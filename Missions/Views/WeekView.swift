@@ -9,7 +9,7 @@ struct WeekView: View {
         var grouped: [Date: [Mission]] = [:]
         
         for mission in allMissions {
-            if let dueDate = mission.dueDate {
+            if !mission.isCompleted, let dueDate = mission.dueDate {
                 let startOfDay = calendar.startOfDay(for: dueDate)
                 grouped[startOfDay, default: []].append(mission)
             }
@@ -25,7 +25,7 @@ struct WeekView: View {
                     ContentUnavailableView("Sem missões agendadas", systemImage: "calendar.badge.clock", description: Text("Descanse ou planeje com antecedência!"))
                 } else {
                     ForEach(missionsByDay, id: \.0) { date, missions in
-                        Section(header: Text(date, style: .date).bold()) {
+                        Section(header: Text(friendlyDate(date)).bold().textCase(nil)) {
                             ForEach(missions) { mission in
                                 MissionRow(mission: mission)
                             }
@@ -35,6 +35,20 @@ struct WeekView: View {
             }
             .listStyle(.insetGrouped)
             .navigationTitle("Semana")
+        }
+    }
+    
+    private func friendlyDate(_ date: Date) -> String {
+        let calendar = Calendar.current
+        if calendar.isDateInToday(date) {
+            return "Hoje"
+        } else if calendar.isDateInTomorrow(date) {
+            return "Amanhã"
+        } else {
+            let formatter = DateFormatter()
+            formatter.locale = Locale(identifier: "pt_BR")
+            formatter.dateFormat = "EEEE, d 'de' MMMM"
+            return formatter.string(from: date).capitalized
         }
     }
 }

@@ -20,6 +20,7 @@
 		7351143BE863AA59C3640449 /* Sector.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC94F49B823D2B00ADD2B81 /* Sector.swift */; };
 		756146ED84C92A94508ED79B /* ProjectDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F044139D2C96379610A4E7 /* ProjectDetailView.swift */; };
 		98E249C5A041B7F5B4FE70B4 /* SectorDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7484472824C8E8FA0977304 /* SectorDetailView.swift */; };
+		9A6BC4A440E4BC932DB2E61C /* HelpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2A9B931B502BD680A756110 /* HelpView.swift */; };
 		AE874B0AA7BACCF724440A33 /* MissionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3324E94BA85E2997152232D /* MissionDetailView.swift */; };
 		B1A811BDE19464B464D2B67F /* Step.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447B4F2FA05CB553715E0CA7 /* Step.swift */; };
 		B8BE0069B1C0B6DB910DBC7F /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = A490473F8361F49514AAA87E /* Project.swift */; };
@@ -56,6 +57,7 @@
 		D7484472824C8E8FA0977304 /* SectorDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SectorDetailView.swift; path = Missions/Views/SectorDetailView.swift; sourceTree = SOURCE_ROOT; };
 		DB624ADFAD8A4CD66FB9697A /* Mission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Mission.swift; path = Missions/Models/Mission.swift; sourceTree = SOURCE_ROOT; };
 		DFC94F49B823D2B00ADD2B81 /* Sector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Sector.swift; path = Missions/Models/Sector.swift; sourceTree = SOURCE_ROOT; };
+		E2A9B931B502BD680A756110 /* HelpView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HelpView.swift; sourceTree = "<group>"; };
 		E4A6494A9AAC8C4A0D54577E /* FocusModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FocusModeView.swift; path = Missions/Views/FocusModeView.swift; sourceTree = SOURCE_ROOT; };
 		F1F58097FEA5FF5044DD8690 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		F3324E94BA85E2997152232D /* MissionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MissionDetailView.swift; path = Missions/Views/MissionDetailView.swift; sourceTree = SOURCE_ROOT; };
@@ -157,6 +159,7 @@
 				26F54DAE970069BD88B2E70C /* AddProjectView.swift */,
 				21F044139D2C96379610A4E7 /* ProjectDetailView.swift */,
 				F3324E94BA85E2997152232D /* MissionDetailView.swift */,
+				E2A9B931B502BD680A756110 /* HelpView.swift */,
 			);
 			name = Views;
 			path = Missions/Views;
@@ -286,6 +289,7 @@
 				6910443FB4ADAA5CA6D0AE20 /* AddProjectView.swift in Sources */,
 				756146ED84C92A94508ED79B /* ProjectDetailView.swift in Sources */,
 				AE874B0AA7BACCF724440A33 /* MissionDetailView.swift in Sources */,
+				9A6BC4A440E4BC932DB2E61C /* HelpView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

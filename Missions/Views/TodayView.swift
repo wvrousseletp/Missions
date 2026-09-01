@@ -6,12 +6,54 @@ struct TodayView: View {
         mission.isCompleted == false
     }, sort: \Mission.dueDate) var todayMissions: [Mission]
     
+    @Query(filter: #Predicate<Mission> { mission in
+        mission.isCompleted == true
+    }) var completedMissions: [Mission]
+    
     @State private var showingQuickCapture = false
     @State private var showingFocusMode = false
+    @State private var showingHelp = false
     
     var body: some View {
         NavigationStack {
             List {
+                // ANEL DE PROGRESSO
+                Section {
+                    HStack(spacing: 16) {
+                        ZStack {
+                            Circle()
+                                .stroke(Color.secondary.opacity(0.2), lineWidth: 8)
+                            
+                            let total = todayMissions.count + completedMissions.filter { Calendar.current.isDateInToday($0.dueDate ?? Date()) }.count
+                            let completed = completedMissions.filter { Calendar.current.isDateInToday($0.dueDate ?? Date()) }.count
+                            let progress: CGFloat = total == 0 ? 0 : CGFloat(completed) / CGFloat(total)
+                            
+                            Circle()
+                                .trim(from: 0, to: progress)
+                                .stroke(Color.accentColor, style: StrokeStyle(lineWidth: 8, lineCap: .round))
+                                .rotationEffect(.degrees(-90))
+                                .animation(.spring(), value: progress)
+                            
+                            Text("\(Int(progress * 100))%")
+                                .font(.caption)
+                                .bold()
+                        }
+                        .frame(width: 60, height: 60)
+                        
+                        VStack(alignment: .leading) {
+                            Text("Seu Progresso")
+                                .font(.headline)
+                            let total = todayMissions.count + completedMissions.filter { Calendar.current.isDateInToday($0.dueDate ?? Date()) }.count
+                            let completed = completedMissions.filter { Calendar.current.isDateInToday($0.dueDate ?? Date()) }.count
+                            Text("\(completed) de \(total) missões concluídas hoje")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .padding(.vertical, 8)
+                }
+                .listRowBackground(Color.clear)
+            
                 if todayMissions.isEmpty {
                     ContentUnavailableView("Sem Missões Hoje", systemImage: "sparkles", description: Text("Você está em dia!"))
                 } else {
@@ -48,6 +90,13 @@ struct TodayView: View {
             .listStyle(.insetGrouped)
             .navigationTitle("Hoje")
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button(action: {
+                        showingHelp = true
+                    }) {
+                        Image(systemName: "questionmark.circle")
+                    }
+                }
                 ToolbarItem(placement: .primaryAction) {
                     Button(action: {
                         showingQuickCapture = true
@@ -60,6 +109,9 @@ struct TodayView: View {
             .sheet(isPresented: $showingQuickCapture) {
                 QuickCaptureView()
             }
+            .sheet(isPresented: $showingHelp) {
+                HelpView()
+            }
             .fullScreenCover(isPresented: $showingFocusMode) {
                 if let mission = todayMissions.first {
                     FocusModeView(mission: mission)
@@ -70,6 +122,7 @@ struct TodayView: View {
 }
 
 struct MissionRow: View {
+    @Environment(\.modelContext) private var modelContext
     @Bindable var mission: Mission
     @State private var isExpanded: Bool = false
     
@@ -91,6 +144,7 @@ struct MissionRow: View {
                 Button(action: {
                     withAnimation {
                         mission.isCompleted.toggle()
+                        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                     }
                 }) {
                     Image(systemName: mission.isCompleted ? "checkmark.circle.fill" : "circle")
@@ -152,6 +206,35 @@ struct MissionRow: View {
         }
         .padding(.vertical, 4)
         .sensoryFeedback(.success, trigger: mission.isCompleted)
+        .swipeActions(edge: .leading) {
+            Button {
+                withAnimation {
+                    mission.isCompleted = true
+                    UINotificationFeedbackGenerator().notificationOccurred(.success)
+                }
+            } label: {
+                Label("Concluir", systemImage: "checkmark")
+            }
+            .tint(.green)
+        }
+        .swipeActions(edge: .trailing) {
+            Button(role: .destructive) {
+                withAnimation {
+                    modelContext.delete(mission)
+                }
+            } label: {
+                Label("Excluir", systemImage: "trash")
+            }
+            
+            Button {
+                withAnimation {
+                    mission.dueDate = Calendar.current.date(byAdding: .day, value: 1, to: Date())
+                }
+            } label: {
+                Label("Adiar", systemImage: "arrow.right.circle")
+            }
+            .tint(.orange)
+        }
     }
 }
 
@@ -164,6 +247,7 @@ struct StepRow: View {
             Button(action: {
                 withAnimation {
                     step.isCompleted.toggle()
+                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
                     checkMissionCompletion()
                 }
             }) {
@@ -179,12 +263,14 @@ struct StepRow: View {
             
             Spacer()
         }
+        .sensoryFeedback(.impact(flexibility: .rigid), trigger: step.isCompleted)
     }
     
     private func checkMissionCompletion() {
         let allCompleted = mission.steps?.allSatisfy { $0.isCompleted } ?? false
         if allCompleted {
             mission.isCompleted = true
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
         }
     }
 }

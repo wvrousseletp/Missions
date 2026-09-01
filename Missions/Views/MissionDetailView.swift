@@ -13,6 +13,11 @@ struct MissionDetailView: View {
                 TextField("Título", text: $mission.title)
             }
             
+            Section(header: Text("Anotações & Links")) {
+                TextField("Adicione links de reuniões, documentos ou anotações livres...", text: $mission.details, axis: .vertical)
+                    .lineLimit(3...8)
+            }
+            
             Section(header: Text("Projeto e Setor")) {
                 if let project = mission.project, let sector = project.sector {
                     HStack {

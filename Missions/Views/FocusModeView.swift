@@ -5,6 +5,11 @@ struct FocusModeView: View {
     @Environment(\.dismiss) private var dismiss
     @Bindable var mission: Mission
     
+    // Timer state
+    @State private var timeRemaining: Int = 25 * 60 // 25 minutos
+    @State private var isTimerRunning = false
+    @State private var timer: Timer? = nil
+    
     var nextStep: Step? {
         mission.steps?.filter { !$0.isCompleted }.sorted(by: { $0.order < $1.order }).first
     }
@@ -45,6 +50,7 @@ struct FocusModeView: View {
                         Button(action: {
                             withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
                                 step.isCompleted = true
+                                UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
                                 checkMissionCompletion()
                             }
                         }) {
@@ -74,11 +80,32 @@ struct FocusModeView: View {
                 }
                 
                 Spacer()
+                
+                // POMODORO TIMER
+                VStack(spacing: 12) {
+                    Text(timeString(time: timeRemaining))
+                        .font(.system(size: 44, weight: .thin, design: .monospaced))
+                    
+                    HStack(spacing: 24) {
+                        Button(action: toggleTimer) {
+                            Image(systemName: isTimerRunning ? "pause.circle.fill" : "play.circle.fill")
+                                .font(.title)
+                                .foregroundStyle(isTimerRunning ? .orange : .green)
+                        }
+                        Button(action: resetTimer) {
+                            Image(systemName: "arrow.counterclockwise.circle.fill")
+                                .font(.title)
+                                .foregroundStyle(.gray)
+                        }
+                    }
+                }
+                .padding(.bottom, 20)
             }
             .sensoryFeedback(.success, trigger: mission.isCompleted)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(action: {
+                        stopTimer()
                         dismiss()
                     }) {
                         Image(systemName: "xmark.circle.fill")
@@ -86,6 +113,9 @@ struct FocusModeView: View {
                             .font(.title2)
                     }
                 }
+            }
+            .onDisappear {
+                stopTimer()
             }
         }
     }
@@ -95,7 +125,46 @@ struct FocusModeView: View {
         if allCompleted {
             withAnimation {
                 mission.isCompleted = true
+                UINotificationFeedbackGenerator().notificationOccurred(.success)
             }
         }
+    }
+    
+    // MARK: - Timer Logic
+    private func toggleTimer() {
+        if isTimerRunning {
+            stopTimer()
+        } else {
+            startTimer()
+        }
+    }
+    
+    private func startTimer() {
+        isTimerRunning = true
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+            if timeRemaining > 0 {
+                timeRemaining -= 1
+            } else {
+                stopTimer()
+                UINotificationFeedbackGenerator().notificationOccurred(.warning)
+            }
+        }
+    }
+    
+    private func stopTimer() {
+        isTimerRunning = false
+        timer?.invalidate()
+        timer = nil
+    }
+    
+    private func resetTimer() {
+        stopTimer()
+        timeRemaining = 25 * 60
+    }
+    
+    private func timeString(time: Int) -> String {
+        let minutes = time / 60
+        let seconds = time % 60
+        return String(format: "%02d:%02d", minutes, seconds)
     }
 }
