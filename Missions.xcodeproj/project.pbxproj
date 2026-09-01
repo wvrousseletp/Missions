@@ -57,7 +57,7 @@
 		D7484472824C8E8FA0977304 /* SectorDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SectorDetailView.swift; path = Missions/Views/SectorDetailView.swift; sourceTree = SOURCE_ROOT; };
 		DB624ADFAD8A4CD66FB9697A /* Mission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Mission.swift; path = Missions/Models/Mission.swift; sourceTree = SOURCE_ROOT; };
 		DFC94F49B823D2B00ADD2B81 /* Sector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Sector.swift; path = Missions/Models/Sector.swift; sourceTree = SOURCE_ROOT; };
-		E2A9B931B502BD680A756110 /* HelpView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HelpView.swift; sourceTree = "<group>"; };
+		E2A9B931B502BD680A756110 /* HelpView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Missions/Views/HelpView.swift; sourceTree = SOURCE_ROOT; };
 		E4A6494A9AAC8C4A0D54577E /* FocusModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FocusModeView.swift; path = Missions/Views/FocusModeView.swift; sourceTree = SOURCE_ROOT; };
 		F1F58097FEA5FF5044DD8690 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		F3324E94BA85E2997152232D /* MissionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MissionDetailView.swift; path = Missions/Views/MissionDetailView.swift; sourceTree = SOURCE_ROOT; };
