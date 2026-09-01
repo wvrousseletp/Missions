@@ -2,7 +2,6 @@ name: Deploy to TestFlight
 
 on:
   workflow_dispatch:
-
   push:
     branches:
       - main
@@ -13,16 +12,16 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.0'
-          bundler-cache: true
+          ruby-version: '3.3'
+          bundler-cache: false
 
       - name: Install Fastlane
-        run: gem install fastlane
+        run: gem install fastlane --no-document
 
       - name: Setup Fastlane App Store Connect API Key
         run: |
@@ -34,7 +33,6 @@ jobs:
           APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
           APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}
           APP_STORE_CONNECT_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
-          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
+          GITHUB_RUN_NUMBER: ${{ github.run_number }}
         run: fastlane beta
         working-directory: .
