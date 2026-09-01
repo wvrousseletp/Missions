@@ -27,7 +27,7 @@ jobs:
       - name: Setup Fastlane App Store Connect API Key
         run: |
           echo "${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}" > AuthKey_${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}.p8
-        working-directory: ./Missions/fastlane
+        working-directory: ./fastlane
 
       - name: Deploy to TestFlight
         env:
@@ -37,4 +37,4 @@ jobs:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
           FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
         run: fastlane beta
-        working-directory: ./Missions
+        working-directory: .
