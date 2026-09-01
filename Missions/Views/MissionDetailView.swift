@@ -39,7 +39,7 @@ struct MissionDetailView: View {
                 
                 HStack {
                     Image(systemName: "plus")
-                        .foregroundStyle(.accentColor)
+                        .foregroundColor(.accentColor)
                     TextField("Add new step", text: $newStepTitle)
                         .onSubmit {
                             addStep()
