@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		04DE4582A27657C931B8770F /* BacklogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1CB4925B177DB3FD953BC72 /* BacklogView.swift */; };
 		0F4C4499BB7F3E2A7E169C4E /* Mission.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB624ADFAD8A4CD66FB9697A /* Mission.swift */; };
+		2BF418BEC07C350303CC8D7A /* MissionsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA57B73748D0CC8D511510EE /* MissionsWidget.swift */; };
 		2D4C40698EEC812EA1B05C3C /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = A490473F8361F49514AAA87E /* Project.swift */; };
 		3CB8419886CCAAC12F2B862F /* WeekView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83804550ADEC47A5BCAB3816 /* WeekView.swift */; };
 		5DEE4BC288834FD34CD6C5B2 /* Step.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447B4F2FA05CB553715E0CA7 /* Step.swift */; };
@@ -16,42 +17,61 @@
 		63BF4B208E394B1C00CE0FEC /* AddSectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BF04401BE9D76D37F894FCC /* AddSectorView.swift */; };
 		6910443FB4ADAA5CA6D0AE20 /* AddProjectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F54DAE970069BD88B2E70C /* AddProjectView.swift */; };
 		71244BA4B9303EEDFE29E68B /* FocusModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A6494A9AAC8C4A0D54577E /* FocusModeView.swift */; };
+		7351143BE863AA59C3640449 /* Sector.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC94F49B823D2B00ADD2B81 /* Sector.swift */; };
 		756146ED84C92A94508ED79B /* ProjectDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F044139D2C96379610A4E7 /* ProjectDetailView.swift */; };
 		98E249C5A041B7F5B4FE70B4 /* SectorDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7484472824C8E8FA0977304 /* SectorDetailView.swift */; };
 		AE874B0AA7BACCF724440A33 /* MissionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3324E94BA85E2997152232D /* MissionDetailView.swift */; };
+		B1A811BDE19464B464D2B67F /* Step.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447B4F2FA05CB553715E0CA7 /* Step.swift */; };
+		B8BE0069B1C0B6DB910DBC7F /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = A490473F8361F49514AAA87E /* Project.swift */; };
 		C92047B4B8BE6AF9B63D9FC0 /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11914911A78D9980A0B27CC9 /* Color+Hex.swift */; };
 		D35B3D383045FBA300498B3F /* MissionsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D35B3D373045FBA300498B3F /* MissionsApp.swift */; };
 		D35B3D3C3045FBA900498B3F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D35B3D3B3045FBA900498B3F /* Assets.xcassets */; };
 		D35B3D3F3045FBA900498B3F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D35B3D3E3045FBA900498B3F /* Preview Assets.xcassets */; };
 		DA844533B27950F7F0DB7A0D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F781448F8D71CD9D4E9DD99C /* ContentView.swift */; };
+		DF18CCE9623BAB438FE250B0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1F58097FEA5FF5044DD8690 /* Foundation.framework */; };
 		E2364309B2B76B17C8128D7E /* SectorsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33964E3AB97B4857580A98AA /* SectorsView.swift */; };
 		E7044C20BAC6571175C73A3E /* QuickCaptureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E6C4A88904D6E59C8E6190C /* QuickCaptureView.swift */; };
+		F95D95B86A7EA38F01C6DB86 /* Mission.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB624ADFAD8A4CD66FB9697A /* Mission.swift */; };
 		FE80441ABAB7BD02940DDDB4 /* TodayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FA4985A4CC86782067E2C2 /* TodayView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0A491E1C9A3E2962A6DC78C1 /* MissionsWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MissionsWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		11914911A78D9980A0B27CC9 /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Color+Hex.swift"; path = "Missions/Views/Color+Hex.swift"; sourceTree = SOURCE_ROOT; };
 		21F044139D2C96379610A4E7 /* ProjectDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProjectDetailView.swift; path = Missions/Views/ProjectDetailView.swift; sourceTree = SOURCE_ROOT; };
 		26F54DAE970069BD88B2E70C /* AddProjectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AddProjectView.swift; path = Missions/Views/AddProjectView.swift; sourceTree = SOURCE_ROOT; };
 		2BF04401BE9D76D37F894FCC /* AddSectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AddSectorView.swift; path = Missions/Views/AddSectorView.swift; sourceTree = SOURCE_ROOT; };
 		2E6C4A88904D6E59C8E6190C /* QuickCaptureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = QuickCaptureView.swift; path = Missions/Views/QuickCaptureView.swift; sourceTree = SOURCE_ROOT; };
-		33964E3AB97B4857580A98AA /* SectorsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SectorsView.swift; name = SectorsView.swift; path = Missions/Views/SectorsView.swift; sourceTree = SOURCE_ROOT; };
-		42FA4985A4CC86782067E2C2 /* TodayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TodayView.swift; name = TodayView.swift; path = Missions/Views/TodayView.swift; sourceTree = SOURCE_ROOT; };
-		447B4F2FA05CB553715E0CA7 /* Step.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Step.swift; name = Step.swift; path = Missions/Models/Step.swift; sourceTree = SOURCE_ROOT; };
-		83804550ADEC47A5BCAB3816 /* WeekView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WeekView.swift; name = WeekView.swift; path = Missions/Views/WeekView.swift; sourceTree = SOURCE_ROOT; };
-		A490473F8361F49514AAA87E /* Project.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Project.swift; name = Project.swift; path = Missions/Models/Project.swift; sourceTree = SOURCE_ROOT; };
-		D1CB4925B177DB3FD953BC72 /* BacklogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BacklogView.swift; name = BacklogView.swift; path = Missions/Views/BacklogView.swift; sourceTree = SOURCE_ROOT; };
+		33964E3AB97B4857580A98AA /* SectorsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SectorsView.swift; path = Missions/Views/SectorsView.swift; sourceTree = SOURCE_ROOT; };
+		42FA4985A4CC86782067E2C2 /* TodayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TodayView.swift; path = Missions/Views/TodayView.swift; sourceTree = SOURCE_ROOT; };
+		447B4F2FA05CB553715E0CA7 /* Step.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Step.swift; path = Missions/Models/Step.swift; sourceTree = SOURCE_ROOT; };
+		83804550ADEC47A5BCAB3816 /* WeekView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WeekView.swift; path = Missions/Views/WeekView.swift; sourceTree = SOURCE_ROOT; };
+		A490473F8361F49514AAA87E /* Project.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Project.swift; path = Missions/Models/Project.swift; sourceTree = SOURCE_ROOT; };
+		CA57B73748D0CC8D511510EE /* MissionsWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MissionsWidget.swift; sourceTree = "<group>"; };
+		D1CB4925B177DB3FD953BC72 /* BacklogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BacklogView.swift; path = Missions/Views/BacklogView.swift; sourceTree = SOURCE_ROOT; };
 		D35B3D343045FBA300498B3F /* Missions.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Missions.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D35B3D373045FBA300498B3F /* MissionsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MissionsApp.swift; path = Missions/MissionsApp.swift; sourceTree = SOURCE_ROOT; };
 		D35B3D3B3045FBA900498B3F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D35B3D3E3045FBA900498B3F /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		D7484472824C8E8FA0977304 /* SectorDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SectorDetailView.swift; path = Missions/Views/SectorDetailView.swift; sourceTree = SOURCE_ROOT; };
-		DB624ADFAD8A4CD66FB9697A /* Mission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Mission.swift; name = Mission.swift; path = Missions/Models/Mission.swift; sourceTree = SOURCE_ROOT; };
-		DFC94F49B823D2B00ADD2B81 /* Sector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Sector.swift; name = Sector.swift; path = Missions/Models/Sector.swift; sourceTree = SOURCE_ROOT; };
+		DB624ADFAD8A4CD66FB9697A /* Mission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Mission.swift; path = Missions/Models/Mission.swift; sourceTree = SOURCE_ROOT; };
+		DFC94F49B823D2B00ADD2B81 /* Sector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Sector.swift; path = Missions/Models/Sector.swift; sourceTree = SOURCE_ROOT; };
 		E4A6494A9AAC8C4A0D54577E /* FocusModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FocusModeView.swift; path = Missions/Views/FocusModeView.swift; sourceTree = SOURCE_ROOT; };
+		F1F58097FEA5FF5044DD8690 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		F3324E94BA85E2997152232D /* MissionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MissionDetailView.swift; path = Missions/Views/MissionDetailView.swift; sourceTree = SOURCE_ROOT; };
-		F781448F8D71CD9D4E9DD99C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ContentView.swift; name = ContentView.swift; path = Missions/Views/ContentView.swift; sourceTree = SOURCE_ROOT; };
+		F781448F8D71CD9D4E9DD99C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ContentView.swift; path = Missions/Views/ContentView.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		6BAE62AD97C74B51227B9DA3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DF18CCE9623BAB438FE250B0 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		116746CC8F19769C1A435219 /* Models */ = {
@@ -66,11 +86,28 @@
 			path = Missions/Models;
 			sourceTree = "<group>";
 		};
+		8B20D90A4F3A357825BA2BA0 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				F1F58097FEA5FF5044DD8690 /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		C6ACD815669B70BDA8810B47 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				8B20D90A4F3A357825BA2BA0 /* iOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		D35B3D2B3045FBA300498B3F = {
 			isa = PBXGroup;
 			children = (
 				D35B3D363045FBA300498B3F /* Missions */,
 				D35B3D353045FBA300498B3F /* Products */,
+				C6ACD815669B70BDA8810B47 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -78,6 +115,7 @@
 			isa = PBXGroup;
 			children = (
 				D35B3D343045FBA300498B3F /* Missions.app */,
+				0A491E1C9A3E2962A6DC78C1 /* MissionsWidget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -90,6 +128,7 @@
 				D35B3D3D3045FBA900498B3F /* Preview Content */,
 				116746CC8F19769C1A435219 /* Models */,
 				FCA24DB49D42DE78EB3A82F1 /* Views */,
+				CA57B73748D0CC8D511510EE /* MissionsWidget.swift */,
 			);
 			path = Missions;
 			sourceTree = "<group>";
@@ -126,6 +165,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		2DECC450A98E77B69AD2910B /* MissionsWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 380E9024AEF96854AF06F934 /* Build configuration list for PBXNativeTarget "MissionsWidget" */;
+			buildPhases = (
+				73D80CE0BD88DEB1605A08F8 /* Sources */,
+				6BAE62AD97C74B51227B9DA3 /* Frameworks */,
+				E68D84782EFBDA216D38B05A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MissionsWidget;
+			productName = MissionsWidget;
+			productReference = 0A491E1C9A3E2962A6DC78C1 /* MissionsWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		D35B3D333045FBA300498B3F /* Missions */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D35B3D423045FBA900498B3F /* Build configuration list for PBXNativeTarget "Missions" */;
@@ -171,6 +227,7 @@
 			projectRoot = "";
 			targets = (
 				D35B3D333045FBA300498B3F /* Missions */,
+				2DECC450A98E77B69AD2910B /* MissionsWidget */,
 			);
 		};
 /* End PBXProject section */
@@ -185,9 +242,28 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E68D84782EFBDA216D38B05A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		73D80CE0BD88DEB1605A08F8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F95D95B86A7EA38F01C6DB86 /* Mission.swift in Sources */,
+				B8BE0069B1C0B6DB910DBC7F /* Project.swift in Sources */,
+				B1A811BDE19464B464D2B67F /* Step.swift in Sources */,
+				7351143BE863AA59C3640449 /* Sector.swift in Sources */,
+				2BF418BEC07C350303CC8D7A /* MissionsWidget.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D35B3D303045FBA300498B3F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -216,6 +292,39 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		0F07CCE9E720428B54D7FE2C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				DEVELOPMENT_TEAM = PJ32UPL29J;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Missions;
+				INFOPLIST_KEY_NSWidgetWantsLocation = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vicente.missions.MissionsWidget;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		B9065CA89C5DB22327D4DC3F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				DEVELOPMENT_TEAM = PJ32UPL29J;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Missions;
+				INFOPLIST_KEY_NSWidgetWantsLocation = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vicente.missions.MissionsWidget;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
 		D35B3D403045FBA900498B3F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -401,6 +510,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		380E9024AEF96854AF06F934 /* Build configuration list for PBXNativeTarget "MissionsWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0F07CCE9E720428B54D7FE2C /* Release */,
+				B9065CA89C5DB22327D4DC3F /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		D35B3D2F3045FBA300498B3F /* Build configuration list for PBXProject "Missions" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

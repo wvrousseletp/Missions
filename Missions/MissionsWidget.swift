@@ -5,8 +5,8 @@ import SwiftData
 struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> SimpleEntry {
         SimpleEntry(date: Date(), missions: [
-            Mission(title: "Finish project presentation", priority: .high),
-            Mission(title: "Buy groceries", priority: .medium)
+            Mission(title: "Apresentar projeto", priority: .high),
+            Mission(title: "Comprar suprimentos", priority: .medium)
         ])
     }
 
@@ -16,11 +16,9 @@ struct Provider: TimelineProvider {
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
-        // In a real scenario with App Groups, we would fetch from SwiftData here.
-        // For now, we provide a placeholder timeline.
         let entry = SimpleEntry(date: Date(), missions: [
-            Mission(title: "Review pull requests", priority: .high),
-            Mission(title: "Update design specs", priority: .medium)
+            Mission(title: "Revisar relatórios", priority: .high),
+            Mission(title: "Atualizar especificações", priority: .medium)
         ])
         let timeline = Timeline(entries: [entry], policy: .atEnd)
         completion(timeline)
@@ -37,13 +35,13 @@ struct MissionsWidgetEntryView : View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Today's Focus")
+            Text("Foco de Hoje")
                 .font(.caption)
                 .fontWeight(.bold)
                 .foregroundStyle(.secondary)
             
             if entry.missions.isEmpty {
-                Text("All clear! 🚀")
+                Text("Tudo em dia! 🚀")
                     .font(.headline)
             } else {
                 ForEach(entry.missions.prefix(3)) { mission in
@@ -77,8 +75,8 @@ struct MissionsWidget: Widget {
                     .background()
             }
         }
-        .configurationDisplayName("Today's Missions")
-        .description("Keep track of your top priorities for the day.")
+        .configurationDisplayName("Missões de Hoje")
+        .description("Acompanhe suas principais prioridades do dia.")
         .supportedFamilies([.systemSmall, .systemMedium])
     }
 }
