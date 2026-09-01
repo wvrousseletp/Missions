@@ -75,6 +75,7 @@ struct FocusModeView: View {
                 
                 Spacer()
             }
+            .sensoryFeedback(.success, trigger: mission.isCompleted)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(action: {

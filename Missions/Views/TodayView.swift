@@ -151,6 +151,7 @@ struct MissionRow: View {
             }
         }
         .padding(.vertical, 4)
+        .sensoryFeedback(.success, trigger: mission.isCompleted)
     }
 }
 
