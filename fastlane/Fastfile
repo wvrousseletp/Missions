@@ -22,18 +22,17 @@ platform :ios do
       is_key_content_base64: false
     )
 
-    cert
-    sigh(force: true)
-
     # Ensure correct version bumping
     increment_build_number(
       build_number: ENV["GITHUB_RUN_NUMBER"]
     )
 
-    # Build the application
+    # Build the application with automatic signing via xcodebuild auth
+    p8_path = File.expand_path("AuthKey_#{ENV['APP_STORE_CONNECT_API_KEY_ID']}.p8")
     build_app(
       scheme: "Missions",
-      export_method: "app-store"
+      export_method: "app-store",
+      xcargs: "-allowProvisioningUpdates -authenticationKeyID #{ENV['APP_STORE_CONNECT_API_KEY_ID']} -authenticationKeyIssuerID #{ENV['APP_STORE_CONNECT_API_KEY_ISSUER_ID']} -authenticationKeyPath \"#{p8_path}\""
     )
 
     # Upload to TestFlight
