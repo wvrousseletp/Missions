@@ -21,7 +21,7 @@ struct SectorDetailView: View {
                 .padding(.vertical, 8)
             }
             
-            Section("Projects") {
+            Section("Projetos") {
                 if let projects = sector.projects, !projects.isEmpty {
                     ForEach(projects.sorted(by: { $0.createdAt > $1.createdAt })) { project in
                         NavigationLink(destination: ProjectDetailView(project: project)) {
@@ -39,7 +39,7 @@ struct SectorDetailView: View {
                     }
                     .onDelete(perform: deleteProjects)
                 } else {
-                    Text("No projects yet.")
+                    Text("Nenhum projeto ainda.")
                         .foregroundStyle(.secondary)
                 }
             }

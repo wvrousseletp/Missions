@@ -17,15 +17,15 @@ struct QuickCaptureView: View {
         NavigationStack {
             Form {
                 Section {
-                    TextField("What needs to be done?", text: $title)
+                    TextField("O que precisa ser feito?", text: $title)
                         .font(.headline)
                         .padding(.vertical, 8)
                 }
                 
                 Section {
                     if !projects.isEmpty {
-                        Picker("Project", selection: $selectedProject) {
-                            Text("None").tag(Project?.none)
+                        Picker("Projeto", selection: $selectedProject) {
+                            Text("Nenhum").tag(Project?.none)
                             ForEach(projects) { project in
                                 Text("\(project.sector?.name ?? "") • \(project.name)").tag(Project?.some(project))
                             }
@@ -34,34 +34,34 @@ struct QuickCaptureView: View {
                 }
                 
                 Section {
-                    Picker("Priority", selection: $priority) {
-                        Text("Low").tag(Priority.low)
-                        Text("Medium").tag(Priority.medium)
-                        Text("High").tag(Priority.high)
+                    Picker("Prioridade", selection: $priority) {
+                        Text("Baixa").tag(Priority.low)
+                        Text("Média").tag(Priority.medium)
+                        Text("Alta").tag(Priority.high)
                     }
                     .pickerStyle(.segmented)
                     
-                    Toggle("Set Due Date", isOn: $hasDueDate)
+                    Toggle("Definir Data", isOn: $hasDueDate)
                     
                     if hasDueDate {
-                        DatePicker("Date", selection: $dueDate, displayedComponents: .date)
+                        DatePicker("Data", selection: $dueDate, displayedComponents: .date)
                     }
                 }
                 
                 Section {
                     Button(action: saveMission) {
-                        Text("Save Mission")
+                        Text("Salvar Missão")
                             .frame(maxWidth: .infinity)
                             .bold()
                     }
                     .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
             }
-            .navigationTitle("Quick Capture")
+            .navigationTitle("Captura Rápida")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
+                    Button("Cancelar") { dismiss() }
                 }
             }
         }

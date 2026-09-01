@@ -14,7 +14,7 @@ struct BacklogView: View {
         NavigationStack {
             List {
                 if backlogMissions.isEmpty {
-                    ContentUnavailableView("Backlog Empty", systemImage: "tray", description: Text("All your missions are scheduled!"))
+                    ContentUnavailableView("Backlog vazio", systemImage: "tray", description: Text("Todas as suas missões estão agendadas!"))
                 } else {
                     ForEach(backlogMissions) { mission in
                         MissionRow(mission: mission)

@@ -11,7 +11,7 @@ struct SectorsView: View {
         NavigationStack {
             List {
                 if sectors.isEmpty {
-                    ContentUnavailableView("No Sectors", systemImage: "square.grid.2x2", description: Text("Create your first sector to organize your projects."))
+                    ContentUnavailableView("Sem setores", systemImage: "square.grid.2x2", description: Text("Crie seu primeiro setor para organizar seus projetos."))
                 } else {
                     ForEach(sectors) { sector in
                         NavigationLink(destination: SectorDetailView(sector: sector)) {
@@ -26,7 +26,7 @@ struct SectorsView: View {
                                 
                                 Spacer()
                                 
-                                Text("\(sector.projects?.count ?? 0) projects")
+                                Text("\(sector.projects?.count ?? 0) projetos")
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                             }
@@ -36,7 +36,7 @@ struct SectorsView: View {
                     .onDelete(perform: deleteSectors)
                 }
             }
-            .navigationTitle("Sectors")
+            .navigationTitle("Setores")
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button(action: {

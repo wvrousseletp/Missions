@@ -14,13 +14,13 @@ struct ProjectDetailView: View {
                 }
             }
             
-            Section("Missions") {
+            Section("Missões") {
                 if let missions = project.missions, !missions.isEmpty {
                     ForEach(missions.sorted(by: { ($0.dueDate ?? Date.distantFuture) < ($1.dueDate ?? Date.distantFuture) })) { mission in
                         MissionRow(mission: mission)
                     }
                 } else {
-                    Text("No missions in this project yet.")
+                    Text("Nenhuma missão neste projeto ainda.")
                         .foregroundStyle(.secondary)
                 }
             }

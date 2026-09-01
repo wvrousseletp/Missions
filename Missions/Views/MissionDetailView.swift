@@ -9,29 +9,27 @@ struct MissionDetailView: View {
     
     var body: some View {
         Form {
-            Section(header: Text("Mission Info")) {
-                TextField("Title", text: $mission.title)
-                TextField("Details (Optional)", text: $mission.details, axis: .vertical)
-                    .lineLimit(3...6)
+            Section(header: Text("Título da Missão")) {
+                TextField("Título", text: $mission.title)
             }
             
-            Section(header: Text("Checklist (Steps)")) {
+            Section(header: Text("Projeto e Setor")) {
+                if let project = mission.project, let sector = project.sector {
+                    HStack {
+                        Image(systemName: sector.iconName)
+                            .foregroundStyle(Color(hex: sector.colorHex) ?? .primary)
+                        Text("\(sector.name) • \(project.name)")
+                    }
+                } else {
+                    Text("Caixa de Entrada")
+                        .foregroundStyle(.secondary)
+                }
+            }
+            
+            Section(header: Text("Checklist (Etapas)")) {
                 if let steps = mission.steps?.sorted(by: { $0.order < $1.order }) {
                     ForEach(steps) { step in
-                        HStack {
-                            Image(systemName: step.isCompleted ? "checkmark.square.fill" : "square")
-                                .foregroundStyle(step.isCompleted ? .green : .gray)
-                                .onTapGesture {
-                                    withAnimation { step.isCompleted.toggle() }
-                                }
-                            
-                            TextField("Step Title", text: Binding(
-                                get: { step.title },
-                                set: { step.title = $0 }
-                            ))
-                            .strikethrough(step.isCompleted, color: .gray)
-                            .foregroundStyle(step.isCompleted ? .secondary : .primary)
-                        }
+                        StepRow(step: step, mission: mission)
                     }
                     .onDelete(perform: deleteSteps)
                     .onMove(perform: moveSteps)
@@ -40,31 +38,27 @@ struct MissionDetailView: View {
                 HStack {
                     Image(systemName: "plus")
                         .foregroundColor(.accentColor)
-                    TextField("Add new step", text: $newStepTitle)
+                    TextField("Adicionar nova etapa", text: $newStepTitle)
                         .onSubmit {
                             addStep()
                         }
-                    Button("Add") {
-                        addStep()
-                    }
-                    .disabled(newStepTitle.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
             }
             
-            Section(header: Text("Settings")) {
-                Picker("Priority", selection: $mission.priority) {
-                    Text("Low").tag(Priority.low)
-                    Text("Medium").tag(Priority.medium)
-                    Text("High").tag(Priority.high)
+            Section(header: Text("Detalhes")) {
+                Picker("Prioridade", selection: $mission.priority) {
+                    Text("Baixa").tag(Priority.low)
+                    Text("Média").tag(Priority.medium)
+                    Text("Alta").tag(Priority.high)
                 }
                 
-                DatePicker("Due Date", selection: Binding(
+                DatePicker("Data de Entrega", selection: Binding(
                     get: { mission.dueDate ?? Date() },
                     set: { mission.dueDate = $0 }
                 ), displayedComponents: .date)
             }
         }
-        .navigationTitle("Mission Details")
+        .navigationTitle("Detalhes da Missão")
         .navigationBarTitleDisplayMode(.inline)
     }
     

@@ -4,7 +4,6 @@ import SwiftData
 struct WeekView: View {
     @Query(sort: \Mission.dueDate) var allMissions: [Mission]
     
-    // Group by Day
     var missionsByDay: [(Date, [Mission])] {
         let calendar = Calendar.current
         var grouped: [Date: [Mission]] = [:]
@@ -23,7 +22,7 @@ struct WeekView: View {
         NavigationStack {
             List {
                 if missionsByDay.isEmpty {
-                    ContentUnavailableView("No Upcoming Missions", systemImage: "calendar.badge.clock", description: Text("Take a break or plan ahead!"))
+                    ContentUnavailableView("Sem missões agendadas", systemImage: "calendar.badge.clock", description: Text("Descanse ou planeje com antecedência!"))
                 } else {
                     ForEach(missionsByDay, id: \.0) { date, missions in
                         Section(header: Text(date, style: .date).bold()) {
@@ -35,7 +34,7 @@ struct WeekView: View {
                 }
             }
             .listStyle(.insetGrouped)
-            .navigationTitle("Upcoming")
+            .navigationTitle("Semana")
         }
     }
 }

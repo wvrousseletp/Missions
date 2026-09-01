@@ -15,7 +15,7 @@ struct FocusModeView: View {
                 Spacer()
                 
                 VStack(spacing: 16) {
-                    Text("CURRENT MISSION")
+                    Text("MISSÃO ATUAL")
                         .font(.caption)
                         .fontWeight(.bold)
                         .foregroundStyle(.secondary)
@@ -30,7 +30,7 @@ struct FocusModeView: View {
                 
                 if let step = nextStep {
                     VStack(spacing: 24) {
-                        Text("NEXT STEP")
+                        Text("PRÓXIMA ETAPA")
                             .font(.caption)
                             .fontWeight(.bold)
                             .foregroundStyle(.secondary)
@@ -67,7 +67,7 @@ struct FocusModeView: View {
                             .font(.system(size: 80))
                             .foregroundStyle(.green)
                         
-                        Text("Mission Accomplished!")
+                        Text("Missão Cumprida!")
                             .font(.title)
                             .fontWeight(.bold)
                     }

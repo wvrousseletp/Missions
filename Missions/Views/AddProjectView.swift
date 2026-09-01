@@ -13,20 +13,20 @@ struct AddProjectView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section(header: Text("Project Info")) {
-                    TextField("Project Name", text: $name)
-                    TextField("Description (Optional)", text: $description, axis: .vertical)
+                Section(header: Text("Informações do Projeto")) {
+                    TextField("Nome do Projeto", text: $name)
+                    TextField("Descrição (Opcional)", text: $description, axis: .vertical)
                         .lineLimit(3...6)
                 }
             }
-            .navigationTitle("New Project")
+            .navigationTitle("Novo Projeto")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
+                    Button("Cancelar") { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save", action: saveProject)
+                    Button("Salvar", action: saveProject)
                         .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
             }

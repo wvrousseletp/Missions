@@ -13,7 +13,7 @@ struct TodayView: View {
         NavigationStack {
             List {
                 if todayMissions.isEmpty {
-                    ContentUnavailableView("No Missions Today", systemImage: "sparkles", description: Text("You're all caught up!"))
+                    ContentUnavailableView("Sem Missões Hoje", systemImage: "sparkles", description: Text("Você está em dia!"))
                 } else {
                     Section {
                         if let firstMission = todayMissions.first {
@@ -22,7 +22,7 @@ struct TodayView: View {
                             }) {
                                 HStack {
                                     Image(systemName: "scope")
-                                    Text("Enter Focus Mode")
+                                    Text("Entrar no Modo Foco")
                                         .bold()
                                     Spacer()
                                     Image(systemName: "chevron.right")
@@ -38,7 +38,7 @@ struct TodayView: View {
                         }
                     }
                     
-                    Section("Pending Missions") {
+                    Section("Missões Pendentes") {
                         ForEach(todayMissions) { mission in
                             MissionRow(mission: mission)
                         }
@@ -46,7 +46,7 @@ struct TodayView: View {
                 }
             }
             .listStyle(.insetGrouped)
-            .navigationTitle("Today")
+            .navigationTitle("Hoje")
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button(action: {
@@ -134,7 +134,7 @@ struct MissionRow: View {
                     .progressViewStyle(.linear)
                     .tint(progress == 1.0 ? .green : .accentColor)
                 
-                Text("\(completedStepsCount)/\(totalStepsCount) steps completed")
+                Text("\(completedStepsCount)/\(totalStepsCount) etapas concluídas")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }

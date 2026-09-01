@@ -6,17 +6,17 @@ struct ContentView: View {
         TabView {
             TodayView()
                 .tabItem {
-                    Label("Today", systemImage: "sun.max.fill")
+                    Label("Hoje", systemImage: "sun.max.fill")
                 }
             
             WeekView()
                 .tabItem {
-                    Label("Week", systemImage: "calendar")
+                    Label("Semana", systemImage: "calendar")
                 }
             
             SectorsView()
                 .tabItem {
-                    Label("Sectors", systemImage: "square.grid.2x2.fill")
+                    Label("Setores", systemImage: "square.grid.2x2.fill")
                 }
             
             BacklogView()
