@@ -32,6 +32,10 @@ platform :ios do
     build_app(
       scheme: "Missions",
       export_method: "app-store",
+      export_options: {
+        method: "app-store",
+        signingStyle: "automatic"
+      },
       xcargs: "-allowProvisioningUpdates -authenticationKeyID #{ENV['APP_STORE_CONNECT_API_KEY_ID']} -authenticationKeyIssuerID #{ENV['APP_STORE_CONNECT_API_KEY_ISSUER_ID']} -authenticationKeyPath \"#{p8_path}\""
     )
 
