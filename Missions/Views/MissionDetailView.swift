@@ -34,7 +34,7 @@ struct MissionDetailView: View {
             Section(header: Text("Checklist (Etapas)")) {
                 if let steps = mission.steps?.sorted(by: { $0.order < $1.order }) {
                     ForEach(steps) { step in
-                        StepRow(step: step, mission: mission)
+                        StepCardRow(step: step, mission: mission)
                     }
                     .onDelete(perform: deleteSteps)
                     .onMove(perform: moveSteps)
