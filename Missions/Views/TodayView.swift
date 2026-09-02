@@ -219,11 +219,12 @@ struct TodayView: View {
     }
 }
 
-// CARD MODERNO DE MISSAO (SUBSTITUI A LINHA DE LISTA PADRAO)
+// CARD MODERNO DE MISSAO (INTEIRAMENTE CLICÁVEL)
 struct MissionCard: View {
     @Environment(\.modelContext) private var modelContext
     @Bindable var mission: Mission
     @State private var isExpanded: Bool = false
+    @State private var showingDetail: Bool = false
     
     var completedStepsCount: Int {
         mission.steps?.filter { $0.isCompleted }.count ?? 0
@@ -240,7 +241,7 @@ struct MissionCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .top, spacing: 14) {
-                // BOTÃO DE CHECKLIST ANIMADO
+                // BOTÃO DE CHECKLIST ANIMADO (APENAS ESTE BOTÃO MARCA CONCLUÍDO)
                 Button(action: {
                     withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
                         mission.isCompleted.toggle()
@@ -265,50 +266,50 @@ struct MissionCard: View {
                 .buttonStyle(.plain)
                 .padding(.top, 2)
                 
-                // DETALHES DA MISSAO
-                NavigationLink(destination: MissionDetailView(mission: mission)) {
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text(mission.title)
-                            .font(.headline)
-                            .fontWeight(.semibold)
-                            .strikethrough(mission.isCompleted, color: .secondary)
-                            .foregroundStyle(mission.isCompleted ? .secondary : .primary)
-                            .multilineTextAlignment(.leading)
+                // DETALHES DA MISSAO (CLIQUE EM QUALQUER LUGAR AQUI ABRE OS DETALHES)
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(mission.title)
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                        .strikethrough(mission.isCompleted, color: .secondary)
+                        .foregroundStyle(mission.isCompleted ? .secondary : .primary)
+                        .multilineTextAlignment(.leading)
+                    
+                    // BADGES DE SETOR E PRIORIDADE
+                    HStack(spacing: 8) {
+                        if let project = mission.project, let sector = project.sector {
+                            HStack(spacing: 4) {
+                                Image(systemName: sector.iconName)
+                                    .font(.caption2)
+                                Text("\(sector.name) • \(project.name)")
+                                    .font(.caption2)
+                                    .fontWeight(.medium)
+                            }
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background((Color(hex: sector.colorHex) ?? Color.accentColor).opacity(0.12))
+                            .foregroundStyle(Color(hex: sector.colorHex) ?? Color.accentColor)
+                            .clipShape(Capsule())
+                        }
                         
-                        // BADGES DE SETOR E PRIORIDADE
-                        HStack(spacing: 8) {
-                            if let project = mission.project, let sector = project.sector {
-                                HStack(spacing: 4) {
-                                    Image(systemName: sector.iconName)
-                                        .font(.caption2)
-                                    Text("\(sector.name) • \(project.name)")
-                                        .font(.caption2)
-                                        .fontWeight(.medium)
-                                }
+                        // BADGE DE PRIORIDADE
+                        if mission.priority == .high {
+                            Text("🔥 Alta")
+                                .font(.caption2)
+                                .fontWeight(.bold)
                                 .padding(.horizontal, 8)
                                 .padding(.vertical, 4)
-                                .background((Color(hex: sector.colorHex) ?? Color.accentColor).opacity(0.12))
-                                .foregroundStyle(Color(hex: sector.colorHex) ?? Color.accentColor)
+                                .background(Color.red.opacity(0.12))
+                                .foregroundStyle(.red)
                                 .clipShape(Capsule())
-                            }
-                            
-                            // BADGE DE PRIORIDADE
-                            if mission.priority == .high {
-                                Text("🔥 Alta")
-                                    .font(.caption2)
-                                    .fontWeight(.bold)
-                                    .padding(.horizontal, 8)
-                                    .padding(.vertical, 4)
-                                    .background(Color.red.opacity(0.12))
-                                    .foregroundStyle(.red)
-                                    .clipShape(Capsule())
-                            }
                         }
                     }
                 }
-                .buttonStyle(.plain)
-                
-                Spacer()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    showingDetail = true
+                }
                 
                 if totalStepsCount > 0 {
                     Button(action: {
@@ -342,6 +343,10 @@ struct MissionCard: View {
                         .progressViewStyle(.linear)
                         .tint(progress == 1.0 ? .green : .accentColor)
                 }
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    showingDetail = true
+                }
             }
             
             // CHECKLIST EXPANDIDO
@@ -358,9 +363,19 @@ struct MissionCard: View {
             }
         }
         .padding(16)
+        .background(
+            NavigationLink(destination: MissionDetailView(mission: mission), isActive: $showingDetail) {
+                EmptyView()
+            }
+            .opacity(0)
+        )
         .background(Color(uiColor: .systemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
         .shadow(color: Color.black.opacity(0.04), radius: 8, x: 0, y: 3)
+        .contentShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .onTapGesture {
+            showingDetail = true
+        }
         .sensoryFeedback(.success, trigger: mission.isCompleted)
     }
 }
