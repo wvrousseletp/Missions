@@ -3,6 +3,7 @@ import SwiftData
 
 struct SectorsView: View {
     @Environment(\.modelContext) private var modelContext
+    @AppStorage("isPureBlack") private var isPureBlack: Bool = false
     @Query(sort: \Sector.order) var sectors: [Sector]
     
     @State private var showingAddSector = false
@@ -56,9 +57,11 @@ struct SectorsView: View {
                 .padding(.top, 16)
                 .padding(.bottom, 100)
             }
-            .background(Color(uiColor: .systemGroupedBackground))
+            .background(Color(uiColor: isPureBlack ? .black : .systemGroupedBackground))
+            .preferredColorScheme(isPureBlack ? .dark : nil)
             .sheet(isPresented: $showingAddSector) {
                 AddSectorView()
+                    .preferredColorScheme(isPureBlack ? .dark : nil)
             }
         }
     }

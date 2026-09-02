@@ -2,6 +2,7 @@ import SwiftUI
 import SwiftData
 
 struct WeekView: View {
+    @AppStorage("isPureBlack") private var isPureBlack: Bool = false
     @Query(sort: \Mission.dueDate) var allMissions: [Mission]
     
     @State private var selectedDate: Date? = nil
@@ -135,7 +136,8 @@ struct WeekView: View {
                     .padding(.bottom, 100)
                 }
             }
-            .background(Color(uiColor: .systemGroupedBackground))
+            .background(Color(uiColor: isPureBlack ? .black : .systemGroupedBackground))
+            .preferredColorScheme(isPureBlack ? .dark : nil)
             .environment(\.locale, Locale(identifier: "pt_BR"))
         }
     }

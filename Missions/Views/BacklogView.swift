@@ -2,6 +2,8 @@ import SwiftUI
 import SwiftData
 
 struct BacklogView: View {
+    @AppStorage("isPureBlack") private var isPureBlack: Bool = false
+    
     @Query(filter: #Predicate<Mission> { mission in
         mission.isCompleted == false
     }, sort: \Mission.createdAt, order: .reverse) var allPendingMissions: [Mission]
@@ -39,7 +41,8 @@ struct BacklogView: View {
                 .padding(.top, 16)
                 .padding(.bottom, 100)
             }
-            .background(Color(uiColor: .systemGroupedBackground))
+            .background(Color(uiColor: isPureBlack ? .black : .systemGroupedBackground))
+            .preferredColorScheme(isPureBlack ? .dark : nil)
         }
     }
 }

@@ -2,6 +2,7 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
+    @AppStorage("isPureBlack") private var isPureBlack: Bool = false
     @State private var selectedTab: Int = 0
     @State private var showingQuickCapture: Bool = false
     @State private var showingAddSector: Bool = false
@@ -107,11 +108,14 @@ struct ContentView: View {
             .padding(.bottom, 28)
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
+        .preferredColorScheme(isPureBlack ? .dark : nil)
         .sheet(isPresented: $showingQuickCapture) {
             QuickCaptureView()
+                .preferredColorScheme(isPureBlack ? .dark : nil)
         }
         .sheet(isPresented: $showingAddSector) {
             AddSectorView()
+                .preferredColorScheme(isPureBlack ? .dark : nil)
         }
     }
     
