@@ -202,6 +202,7 @@ struct QuickCaptureView: View {
         
         do {
             try modelContext.save()
+            NotificationManager.shared.scheduleNotification(for: newMission)
             dismiss()
         } catch {
             print("Error saving mission: \(error)")
@@ -213,99 +214,5 @@ struct QuickCaptureView: View {
         var components = DateComponents()
         components.weekday = 7 // Sábado
         return calendar.nextDate(after: Date(), matching: components, matchingPolicy: .nextTime) ?? Date()
-    }
-}
-
-struct QuickDateChip: View {
-    let title: String
-    let icon: String
-    let color: Color
-    let action: () -> Void
-    
-    var body: some View {
-        Button(action: action) {
-            HStack(spacing: 6) {
-                Image(systemName: icon)
-                    .foregroundStyle(color)
-                Text(title)
-                    .font(.caption)
-                    .bold()
-            }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .background(Color.secondary.opacity(0.12))
-            .clipShape(Capsule())
-        }
-        .buttonStyle(.plain)
-    }
-}
-
-class SpeechManager: NSObject, ObservableObject, SFSpeechRecognizerDelegate {
-    @Published var recognizedText = ""
-    
-    private let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "pt-BR"))
-    private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
-    private var recognitionTask: SFSpeechRecognitionTask?
-    private let audioEngine = AVAudioEngine()
-    
-    override init() {
-        super.init()
-        speechRecognizer?.delegate = self
-    }
-    
-    func startRecording() {
-        SFSpeechRecognizer.requestAuthorization { authStatus in
-            if authStatus == .authorized {
-                DispatchQueue.main.async {
-                    self.beginSession()
-                }
-            }
-        }
-    }
-    
-    private func beginSession() {
-        if recognitionTask != nil {
-            recognitionTask?.cancel()
-            recognitionTask = nil
-        }
-        
-        let audioSession = AVAudioSession.sharedInstance()
-        try? audioSession.setCategory(.record, mode: .measurement, options: .duckOthers)
-        try? audioSession.setActive(true, options: .notifyOthersOnDeactivation)
-        
-        recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
-        guard let recognitionRequest = recognitionRequest else { return }
-        recognitionRequest.shouldReportPartialResults = true
-        
-        let inputNode = audioEngine.inputNode
-        let recordingFormat = inputNode.outputFormat(forBus: 0)
-        inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { (buffer, when) in
-            self.recognitionRequest?.append(buffer)
-        }
-        
-        audioEngine.prepare()
-        try? audioEngine.start()
-        
-        recognitionTask = speechRecognizer?.recognitionTask(with: recognitionRequest) { result, error in
-            if let result = result {
-                DispatchQueue.main.async {
-                    self.recognizedText = result.bestTranscription.formattedString
-                }
-            }
-            if error != nil {
-                self.audioEngine.stop()
-                inputNode.removeTap(onBus: 0)
-                self.recognitionRequest = nil
-                self.recognitionTask = nil
-            }
-        }
-    }
-    
-    func stopRecording() {
-        audioEngine.stop()
-        audioEngine.inputNode.removeTap(onBus: 0)
-        recognitionRequest?.endAudio()
-        recognitionRequest = nil
-        recognitionTask = nil
     }
 }

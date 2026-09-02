@@ -22,6 +22,8 @@ struct TodayView: View {
     @State private var showingQuickCapture = false
     @State private var showingFocusMode = false
     @State private var showingHelp = false
+    @State private var showingStats = false
+    @State private var showingSearch = false
     
     var filteredTodayMissions: [Mission] {
         switch selectedFilter {
@@ -185,10 +187,21 @@ struct TodayView: View {
             .background(Color(uiColor: isPureBlack ? .black : .systemGroupedBackground))
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    HStack(spacing: 12) {
+                    HStack(spacing: 14) {
                         Button(action: { showingHelp = true }) {
                             Image(systemName: "questionmark.circle")
                                 .font(.title3)
+                        }
+                        
+                        Button(action: { showingSearch = true }) {
+                            Image(systemName: "magnifyingglass")
+                                .font(.title3)
+                        }
+                        
+                        Button(action: { showingStats = true }) {
+                            Image(systemName: "chart.bar.fill")
+                                .font(.title3)
+                                .foregroundStyle(Color.accentColor)
                         }
                         
                         Button(action: {
@@ -209,10 +222,19 @@ struct TodayView: View {
             .sheet(isPresented: $showingHelp) {
                 HelpView()
             }
+            .sheet(isPresented: $showingStats) {
+                StatsView()
+            }
+            .sheet(isPresented: $showingSearch) {
+                SearchView()
+            }
             .fullScreenCover(isPresented: $showingFocusMode) {
                 if let mission = filteredTodayMissions.first {
                     FocusModeView(mission: mission)
                 }
+            }
+            .onAppear {
+                NotificationManager.shared.requestAuthorization()
             }
         }
         .preferredColorScheme(isPureBlack ? .dark : nil)
@@ -241,11 +263,14 @@ struct MissionCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .top, spacing: 14) {
-                // BOTÃO DE CHECKLIST ANIMADO (APENAS ESTE BOTÃO MARCA CONCLUÍDO)
+                // BOTÃO DE CHECKLIST ANIMADO
                 Button(action: {
                     withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
                         mission.isCompleted.toggle()
                         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                        if mission.isCompleted {
+                            NotificationManager.shared.cancelNotification(for: mission)
+                        }
                     }
                 }) {
                     ZStack {
@@ -266,7 +291,7 @@ struct MissionCard: View {
                 .buttonStyle(.plain)
                 .padding(.top, 2)
                 
-                // DETALHES DA MISSAO (CLIQUE EM QUALQUER LUGAR AQUI ABRE OS DETALHES)
+                // DETALHES DA MISSAO
                 VStack(alignment: .leading, spacing: 6) {
                     Text(mission.title)
                         .font(.headline)
@@ -415,6 +440,7 @@ struct StepCardRow: View {
         if allCompleted {
             mission.isCompleted = true
             UINotificationFeedbackGenerator().notificationOccurred(.success)
+            NotificationManager.shared.cancelNotification(for: mission)
         }
     }
 }
