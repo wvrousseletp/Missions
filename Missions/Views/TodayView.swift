@@ -536,6 +536,7 @@ struct MissionCard: View {
 
 // LINHA DE ETAPA NO CARD
 struct StepCardRow: View {
+    @Environment(\.modelContext) private var modelContext
     @Bindable var step: Step
     let mission: Mission
     
