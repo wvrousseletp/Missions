@@ -3,6 +3,14 @@ import SwiftData
 import Speech
 import AVFoundation
 
+enum RecurrenceDuration: String, CaseIterable {
+    case forever = "Para Sempre"
+    case oneMonth = "Por 1 Mês"
+    case twoMonths = "Por 2 Meses"
+    case threeMonths = "Por 3 Meses"
+    case customDate = "Data Específica"
+}
+
 struct QuickCaptureView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
@@ -13,6 +21,9 @@ struct QuickCaptureView: View {
     @State private var details: String = ""
     @State private var priority: Priority = .medium
     @State private var recurrence: Recurrence = .none
+    @State private var selectedDays: Set<Int> = [2, 4, 6] // Seg, Qua, Sex por padrão
+    @State private var recurrenceDuration: RecurrenceDuration = .forever
+    @State private var customEndDate: Date = Calendar.current.date(byAdding: .month, value: 2, to: Date()) ?? Date()
     @State private var estimatedMinutes: Int = 30
     @State private var hasEstimatedTime: Bool = false
     @State private var dueDate: Date = Date()
@@ -27,6 +38,10 @@ struct QuickCaptureView: View {
     // Reconhecimento de voz
     @State private var isListening = false
     @StateObject private var speechManager = SpeechManager()
+    
+    let daysOfWeek = [
+        (1, "Dom"), (2, "Seg"), (3, "Ter"), (4, "Qua"), (5, "Qui"), (6, "Sex"), (7, "Sáb")
+    ]
     
     var body: some View {
         NavigationStack {
@@ -86,11 +101,58 @@ struct QuickCaptureView: View {
                     }
                 }
                 
-                // RECORRÊNCIA E ESTIMATIVA DE TEMPO
+                // RECORRÊNCIA PERSONALIZADA (DIAS DA SEMANA E DURAÇÃO)
                 Section(header: Text("Planejamento & Repetição")) {
                     Picker("Repetição", selection: $recurrence) {
                         ForEach(Recurrence.allCases, id: \.self) { rec in
                             Text(rec.rawValue).tag(rec)
+                        }
+                    }
+                    
+                    // SELETOR DE DIAS DA SEMANA (ex: Seg, Qua, Sex)
+                    if recurrence == .customDays {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Escolha os dias da semana:")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            
+                            HStack(spacing: 6) {
+                                ForEach(daysOfWeek, id: \.0) { id, name in
+                                    let isSelected = selectedDays.contains(id)
+                                    Button(action: {
+                                        if isSelected {
+                                            selectedDays.remove(id)
+                                        } else {
+                                            selectedDays.insert(id)
+                                        }
+                                    }) {
+                                        Text(name)
+                                            .font(.caption2)
+                                            .bold()
+                                            .frame(maxWidth: .infinity)
+                                            .padding(.vertical, 8)
+                                            .background(isSelected ? Color.accentColor : Color.secondary.opacity(0.12))
+                                            .foregroundStyle(isSelected ? .white : .primary)
+                                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                                    }
+                                    .buttonStyle(.plain)
+                                }
+                            }
+                        }
+                        .padding(.vertical, 4)
+                    }
+                    
+                    // DURAÇÃO DA RECORRÊNCIA (ex: por 2 meses)
+                    if recurrence != .none {
+                        Picker("Duração da Repetição", selection: $recurrenceDuration) {
+                            ForEach(RecurrenceDuration.allCases, id: \.self) { dur in
+                                Text(dur.rawValue).tag(dur)
+                            }
+                        }
+                        
+                        if recurrenceDuration == .customDate {
+                            DatePicker("Repetir Até", selection: $customEndDate, displayedComponents: [.date])
+                                .environment(\.locale, Locale(identifier: "pt_BR"))
                         }
                     }
                     
@@ -201,6 +263,23 @@ struct QuickCaptureView: View {
         }
     }
     
+    private func calculatedEndDate() -> Date? {
+        guard recurrence != .none else { return nil }
+        let calendar = Calendar.current
+        switch recurrenceDuration {
+        case .forever:
+            return nil
+        case .oneMonth:
+            return calendar.date(byAdding: .month, value: 1, to: dueDate)
+        case .twoMonths:
+            return calendar.date(byAdding: .month, value: 2, to: dueDate)
+        case .threeMonths:
+            return calendar.date(byAdding: .month, value: 3, to: dueDate)
+        case .customDate:
+            return customEndDate
+        }
+    }
+    
     private func saveMission() {
         speechManager.stopRecording()
         let newMission = Mission(
@@ -209,7 +288,9 @@ struct QuickCaptureView: View {
             dueDate: hasDueDate ? dueDate : nil,
             estimatedMinutes: hasEstimatedTime ? estimatedMinutes : nil,
             priority: priority,
-            recurrence: recurrence
+            recurrence: recurrence,
+            selectedDays: Array(selectedDays),
+            recurrenceEndDate: calculatedEndDate()
         )
         newMission.project = selectedProject
         modelContext.insert(newMission)

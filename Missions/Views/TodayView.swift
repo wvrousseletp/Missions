@@ -28,6 +28,8 @@ struct TodayView: View {
     @State private var showingSearch = false
     @State private var showingDailyReview = false
     
+    @StateObject private var audioManager = AudioSummaryManager.shared
+    
     var filteredTodayMissions: [Mission] {
         switch selectedFilter {
         case .all:
@@ -211,6 +213,15 @@ struct TodayView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     HStack(spacing: 14) {
+                        // BOTAO DE OUVRIR O DIA EM AUDIO
+                        Button(action: {
+                            audioManager.speakSummary(missions: todayMissions, totalMins: totalEstimatedMinutesToday)
+                        }) {
+                            Image(systemName: audioManager.isSpeaking ? "speaker.wave.3.fill" : "speaker.wave.2.fill")
+                                .font(.title3)
+                                .foregroundStyle(audioManager.isSpeaking ? .orange : .accentColor)
+                        }
+                        
                         Button(action: { showingHelp = true }) {
                             Image(systemName: "questionmark.circle")
                                 .font(.title3)

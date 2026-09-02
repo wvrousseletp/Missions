@@ -11,6 +11,7 @@ enum Recurrence: String, Codable, CaseIterable {
     case none = "Sem Repetição"
     case daily = "Diariamente"
     case weekdays = "Dias Úteis"
+    case customDays = "Dias da Semana"
     case weekly = "Semanalmente"
     case monthly = "Mensalmente"
 }
@@ -24,6 +25,8 @@ final class Mission {
     var estimatedMinutes: Int?
     var priorityRaw: Int
     var recurrenceRaw: String
+    var selectedDaysRaw: String // ex: "2,4,6" (1=Dom, 2=Seg, 3=Ter, 4=Qua, 5=Qui, 6=Sex, 7=Sab)
+    var recurrenceEndDate: Date? // Data limite da repetição (ex: por 2 meses)
     var isCompleted: Bool
     var createdAt: Date
     
@@ -42,22 +45,44 @@ final class Mission {
         set { recurrenceRaw = newValue.rawValue }
     }
     
-    init(title: String, details: String = "", dueDate: Date? = nil, estimatedMinutes: Int? = nil, priority: Priority = .medium, recurrence: Recurrence = .none) {
+    var selectedDays: [Int] {
+        get {
+            guard !selectedDaysRaw.isEmpty else { return [] }
+            return selectedDaysRaw.components(separatedBy: ",").compactMap { Int($0) }
+        }
+        set {
+            selectedDaysRaw = newValue.map { String($0) }.joined(separator: ",")
+        }
+    }
+    
+    init(
+        title: String,
+        details: String = "",
+        dueDate: Date? = nil,
+        estimatedMinutes: Int? = nil,
+        priority: Priority = .medium,
+        recurrence: Recurrence = .none,
+        selectedDays: [Int] = [],
+        recurrenceEndDate: Date? = nil
+    ) {
         self.title = title
         self.details = details
         self.dueDate = dueDate
         self.estimatedMinutes = estimatedMinutes
         self.priorityRaw = priority.rawValue
         self.recurrenceRaw = recurrence.rawValue
+        self.selectedDaysRaw = selectedDays.map { String($0) }.joined(separator: ",")
+        self.recurrenceEndDate = recurrenceEndDate
         self.isCompleted = false
         self.createdAt = Date()
     }
     
-    // Função para gerar a próxima repetição automaticamente
+    // Gerar a próxima repetição com base nos dias da semana e data limite
     func createNextRecurrence() -> Mission? {
         guard recurrence != .none, let currentDueDate = dueDate else { return nil }
         
-        let calendar = Calendar.current
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.locale = Locale(identifier: "pt_BR")
         var nextDate: Date?
         
         switch recurrence {
@@ -71,6 +96,17 @@ final class Mission {
                 date = calendar.date(byAdding: .day, value: 1, to: date) ?? date
             }
             nextDate = date
+        case .customDays:
+            guard !selectedDays.isEmpty else { return nil }
+            var candidate = calendar.date(byAdding: .day, value: 1, to: currentDueDate) ?? currentDueDate
+            for _ in 0..<14 { // Procurar nos próximos 14 dias
+                let weekday = calendar.component(.weekday, from: candidate)
+                if selectedDays.contains(weekday) {
+                    nextDate = candidate
+                    break
+                }
+                candidate = calendar.date(byAdding: .day, value: 1, to: candidate) ?? candidate
+            }
         case .weekly:
             nextDate = calendar.date(byAdding: .day, value: 7, to: currentDueDate)
         case .monthly:
@@ -79,13 +115,22 @@ final class Mission {
         
         guard let next = nextDate else { return nil }
         
+        // Verificar limite de data (ex: repetição por 2 meses)
+        if let endDate = recurrenceEndDate {
+            if next > calendar.startOfDay(for: endDate) {
+                return nil // Repetição concluída!
+            }
+        }
+        
         let nextMission = Mission(
             title: title,
             details: details,
             dueDate: next,
             estimatedMinutes: estimatedMinutes,
             priority: priority,
-            recurrence: recurrence
+            recurrence: recurrence,
+            selectedDays: selectedDays,
+            recurrenceEndDate: recurrenceEndDate
         )
         nextMission.project = project
         return nextMission
