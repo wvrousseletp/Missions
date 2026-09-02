@@ -37,15 +37,6 @@ struct SectorsView: View {
                 }
             }
             .navigationTitle("Setores")
-            .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    Button(action: {
-                        showingAddSector = true
-                    }) {
-                        Image(systemName: "plus")
-                    }
-                }
-            }
             .sheet(isPresented: $showingAddSector) {
                 AddSectorView()
             }

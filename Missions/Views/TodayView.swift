@@ -1,6 +1,12 @@
 import SwiftUI
 import SwiftData
 
+enum MissionFilter: String, CaseIterable {
+    case all = "Todas"
+    case highPriority = "🔥 Alta"
+    case withChecklist = "📋 Com Checklist"
+}
+
 struct TodayView: View {
     @Query(filter: #Predicate<Mission> { mission in
         mission.isCompleted == false
@@ -10,9 +16,23 @@ struct TodayView: View {
         mission.isCompleted == true
     }) var completedMissions: [Mission]
     
+    @AppStorage("isPureBlack") private var isPureBlack: Bool = false
+    
+    @State private var selectedFilter: MissionFilter = .all
     @State private var showingQuickCapture = false
     @State private var showingFocusMode = false
     @State private var showingHelp = false
+    
+    var filteredTodayMissions: [Mission] {
+        switch selectedFilter {
+        case .all:
+            return todayMissions
+        case .highPriority:
+            return todayMissions.filter { $0.priority == .high }
+        case .withChecklist:
+            return todayMissions.filter { ($0.steps?.count ?? 0) > 0 }
+        }
+    }
     
     var body: some View {
         NavigationStack {
@@ -53,12 +73,40 @@ struct TodayView: View {
                     .padding(.vertical, 8)
                 }
                 .listRowBackground(Color.clear)
+                
+                // CHIPS DE FILTRO RÁPIDO
+                Section {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 10) {
+                            ForEach(MissionFilter.allCases, id: \.self) { filter in
+                                Button(action: {
+                                    withAnimation {
+                                        selectedFilter = filter
+                                    }
+                                }) {
+                                    Text(filter.rawValue)
+                                        .font(.subheadline)
+                                        .fontWeight(selectedFilter == filter ? .bold : .regular)
+                                        .padding(.horizontal, 14)
+                                        .padding(.vertical, 6)
+                                        .background(selectedFilter == filter ? Color.accentColor : Color.secondary.opacity(0.15))
+                                        .foregroundStyle(selectedFilter == filter ? .white : .primary)
+                                        .clipShape(Capsule())
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                        .padding(.vertical, 4)
+                    }
+                }
+                .listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
             
-                if todayMissions.isEmpty {
-                    ContentUnavailableView("Sem Missões Hoje", systemImage: "sparkles", description: Text("Você está em dia!"))
+                if filteredTodayMissions.isEmpty {
+                    ContentUnavailableView("Sem Missões Aqui", systemImage: "sparkles", description: Text("Nenhuma missão corresponde ao filtro."))
                 } else {
                     Section {
-                        if let firstMission = todayMissions.first {
+                        if let firstMission = filteredTodayMissions.first {
                             Button(action: {
                                 showingFocusMode = true
                             }) {
@@ -81,7 +129,7 @@ struct TodayView: View {
                     }
                     
                     Section("Missões Pendentes") {
-                        ForEach(todayMissions) { mission in
+                        ForEach(filteredTodayMissions) { mission in
                             MissionRow(mission: mission)
                         }
                     }
@@ -91,18 +139,19 @@ struct TodayView: View {
             .navigationTitle("Hoje")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button(action: {
-                        showingHelp = true
-                    }) {
-                        Image(systemName: "questionmark.circle")
-                    }
-                }
-                ToolbarItem(placement: .primaryAction) {
-                    Button(action: {
-                        showingQuickCapture = true
-                    }) {
-                        Image(systemName: "plus.circle.fill")
-                            .font(.title2)
+                    HStack(spacing: 12) {
+                        Button(action: { showingHelp = true }) {
+                            Image(systemName: "questionmark.circle")
+                        }
+                        
+                        Button(action: {
+                            withAnimation {
+                                isPureBlack.toggle()
+                            }
+                        }) {
+                            Image(systemName: isPureBlack ? "moon.stars.fill" : "moon")
+                                .foregroundStyle(isPureBlack ? .purple : .primary)
+                        }
                     }
                 }
             }
@@ -113,11 +162,12 @@ struct TodayView: View {
                 HelpView()
             }
             .fullScreenCover(isPresented: $showingFocusMode) {
-                if let mission = todayMissions.first {
+                if let mission = filteredTodayMissions.first {
                     FocusModeView(mission: mission)
                 }
             }
         }
+        .preferredColorScheme(isPureBlack ? .dark : nil)
     }
 }
 
