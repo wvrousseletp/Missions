@@ -34,7 +34,6 @@ struct WeekView: View {
                 }
             }
             .listStyle(.insetGrouped)
-            .navigationTitle("Semana")
         }
     }
     

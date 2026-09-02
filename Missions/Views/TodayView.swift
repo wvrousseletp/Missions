@@ -136,7 +136,6 @@ struct TodayView: View {
                 }
             }
             .listStyle(.insetGrouped)
-            .navigationTitle("Hoje")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     HStack(spacing: 12) {

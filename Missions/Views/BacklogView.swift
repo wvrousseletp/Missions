@@ -22,7 +22,6 @@ struct BacklogView: View {
                 }
             }
             .listStyle(.insetGrouped)
-            .navigationTitle("Backlog")
         }
     }
 }

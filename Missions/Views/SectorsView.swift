@@ -36,7 +36,7 @@ struct SectorsView: View {
                     .onDelete(perform: deleteSectors)
                 }
             }
-            .navigationTitle("Setores")
+            .listStyle(.insetGrouped)
             .sheet(isPresented: $showingAddSector) {
                 AddSectorView()
             }
