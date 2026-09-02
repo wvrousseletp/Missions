@@ -239,6 +239,7 @@ struct QuickCaptureView: View {
                     self.title = newValue
                 }
             }
+            .dismissKeyboardOnTap()
         }
     }
     

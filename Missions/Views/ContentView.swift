@@ -109,6 +109,7 @@ struct ContentView: View {
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
         .preferredColorScheme(isPureBlack ? .dark : nil)
+        .dismissKeyboardOnTap()
         .sheet(isPresented: $showingQuickCapture) {
             QuickCaptureView()
                 .preferredColorScheme(isPureBlack ? .dark : nil)

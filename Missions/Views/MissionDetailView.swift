@@ -93,6 +93,7 @@ struct MissionDetailView: View {
         } message: {
             Text("Esta ação não pode ser desfeita.")
         }
+        .dismissKeyboardOnTap()
     }
     
     private func deleteMission() {
