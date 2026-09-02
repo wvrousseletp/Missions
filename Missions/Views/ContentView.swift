@@ -14,68 +14,97 @@ struct ContentView: View {
     ]
     
     var body: some View {
-        ZStack(alignment: .bottomTrailing) {
-            VStack(spacing: 0) {
-                // ABAS NAVEGÁVEIS POR DESLIZAMENTO (SWIPE)
-                TabView(selection: $selectedTab) {
-                    TodayView()
-                        .tag(0)
-                    
-                    WeekView()
-                        .tag(1)
-                    
-                    SectorsView()
-                        .tag(2)
-                    
-                    BacklogView()
-                        .tag(3)
-                }
-                .tabViewStyle(.page(indexDisplayMode: .never))
+        ZStack(alignment: .bottom) {
+            // CONTEÚDO DAS ABAS NAVEGÁVEIS POR DESLIZAMENTO
+            TabView(selection: $selectedTab) {
+                TodayView()
+                    .tag(0)
                 
-                // BARRA INFERIOR DE NAVEGAÇÃO PERSONALIZADA
-                HStack {
+                WeekView()
+                    .tag(1)
+                
+                SectorsView()
+                    .tag(2)
+                
+                BacklogView()
+                    .tag(3)
+            }
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            .ignoresSafeArea(.all, edges: .bottom)
+            
+            // DOCK BAR FLUTUANTE PREMIUM + BOTÃO FLUTUANTE (FAB)
+            HStack(alignment: .center, spacing: 0) {
+                // ABAS DE NAVEGAÇÃO COM PILL ANIMADO
+                HStack(spacing: 4) {
                     ForEach(0..<tabs.count, id: \.self) { index in
                         Button(action: {
-                            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                            withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
                                 selectedTab = index
+                                UIImpactFeedbackGenerator(style: .light).impactOccurred()
                             }
                         }) {
-                            VStack(spacing: 4) {
+                            HStack(spacing: 6) {
                                 Image(systemName: tabs[index].icon)
-                                    .font(.title3)
-                                Text(tabs[index].title)
-                                    .font(.caption2)
-                                    .fontWeight(selectedTab == index ? .bold : .regular)
+                                    .font(.system(size: 16, weight: selectedTab == index ? .bold : .medium))
+                                
+                                if selectedTab == index {
+                                    Text(tabs[index].title)
+                                        .font(.caption)
+                                        .fontWeight(.bold)
+                                        .transition(.scale.combined(with: .opacity))
+                                }
                             }
-                            .foregroundStyle(selectedTab == index ? Color.accentColor : Color.secondary)
-                            .frame(maxWidth: .infinity)
+                            .foregroundStyle(selectedTab == index ? .white : .secondary)
+                            .padding(.horizontal, selectedTab == index ? 14 : 10)
+                            .padding(.vertical, 10)
+                            .background(
+                                ZStack {
+                                    if selectedTab == index {
+                                        Capsule()
+                                            .fill(Color.accentColor.gradient)
+                                            .matchedGeometryEffect(id: "activeTabPill", in: tabNamespace)
+                                            .shadow(color: Color.accentColor.opacity(0.4), radius: 6, x: 0, y: 3)
+                                    }
+                                }
+                            )
                         }
+                        .buttonStyle(.plain)
                     }
                 }
-                .padding(.top, 10)
-                .padding(.bottom, 24)
-                .background(.thinMaterial)
-            }
-            
-            // BOTÃO FLUTUANTE UNIFICADO NO CANTO INFERIOR DIREITO
-            Button(action: {
-                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                if selectedTab == 2 {
-                    showingAddSector = true
-                } else {
-                    showingQuickCapture = true
+                .padding(6)
+                .background(.ultraThinMaterial)
+                .clipShape(Capsule())
+                .shadow(color: Color.black.opacity(0.12), radius: 12, x: 0, y: 6)
+                
+                Spacer()
+                
+                // BOTÃO FLUTUANTE `+` PREMIUM
+                Button(action: {
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                    if selectedTab == 2 {
+                        showingAddSector = true
+                    } else {
+                        showingQuickCapture = true
+                    }
+                }) {
+                    Image(systemName: "plus")
+                        .font(.title3.bold())
+                        .foregroundStyle(.white)
+                        .frame(width: 48, height: 48)
+                        .background(
+                            LinearGradient(
+                                colors: [Color.accentColor, Color.accentColor.opacity(0.8)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .clipShape(Circle())
+                        .shadow(color: Color.accentColor.opacity(0.4), radius: 8, x: 0, y: 4)
                 }
-            }) {
-                Image(systemName: "plus")
-                    .font(.title.bold())
-                    .foregroundStyle(.white)
-                    .frame(width: 56, height: 56)
-                    .background(Color.accentColor.gradient)
-                    .clipShape(Circle())
-                    .shadow(color: Color.black.opacity(0.25), radius: 8, x: 0, y: 4)
+                .buttonStyle(.plain)
             }
-            .padding(.trailing, 20)
-            .padding(.bottom, 80) // Fica posicionado logo acima da barra inferior
+            .padding(.horizontal, 20)
+            .padding(.bottom, 28)
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
         .sheet(isPresented: $showingQuickCapture) {
@@ -85,6 +114,8 @@ struct ContentView: View {
             AddSectorView()
         }
     }
+    
+    @Namespace private var tabNamespace
 }
 
 #Preview {

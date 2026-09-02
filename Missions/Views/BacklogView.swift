@@ -12,16 +12,34 @@ struct BacklogView: View {
     
     var body: some View {
         NavigationStack {
-            List {
-                if backlogMissions.isEmpty {
-                    ContentUnavailableView("Backlog vazio", systemImage: "tray", description: Text("Todas as suas missões estão agendadas!"))
-                } else {
-                    ForEach(backlogMissions) { mission in
-                        MissionRow(mission: mission)
+            ScrollView {
+                VStack(spacing: 16) {
+                    if backlogMissions.isEmpty {
+                        VStack(spacing: 12) {
+                            Image(systemName: "tray")
+                                .font(.system(size: 48))
+                                .foregroundStyle(Color.accentColor.opacity(0.7))
+                            Text("Backlog Vazio")
+                                .font(.headline)
+                            Text("Todas as suas missões estão agendadas para datas específicas!")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                                .multilineTextAlignment(.center)
+                                .padding(.horizontal, 32)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.top, 60)
+                    } else {
+                        ForEach(backlogMissions) { mission in
+                            MissionCard(mission: mission)
+                        }
                     }
                 }
+                .padding(.horizontal, 16)
+                .padding(.top, 16)
+                .padding(.bottom, 100)
             }
-            .listStyle(.insetGrouped)
+            .background(Color(uiColor: .systemGroupedBackground))
         }
     }
 }

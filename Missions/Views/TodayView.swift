@@ -36,13 +36,13 @@ struct TodayView: View {
     
     var body: some View {
         NavigationStack {
-            List {
-                // ANEL DE PROGRESSO
-                Section {
-                    HStack(spacing: 16) {
+            ScrollView {
+                VStack(spacing: 20) {
+                    // HERO CARD: ANEL DE PROGRESSO DIÁRIO
+                    HStack(spacing: 20) {
                         ZStack {
                             Circle()
-                                .stroke(Color.secondary.opacity(0.2), lineWidth: 8)
+                                .stroke(Color.accentColor.opacity(0.15), lineWidth: 10)
                             
                             let total = todayMissions.count + completedMissions.filter { Calendar.current.isDateInToday($0.dueDate ?? Date()) }.count
                             let completed = completedMissions.filter { Calendar.current.isDateInToday($0.dueDate ?? Date()) }.count
@@ -50,97 +50,145 @@ struct TodayView: View {
                             
                             Circle()
                                 .trim(from: 0, to: progress)
-                                .stroke(Color.accentColor, style: StrokeStyle(lineWidth: 8, lineCap: .round))
+                                .stroke(
+                                    LinearGradient(colors: [.accentColor, .blue], startPoint: .topLeading, endPoint: .bottomTrailing),
+                                    style: StrokeStyle(lineWidth: 10, lineCap: .round)
+                                )
                                 .rotationEffect(.degrees(-90))
-                                .animation(.spring(), value: progress)
+                                .animation(.spring(response: 0.6, dampingFraction: 0.8), value: progress)
                             
                             Text("\(Int(progress * 100))%")
-                                .font(.caption)
-                                .bold()
+                                .font(.system(size: 16, weight: .bold, design: .rounded))
                         }
-                        .frame(width: 60, height: 60)
+                        .frame(width: 68, height: 68)
                         
-                        VStack(alignment: .leading) {
-                            Text("Seu Progresso")
-                                .font(.headline)
+                        VStack(alignment: .leading, spacing: 4) {
                             let total = todayMissions.count + completedMissions.filter { Calendar.current.isDateInToday($0.dueDate ?? Date()) }.count
                             let completed = completedMissions.filter { Calendar.current.isDateInToday($0.dueDate ?? Date()) }.count
-                            Text("\(completed) de \(total) missões concluídas hoje")
+                            
+                            Text("Progresso de Hoje")
+                                .font(.headline)
+                                .fontWeight(.bold)
+                            
+                            Text("\(completed) de \(total) missões concluídas")
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
+                            
+                            if total > 0 && completed == total {
+                                Text("Tudo em dia! 🚀")
+                                    .font(.caption)
+                                    .fontWeight(.bold)
+                                    .foregroundStyle(.green)
+                            }
                         }
+                        
+                        Spacer()
                     }
-                    .padding(.vertical, 8)
-                }
-                .listRowBackground(Color.clear)
-                
-                // CHIPS DE FILTRO RÁPIDO
-                Section {
+                    .padding(16)
+                    .background(Color(uiColor: isPureBlack ? .secondarySystemGroupedBackground : .systemBackground))
+                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+                    .shadow(color: Color.black.opacity(0.04), radius: 10, x: 0, y: 4)
+                    
+                    // CHIPS DE FILTRO RÁPIDO
                     ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 10) {
+                        HStack(spacing: 8) {
                             ForEach(MissionFilter.allCases, id: \.self) { filter in
                                 Button(action: {
-                                    withAnimation {
+                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
                                         selectedFilter = filter
                                     }
                                 }) {
                                     Text(filter.rawValue)
                                         .font(.subheadline)
-                                        .fontWeight(selectedFilter == filter ? .bold : .regular)
-                                        .padding(.horizontal, 14)
-                                        .padding(.vertical, 6)
-                                        .background(selectedFilter == filter ? Color.accentColor : Color.secondary.opacity(0.15))
+                                        .fontWeight(selectedFilter == filter ? .bold : .medium)
+                                        .padding(.horizontal, 16)
+                                        .padding(.vertical, 8)
+                                        .background(selectedFilter == filter ? Color.accentColor : Color.secondary.opacity(0.12))
                                         .foregroundStyle(selectedFilter == filter ? .white : .primary)
                                         .clipShape(Capsule())
                                 }
                                 .buttonStyle(.plain)
                             }
                         }
-                        .padding(.vertical, 4)
-                    }
-                }
-                .listRowBackground(Color.clear)
-                .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
-            
-                if filteredTodayMissions.isEmpty {
-                    ContentUnavailableView("Sem Missões Aqui", systemImage: "sparkles", description: Text("Nenhuma missão corresponde ao filtro."))
-                } else {
-                    Section {
-                        if let firstMission = filteredTodayMissions.first {
-                            Button(action: {
-                                showingFocusMode = true
-                            }) {
-                                HStack {
-                                    Image(systemName: "scope")
-                                    Text("Entrar no Modo Foco")
-                                        .bold()
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                }
-                                .foregroundStyle(.white)
-                                .padding()
-                                .background(Color.accentColor.gradient)
-                                .clipShape(RoundedRectangle(cornerRadius: 12))
-                            }
-                            .buttonStyle(.plain)
-                            .listRowSeparator(.hidden)
-                            .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
-                        }
                     }
                     
-                    Section("Missões Pendentes") {
-                        ForEach(filteredTodayMissions) { mission in
-                            MissionRow(mission: mission)
+                    // BANNER MODO FOCO (SE HOUVER MISSOES)
+                    if let firstMission = filteredTodayMissions.first {
+                        Button(action: {
+                            showingFocusMode = true
+                        }) {
+                            HStack(spacing: 14) {
+                                ZStack {
+                                    Circle()
+                                        .fill(.white.opacity(0.2))
+                                        .frame(width: 40, height: 40)
+                                    Image(systemName: "scope")
+                                        .font(.title3.bold())
+                                }
+                                
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text("MODO FOCO")
+                                        .font(.caption2)
+                                        .fontWeight(.bold)
+                                        .kerning(1.2)
+                                        .opacity(0.8)
+                                    Text(firstMission.title)
+                                        .font(.headline)
+                                        .lineLimit(1)
+                                }
+                                
+                                Spacer()
+                                
+                                Image(systemName: "play.circle.fill")
+                                    .font(.title2)
+                            }
+                            .foregroundStyle(.white)
+                            .padding(16)
+                            .background(
+                                LinearGradient(
+                                    colors: [Color.accentColor, Color.purple],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
+                            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+                            .shadow(color: Color.accentColor.opacity(0.3), radius: 8, x: 0, y: 4)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                    
+                    // LISTA DE CARDS DE MISSOES
+                    if filteredTodayMissions.isEmpty {
+                        VStack(spacing: 12) {
+                            Image(systemName: "sparkles")
+                                .font(.system(size: 48))
+                                .foregroundStyle(Color.accentColor.opacity(0.7))
+                            Text("Sem Missões Pendentes")
+                                .font(.headline)
+                            Text("Você está em dia com seus objetivos!")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(.top, 40)
+                    } else {
+                        VStack(spacing: 12) {
+                            ForEach(filteredTodayMissions) { mission in
+                                MissionCard(mission: mission)
+                            }
                         }
                     }
                 }
+                .padding(.horizontal, 16)
+                .padding(.top, 12)
+                .padding(.bottom, 100) // Espaço para a barra flutuante inferior
             }
-            .listStyle(.insetGrouped)
+            .background(Color(uiColor: isPureBlack ? .black : .systemGroupedBackground))
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     HStack(spacing: 12) {
                         Button(action: { showingHelp = true }) {
                             Image(systemName: "questionmark.circle")
+                                .font(.title3)
                         }
                         
                         Button(action: {
@@ -149,6 +197,7 @@ struct TodayView: View {
                             }
                         }) {
                             Image(systemName: isPureBlack ? "moon.stars.fill" : "moon")
+                                .font(.title3)
                                 .foregroundStyle(isPureBlack ? .purple : .primary)
                         }
                     }
@@ -170,7 +219,8 @@ struct TodayView: View {
     }
 }
 
-struct MissionRow: View {
+// CARD MODERNO DE MISSAO (SUBSTITUI A LINHA DE LISTA PADRAO)
+struct MissionCard: View {
     @Environment(\.modelContext) private var modelContext
     @Bindable var mission: Mission
     @State private var isExpanded: Bool = false
@@ -188,30 +238,71 @@ struct MissionRow: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .top, spacing: 14) {
+                // BOTÃO DE CHECKLIST ANIMADO
                 Button(action: {
-                    withAnimation {
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
                         mission.isCompleted.toggle()
                         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                     }
                 }) {
-                    Image(systemName: mission.isCompleted ? "checkmark.circle.fill" : "circle")
-                        .foregroundStyle(mission.isCompleted ? .green : .gray)
-                        .font(.title3)
+                    ZStack {
+                        Circle()
+                            .stroke(mission.isCompleted ? Color.green : Color.secondary.opacity(0.3), lineWidth: 2)
+                            .frame(width: 24, height: 24)
+                        
+                        if mission.isCompleted {
+                            Circle()
+                                .fill(Color.green)
+                                .frame(width: 24, height: 24)
+                            Image(systemName: "checkmark")
+                                .font(.system(size: 12, weight: .bold))
+                                .foregroundStyle(.white)
+                        }
+                    }
                 }
                 .buttonStyle(.plain)
+                .padding(.top, 2)
                 
+                // DETALHES DA MISSAO
                 NavigationLink(destination: MissionDetailView(mission: mission)) {
-                    VStack(alignment: .leading) {
+                    VStack(alignment: .leading, spacing: 6) {
                         Text(mission.title)
                             .font(.headline)
-                            .strikethrough(mission.isCompleted, color: .gray)
+                            .fontWeight(.semibold)
+                            .strikethrough(mission.isCompleted, color: .secondary)
+                            .foregroundStyle(mission.isCompleted ? .secondary : .primary)
+                            .multilineTextAlignment(.leading)
                         
-                        if let project = mission.project, let sector = project.sector {
-                            Text("\(sector.name) • \(project.name)")
-                                .font(.caption)
-                                .foregroundStyle(Color(hex: sector.colorHex) ?? .secondary)
+                        // BADGES DE SETOR E PRIORIDADE
+                        HStack(spacing: 8) {
+                            if let project = mission.project, let sector = project.sector {
+                                HStack(spacing: 4) {
+                                    Image(systemName: sector.iconName)
+                                        .font(.caption2)
+                                    Text("\(sector.name) • \(project.name)")
+                                        .font(.caption2)
+                                        .fontWeight(.medium)
+                                }
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background((Color(hex: sector.colorHex) ?? Color.accentColor).opacity(0.12))
+                                .foregroundStyle(Color(hex: sector.colorHex) ?? Color.accentColor)
+                                .clipShape(Capsule())
+                            }
+                            
+                            // BADGE DE PRIORIDADE
+                            if mission.priority == .high {
+                                Text("🔥 Alta")
+                                    .font(.caption2)
+                                    .fontWeight(.bold)
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 4)
+                                    .background(Color.red.opacity(0.12))
+                                    .foregroundStyle(.red)
+                                    .clipShape(Capsule())
+                            }
                         }
                     }
                 }
@@ -221,93 +312,82 @@ struct MissionRow: View {
                 
                 if totalStepsCount > 0 {
                     Button(action: {
-                        withAnimation {
+                        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
                             isExpanded.toggle()
                         }
                     }) {
-                        Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
-                            .foregroundStyle(.secondary)
+                        Image(systemName: isExpanded ? "chevron.up.circle.fill" : "chevron.down.circle.fill")
+                            .font(.title3)
+                            .foregroundStyle(.secondary.opacity(0.6))
                     }
                     .buttonStyle(.plain)
                 }
             }
             
+            // BARRA DE PROGRESSO DAS ETAPAS
             if totalStepsCount > 0 {
-                ProgressView(value: progress)
-                    .progressViewStyle(.linear)
-                    .tint(progress == 1.0 ? .green : .accentColor)
-                
-                Text("\(completedStepsCount)/\(totalStepsCount) etapas concluídas")
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack {
+                        Text("\(completedStepsCount) de \(totalStepsCount) etapas")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                        Text("\(Int(progress * 100))%")
+                            .font(.caption2)
+                            .bold()
+                            .foregroundStyle(progress == 1.0 ? .green : .accentColor)
+                    }
+                    
+                    ProgressView(value: progress)
+                        .progressViewStyle(.linear)
+                        .tint(progress == 1.0 ? .green : .accentColor)
+                }
             }
             
+            // CHECKLIST EXPANDIDO
             if isExpanded, let steps = mission.steps?.sorted(by: { $0.order < $1.order }) {
                 Divider()
-                VStack(alignment: .leading, spacing: 12) {
+                    .padding(.vertical, 4)
+                
+                VStack(alignment: .leading, spacing: 10) {
                     ForEach(steps) { step in
-                        StepRow(step: step, mission: mission)
+                        StepCardRow(step: step, mission: mission)
                     }
                 }
-                .padding(.leading, 24)
-                .padding(.top, 8)
+                .padding(.leading, 8)
             }
         }
-        .padding(.vertical, 4)
+        .padding(16)
+        .background(Color(uiColor: .systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .shadow(color: Color.black.opacity(0.04), radius: 8, x: 0, y: 3)
         .sensoryFeedback(.success, trigger: mission.isCompleted)
-        .swipeActions(edge: .leading) {
-            Button {
-                withAnimation {
-                    mission.isCompleted = true
-                    UINotificationFeedbackGenerator().notificationOccurred(.success)
-                }
-            } label: {
-                Label("Concluir", systemImage: "checkmark")
-            }
-            .tint(.green)
-        }
-        .swipeActions(edge: .trailing) {
-            Button(role: .destructive) {
-                withAnimation {
-                    modelContext.delete(mission)
-                }
-            } label: {
-                Label("Excluir", systemImage: "trash")
-            }
-            
-            Button {
-                withAnimation {
-                    mission.dueDate = Calendar.current.date(byAdding: .day, value: 1, to: Date())
-                }
-            } label: {
-                Label("Adiar", systemImage: "arrow.right.circle")
-            }
-            .tint(.orange)
-        }
     }
 }
 
-struct StepRow: View {
+// LINHA DE ETAPA NO CARD
+struct StepCardRow: View {
     @Bindable var step: Step
     let mission: Mission
     
     var body: some View {
-        HStack {
+        HStack(spacing: 10) {
             Button(action: {
-                withAnimation {
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
                     step.isCompleted.toggle()
                     UIImpactFeedbackGenerator(style: .light).impactOccurred()
                     checkMissionCompletion()
                 }
             }) {
                 Image(systemName: step.isCompleted ? "checkmark.square.fill" : "square")
-                    .foregroundStyle(step.isCompleted ? .green : .gray)
+                    .foregroundStyle(step.isCompleted ? .green : .secondary)
+                    .font(.title3)
             }
             .buttonStyle(.plain)
             
             Text(step.title)
                 .font(.subheadline)
-                .strikethrough(step.isCompleted, color: .gray)
+                .strikethrough(step.isCompleted, color: .secondary)
                 .foregroundStyle(step.isCompleted ? .secondary : .primary)
             
             Spacer()

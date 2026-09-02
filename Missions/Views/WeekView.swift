@@ -90,26 +90,46 @@ struct WeekView: View {
                 }
                 .background(Color.secondary.opacity(0.06))
                 
-                // LISTA DE MISSÕES
-                List {
-                    if missionsByDay.isEmpty {
-                        ContentUnavailableView(
-                            selectedDate == nil ? "Sem missões agendadas" : "Nenhuma missão neste dia",
-                            systemImage: "calendar.badge.clock",
-                            description: Text(selectedDate == nil ? "Descanse ou planeje com antecedência!" : "Toque em outro dia no calendário ou adicione um novo lembrete.")
-                        )
-                    } else {
-                        ForEach(missionsByDay, id: \.0) { date, missions in
-                            Section(header: Text(friendlyDate(date)).bold().textCase(nil)) {
-                                ForEach(missions) { mission in
-                                    MissionRow(mission: mission)
+                // LISTA DE CARDS DE MISSÕES
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 20) {
+                        if missionsByDay.isEmpty {
+                            VStack(spacing: 12) {
+                                Image(systemName: "calendar.badge.clock")
+                                    .font(.system(size: 48))
+                                    .foregroundStyle(Color.accentColor.opacity(0.7))
+                                Text(selectedDate == nil ? "Sem missões agendadas" : "Nenhuma missão neste dia")
+                                    .font(.headline)
+                                Text(selectedDate == nil ? "Descanse ou planeje com antecedência!" : "Toque em outro dia no calendário ou adicione um novo lembrete.")
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                                    .multilineTextAlignment(.center)
+                                    .padding(.horizontal, 32)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.top, 60)
+                        } else {
+                            ForEach(missionsByDay, id: \.0) { date, missions in
+                                VStack(alignment: .leading, spacing: 10) {
+                                    Text(friendlyDate(date))
+                                        .font(.subheadline)
+                                        .bold()
+                                        .foregroundStyle(.secondary)
+                                        .padding(.leading, 4)
+                                    
+                                    ForEach(missions) { mission in
+                                        MissionCard(mission: mission)
+                                    }
                                 }
                             }
                         }
                     }
+                    .padding(.horizontal, 16)
+                    .padding(.top, 16)
+                    .padding(.bottom, 100)
                 }
-                .listStyle(.insetGrouped)
             }
+            .background(Color(uiColor: .systemGroupedBackground))
         }
     }
     
