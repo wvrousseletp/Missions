@@ -34,31 +34,31 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		11914911A78D9980A0B27CC9 /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Color+Hex.swift"; path = "Color+Hex.swift"; sourceTree = SOURCE_ROOT; };
-		21F044139D2C96379610A4E7 /* ProjectDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProjectDetailView.swift; path = ProjectDetailView.swift; sourceTree = SOURCE_ROOT; };
-		2448DAD8F27A11193F3DF707 /* SearchView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SearchView.swift; path = SearchView.swift; sourceTree = "<group>"; };
-		26F54DAE970069BD88B2E70C /* AddProjectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AddProjectView.swift; path = AddProjectView.swift; sourceTree = SOURCE_ROOT; };
-		2BF04401BE9D76D37F894FCC /* AddSectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AddSectorView.swift; path = AddSectorView.swift; sourceTree = SOURCE_ROOT; };
-		2C704FD7BCDC8F6C55D3E8E4 /* HelpView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HelpView.swift; sourceTree = SOURCE_ROOT; };
-		2E6C4A88904D6E59C8E6190C /* QuickCaptureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = QuickCaptureView.swift; path = QuickCaptureView.swift; sourceTree = SOURCE_ROOT; };
-		33964E3AB97B4857580A98AA /* SectorsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SectorsView.swift; path = SectorsView.swift; sourceTree = SOURCE_ROOT; };
-		42FA4985A4CC86782067E2C2 /* TodayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TodayView.swift; path = TodayView.swift; sourceTree = SOURCE_ROOT; };
+		11914911A78D9980A0B27CC9 /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Color+Hex.swift"; path = "Missions/Views/Color+Hex.swift"; sourceTree = SOURCE_ROOT; };
+		21F044139D2C96379610A4E7 /* ProjectDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProjectDetailView.swift; path = Missions/Views/ProjectDetailView.swift; sourceTree = SOURCE_ROOT; };
+		2448DAD8F27A11193F3DF707 /* SearchView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SearchView.swift; path = Missions/Views/SearchView.swift; sourceTree = SOURCE_ROOT; };
+		26F54DAE970069BD88B2E70C /* AddProjectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AddProjectView.swift; path = Missions/Views/AddProjectView.swift; sourceTree = SOURCE_ROOT; };
+		2BF04401BE9D76D37F894FCC /* AddSectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AddSectorView.swift; path = Missions/Views/AddSectorView.swift; sourceTree = SOURCE_ROOT; };
+		2C704FD7BCDC8F6C55D3E8E4 /* HelpView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Missions/Views/HelpView.swift; sourceTree = SOURCE_ROOT; };
+		2E6C4A88904D6E59C8E6190C /* QuickCaptureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = QuickCaptureView.swift; path = Missions/Views/QuickCaptureView.swift; sourceTree = SOURCE_ROOT; };
+		33964E3AB97B4857580A98AA /* SectorsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SectorsView.swift; path = Missions/Views/SectorsView.swift; sourceTree = SOURCE_ROOT; };
+		42FA4985A4CC86782067E2C2 /* TodayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TodayView.swift; path = Missions/Views/TodayView.swift; sourceTree = SOURCE_ROOT; };
 		447B4F2FA05CB553715E0CA7 /* Step.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Step.swift; path = Missions/Models/Step.swift; sourceTree = SOURCE_ROOT; };
-		83804550ADEC47A5BCAB3816 /* WeekView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WeekView.swift; path = WeekView.swift; sourceTree = SOURCE_ROOT; };
+		83804550ADEC47A5BCAB3816 /* WeekView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WeekView.swift; path = Missions/Views/WeekView.swift; sourceTree = SOURCE_ROOT; };
 		A490473F8361F49514AAA87E /* Project.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Project.swift; path = Missions/Models/Project.swift; sourceTree = SOURCE_ROOT; };
-		AA98EFB7B5965E0D08A22127 /* NotificationManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NotificationManager.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
-		B4C504F58691A53EDB3F0B77 /* StatsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = StatsView.swift; path = StatsView.swift; sourceTree = "<group>"; };
-		D1CB4925B177DB3FD953BC72 /* BacklogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BacklogView.swift; path = BacklogView.swift; sourceTree = SOURCE_ROOT; };
+		AA98EFB7B5965E0D08A22127 /* NotificationManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NotificationManager.swift; path = Missions/Views/NotificationManager.swift; sourceTree = SOURCE_ROOT; };
+		B4C504F58691A53EDB3F0B77 /* StatsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = StatsView.swift; path = Missions/Views/StatsView.swift; sourceTree = SOURCE_ROOT; };
+		D1CB4925B177DB3FD953BC72 /* BacklogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BacklogView.swift; path = Missions/Views/BacklogView.swift; sourceTree = SOURCE_ROOT; };
 		D35B3D343045FBA300498B3F /* Missions.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Missions.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D35B3D373045FBA300498B3F /* MissionsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MissionsApp.swift; path = Missions/MissionsApp.swift; sourceTree = SOURCE_ROOT; };
 		D35B3D3B3045FBA900498B3F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D35B3D3E3045FBA900498B3F /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		D7484472824C8E8FA0977304 /* SectorDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SectorDetailView.swift; path = SectorDetailView.swift; sourceTree = SOURCE_ROOT; };
+		D7484472824C8E8FA0977304 /* SectorDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SectorDetailView.swift; path = Missions/Views/SectorDetailView.swift; sourceTree = SOURCE_ROOT; };
 		DB624ADFAD8A4CD66FB9697A /* Mission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Mission.swift; path = Missions/Models/Mission.swift; sourceTree = SOURCE_ROOT; };
 		DFC94F49B823D2B00ADD2B81 /* Sector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Sector.swift; path = Missions/Models/Sector.swift; sourceTree = SOURCE_ROOT; };
-		E4A6494A9AAC8C4A0D54577E /* FocusModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FocusModeView.swift; path = FocusModeView.swift; sourceTree = SOURCE_ROOT; };
-		F3324E94BA85E2997152232D /* MissionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MissionDetailView.swift; path = MissionDetailView.swift; sourceTree = SOURCE_ROOT; };
-		F781448F8D71CD9D4E9DD99C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ContentView.swift; path = ContentView.swift; sourceTree = SOURCE_ROOT; };
+		E4A6494A9AAC8C4A0D54577E /* FocusModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FocusModeView.swift; path = Missions/Views/FocusModeView.swift; sourceTree = SOURCE_ROOT; };
+		F3324E94BA85E2997152232D /* MissionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MissionDetailView.swift; path = Missions/Views/MissionDetailView.swift; sourceTree = SOURCE_ROOT; };
+		F781448F8D71CD9D4E9DD99C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ContentView.swift; path = Missions/Views/ContentView.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
