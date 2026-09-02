@@ -8,53 +8,62 @@ struct SectorDetailView: View {
     @State private var showingAddProject = false
     
     var body: some View {
-        List {
-            Section {
-                HStack {
-                    Image(systemName: sector.iconName)
-                        .font(.largeTitle)
-                        .foregroundStyle(Color(hex: sector.colorHex) ?? .primary)
-                    Text(sector.name)
-                        .font(.title)
-                        .bold()
-                }
-                .padding(.vertical, 8)
-            }
-            
-            Section("Projetos") {
-                if let projects = sector.projects, !projects.isEmpty {
-                    ForEach(projects.sorted(by: { $0.createdAt > $1.createdAt })) { project in
-                        NavigationLink(destination: ProjectDetailView(project: project)) {
-                            VStack(alignment: .leading) {
-                                Text(project.name).font(.headline)
-                                if !project.projectDescription.isEmpty {
-                                    Text(project.projectDescription)
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                        .lineLimit(2)
-                                }
-                            }
-                            .padding(.vertical, 4)
-                        }
+        ZStack(alignment: .bottomTrailing) {
+            List {
+                Section {
+                    HStack {
+                        Image(systemName: sector.iconName)
+                            .font(.largeTitle)
+                            .foregroundStyle(Color(hex: sector.colorHex) ?? .primary)
+                        Text(sector.name)
+                            .font(.title)
+                            .bold()
                     }
-                    .onDelete(perform: deleteProjects)
-                } else {
-                    Text("Nenhum projeto ainda.")
-                        .foregroundStyle(.secondary)
+                    .padding(.vertical, 8)
+                }
+                
+                Section("Projetos") {
+                    if let projects = sector.projects, !projects.isEmpty {
+                        ForEach(projects.sorted(by: { $0.createdAt > $1.createdAt })) { project in
+                            NavigationLink(destination: ProjectDetailView(project: project)) {
+                                VStack(alignment: .leading) {
+                                    Text(project.name).font(.headline)
+                                    if !project.projectDescription.isEmpty {
+                                        Text(project.projectDescription)
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                            .lineLimit(2)
+                                    }
+                                }
+                                .padding(.vertical, 4)
+                            }
+                        }
+                        .onDelete(perform: deleteProjects)
+                    } else {
+                        Text("Nenhum projeto ainda.")
+                            .foregroundStyle(.secondary)
+                    }
                 }
             }
+            .listStyle(.insetGrouped)
+            
+            // BOTÃO FLUTUANTE DE NOVO PROJETO (FAB)
+            Button(action: {
+                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                showingAddProject = true
+            }) {
+                Image(systemName: "plus")
+                    .font(.title.bold())
+                    .foregroundStyle(.white)
+                    .frame(width: 56, height: 56)
+                    .background(Color.accentColor.gradient)
+                    .clipShape(Circle())
+                    .shadow(color: Color.black.opacity(0.25), radius: 8, x: 0, y: 4)
+            }
+            .padding(.trailing, 20)
+            .padding(.bottom, 24)
         }
-        .navigationTitle(sector.name)
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button(action: {
-                    showingAddProject = true
-                }) {
-                    Image(systemName: "folder.badge.plus")
-                }
-            }
-        }
         .sheet(isPresented: $showingAddProject) {
             AddProjectView(sector: sector)
         }
