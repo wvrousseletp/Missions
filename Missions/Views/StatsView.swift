@@ -34,10 +34,50 @@ struct StatsView: View {
         }.count
     }
     
+    // GERAÇÃO DE RELATÓRIO FORMATADO PARA COMPARTILHAMENTO
+    var formattedReportText: String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "pt_BR")
+        formatter.dateFormat = "dd/MM/yyyy"
+        let todayStr = formatter.string(from: Date())
+        
+        var report = "📊 RELATÓRIO DE PRODUTIVIDADE - MISSIONS (\(todayStr))\n"
+        report += "--------------------------------------\n"
+        report += "✅ Missões Concluídas: \(completedMissionsCount)\n"
+        report += "⏳ Missões Pendentes: \(pendingMissionsCount)\n"
+        report += "⚡ Taxa de Sucesso: \(completionRate)%\n"
+        report += "🚀 Concluídas nos últimos 7 dias: \(completedThisWeekCount)\n\n"
+        
+        report += "📁 DESEMPENHO POR SETOR:\n"
+        for sector in allSectors {
+            let sectorMissions = (sector.projects ?? []).flatMap { $0.missions ?? [] }
+            let completed = sectorMissions.filter { $0.isCompleted }.count
+            let total = sectorMissions.count
+            report += "• \(sector.name): \(completed)/\(total) concluídas\n"
+        }
+        
+        return report
+    }
+    
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 20) {
+                    // BOTÃO COMPARTILHAR RELATÓRIO
+                    ShareLink(item: formattedReportText) {
+                        HStack {
+                            Image(systemName: "square.and.arrow.up.fill")
+                            Text("Exportar Relatório de Progresso")
+                                .bold()
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(14)
+                        .background(Color.accentColor.gradient)
+                        .foregroundStyle(.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                        .shadow(color: Color.accentColor.opacity(0.3), radius: 6, x: 0, y: 3)
+                    }
+                    
                     // CARDS DE RESUMO EM GRID
                     HStack(spacing: 12) {
                         StatCard(

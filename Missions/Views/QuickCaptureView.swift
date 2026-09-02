@@ -12,6 +12,9 @@ struct QuickCaptureView: View {
     @State private var title: String = ""
     @State private var details: String = ""
     @State private var priority: Priority = .medium
+    @State private var recurrence: Recurrence = .none
+    @State private var estimatedMinutes: Int = 30
+    @State private var hasEstimatedTime: Bool = false
     @State private var dueDate: Date = Date()
     @State private var hasDueDate: Bool = true
     @State private var includeTime: Bool = false
@@ -42,12 +45,12 @@ struct QuickCaptureView: View {
                         .buttonStyle(.plain)
                     }
                     
-                    TextField("Notas, links ou detalhes...", text: $details, axis: .vertical)
+                    TextField("Notas, links de reuniões ou detalhes...", text: $details, axis: .vertical)
                         .font(.subheadline)
                         .lineLimit(2...5)
                 }
                 
-                // ATALHOS RÁPIDOS DE DATA (HOJE, AMANHÃ, FIM DE SEMANA)
+                // ATALHOS RÁPIDOS DE DATA
                 Section(header: Text("Data e Hora")) {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 8) {
@@ -79,6 +82,21 @@ struct QuickCaptureView: View {
                         DatePicker("Data", selection: $dueDate, displayedComponents: includeTime ? [.date, .hourAndMinute] : [.date])
                         
                         Toggle("Incluir Horário", isOn: $includeTime)
+                    }
+                }
+                
+                // RECORRÊNCIA E ESTIMATIVA DE TEMPO
+                Section(header: Text("Planejamento & Repetição")) {
+                    Picker("Repetição", selection: $recurrence) {
+                        ForEach(Recurrence.allCases, id: \.self) { rec in
+                            Text(rec.rawValue).tag(rec)
+                        }
+                    }
+                    
+                    Toggle("Definir Estimativa de Tempo", isOn: $hasEstimatedTime)
+                    
+                    if hasEstimatedTime {
+                        Stepper("\(estimatedMinutes) minutos de foco", value: $estimatedMinutes, in: 5...240, step: 15)
                     }
                 }
                 
@@ -188,7 +206,9 @@ struct QuickCaptureView: View {
             title: title,
             details: details,
             dueDate: hasDueDate ? dueDate : nil,
-            priority: priority
+            estimatedMinutes: hasEstimatedTime ? estimatedMinutes : nil,
+            priority: priority,
+            recurrence: recurrence
         )
         newMission.project = selectedProject
         modelContext.insert(newMission)

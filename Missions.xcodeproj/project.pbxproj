@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		04DE4582A27657C931B8770F /* BacklogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1CB4925B177DB3FD953BC72 /* BacklogView.swift */; };
+		0B7BE4804BE67516CE62FFDC /* DailyReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBFA49D28644C17FE21A101B /* DailyReviewView.swift */; };
 		0F4C4499BB7F3E2A7E169C4E /* Mission.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB624ADFAD8A4CD66FB9697A /* Mission.swift */; };
 		11DB31074947D01D319DB8F1 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2448DAD8F27A11193F3DF707 /* SearchView.swift */; };
 		2D4C40698EEC812EA1B05C3C /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = A490473F8361F49514AAA87E /* Project.swift */; };
@@ -55,6 +56,7 @@
 		D35B3D3E3045FBA900498B3F /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		D7484472824C8E8FA0977304 /* SectorDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SectorDetailView.swift; path = Missions/Views/SectorDetailView.swift; sourceTree = SOURCE_ROOT; };
 		DB624ADFAD8A4CD66FB9697A /* Mission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Mission.swift; path = Missions/Models/Mission.swift; sourceTree = SOURCE_ROOT; };
+		DBFA49D28644C17FE21A101B /* DailyReviewView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DailyReviewView.swift; path = Missions/Views/DailyReviewView.swift; sourceTree = SOURCE_ROOT; };
 		DFC94F49B823D2B00ADD2B81 /* Sector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Sector.swift; path = Missions/Models/Sector.swift; sourceTree = SOURCE_ROOT; };
 		E4A6494A9AAC8C4A0D54577E /* FocusModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FocusModeView.swift; path = Missions/Views/FocusModeView.swift; sourceTree = SOURCE_ROOT; };
 		F3324E94BA85E2997152232D /* MissionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MissionDetailView.swift; path = Missions/Views/MissionDetailView.swift; sourceTree = SOURCE_ROOT; };
@@ -130,6 +132,7 @@
 				AA98EFB7B5965E0D08A22127 /* NotificationManager.swift */,
 				B4C504F58691A53EDB3F0B77 /* StatsView.swift */,
 				2448DAD8F27A11193F3DF707 /* SearchView.swift */,
+				DBFA49D28644C17FE21A101B /* DailyReviewView.swift */,
 			);
 			name = Views;
 			path = Missions/Views;
@@ -226,6 +229,7 @@
 				AA1F601B1672AFEACF19C62C /* NotificationManager.swift in Sources */,
 				40F0F56AAD9722E326A52E67 /* StatsView.swift in Sources */,
 				11DB31074947D01D319DB8F1 /* SearchView.swift in Sources */,
+				0B7BE4804BE67516CE62FFDC /* DailyReviewView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

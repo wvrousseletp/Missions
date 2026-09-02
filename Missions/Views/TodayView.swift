@@ -8,6 +8,8 @@ enum MissionFilter: String, CaseIterable {
 }
 
 struct TodayView: View {
+    @Environment(\.modelContext) private var modelContext
+    
     @Query(filter: #Predicate<Mission> { mission in
         mission.isCompleted == false
     }, sort: \Mission.dueDate) var todayMissions: [Mission]
@@ -24,6 +26,7 @@ struct TodayView: View {
     @State private var showingHelp = false
     @State private var showingStats = false
     @State private var showingSearch = false
+    @State private var showingDailyReview = false
     
     var filteredTodayMissions: [Mission] {
         switch selectedFilter {
@@ -36,11 +39,26 @@ struct TodayView: View {
         }
     }
     
+    // Cálculo total da carga horária estimada do dia
+    var totalEstimatedMinutesToday: Int {
+        todayMissions.compactMap { $0.estimatedMinutes }.reduce(0, +)
+    }
+    
+    var formattedEstimatedTimeToday: String {
+        let hours = totalEstimatedMinutesToday / 60
+        let mins = totalEstimatedMinutesToday % 60
+        if hours > 0 {
+            return "\(hours)h \(mins)min"
+        } else {
+            return "\(mins) min"
+        }
+    }
+    
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 20) {
-                    // HERO CARD: ANEL DE PROGRESSO DIÁRIO
+                    // HERO CARD: ANEL DE PROGRESSO DIÁRIO & CARGA HORÁRIA
                     HStack(spacing: 20) {
                         ZStack {
                             Circle()
@@ -76,11 +94,16 @@ struct TodayView: View {
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
                             
-                            if total > 0 && completed == total {
-                                Text("Tudo em dia! 🚀")
-                                    .font(.caption)
-                                    .fontWeight(.bold)
-                                    .foregroundStyle(.green)
+                            if totalEstimatedMinutesToday > 0 {
+                                HStack(spacing: 4) {
+                                    Image(systemName: "hourglass")
+                                        .font(.caption2)
+                                    Text("Carga estimada: \(formattedEstimatedTimeToday)")
+                                        .font(.caption2)
+                                        .bold()
+                                }
+                                .foregroundStyle(Color.accentColor)
+                                .padding(.top, 2)
                             }
                         }
                         
@@ -182,7 +205,7 @@ struct TodayView: View {
                 }
                 .padding(.horizontal, 16)
                 .padding(.top, 12)
-                .padding(.bottom, 100) // Espaço para a barra flutuante inferior
+                .padding(.bottom, 100)
             }
             .background(Color(uiColor: isPureBlack ? .black : .systemGroupedBackground))
             .toolbar {
@@ -204,12 +227,18 @@ struct TodayView: View {
                                 .foregroundStyle(Color.accentColor)
                         }
                         
+                        Button(action: { showingDailyReview = true }) {
+                            Image(systemName: "moon.stars.circle.fill")
+                                .font(.title3)
+                                .foregroundStyle(.purple)
+                        }
+                        
                         Button(action: {
                             withAnimation {
                                 isPureBlack.toggle()
                             }
                         }) {
-                            Image(systemName: isPureBlack ? "moon.stars.fill" : "moon")
+                            Image(systemName: isPureBlack ? "moon.fill" : "moon")
                                 .font(.title3)
                                 .foregroundStyle(isPureBlack ? .purple : .primary)
                         }
@@ -228,6 +257,9 @@ struct TodayView: View {
             .sheet(isPresented: $showingSearch) {
                 SearchView()
             }
+            .sheet(isPresented: $showingDailyReview) {
+                DailyReviewView()
+            }
             .fullScreenCover(isPresented: $showingFocusMode) {
                 if let mission = filteredTodayMissions.first {
                     FocusModeView(mission: mission)
@@ -241,7 +273,7 @@ struct TodayView: View {
     }
 }
 
-// CARD MODERNO DE MISSAO (INTEIRAMENTE CLICÁVEL)
+// CARD MODERNO DE MISSAO (COM DETECÇÃO DE LINKS E RECORRÊNCIA)
 struct MissionCard: View {
     @Environment(\.modelContext) private var modelContext
     @Bindable var mission: Mission
@@ -268,8 +300,16 @@ struct MissionCard: View {
                     withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
                         mission.isCompleted.toggle()
                         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                        
                         if mission.isCompleted {
                             NotificationManager.shared.cancelNotification(for: mission)
+                            
+                            // Se for uma missão recorrente, gerar a próxima automaticamente
+                            if let nextMission = mission.createNextRecurrence() {
+                                modelContext.insert(nextMission)
+                                try? modelContext.save()
+                                NotificationManager.shared.scheduleNotification(for: nextMission)
+                            }
                         }
                     }
                 }) {
@@ -300,7 +340,7 @@ struct MissionCard: View {
                         .foregroundStyle(mission.isCompleted ? .secondary : .primary)
                         .multilineTextAlignment(.leading)
                     
-                    // BADGES DE SETOR E PRIORIDADE
+                    // BADGES DE SETOR, PRIORIDADE, RECORRÊNCIA E TEMPO
                     HStack(spacing: 8) {
                         if let project = mission.project, let sector = project.sector {
                             HStack(spacing: 4) {
@@ -328,6 +368,61 @@ struct MissionCard: View {
                                 .foregroundStyle(.red)
                                 .clipShape(Capsule())
                         }
+                        
+                        // BADGE DE RECORRÊNCIA
+                        if mission.recurrence != .none {
+                            HStack(spacing: 2) {
+                                Image(systemName: "repeat")
+                                    .font(.caption2)
+                                Text(mission.recurrence.rawValue)
+                                    .font(.caption2)
+                                    .fontWeight(.semibold)
+                            }
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(Color.purple.opacity(0.12))
+                            .foregroundStyle(.purple)
+                            .clipShape(Capsule())
+                        }
+                        
+                        // ESTIMATIVA DE TEMPO
+                        if let est = mission.estimatedMinutes {
+                            HStack(spacing: 2) {
+                                Image(systemName: "clock")
+                                    .font(.caption2)
+                                Text("\(est) min")
+                                    .font(.caption2)
+                                    .fontWeight(.semibold)
+                            }
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(Color.blue.opacity(0.12))
+                            .foregroundStyle(.blue)
+                            .clipShape(Capsule())
+                        }
+                    }
+                    
+                    // BOTÕES DE AÇÃO DIRETA NOS LINKS DETECTADOS
+                    if !mission.detectedURLs.isEmpty {
+                        HStack(spacing: 8) {
+                            ForEach(mission.detectedURLs, id: \.self) { url in
+                                Link(destination: url) {
+                                    HStack(spacing: 4) {
+                                        Image(systemName: "link.circle.fill")
+                                        Text(url.host ?? "Abrir Link")
+                                            .font(.caption2)
+                                            .bold()
+                                    }
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 5)
+                                    .background(Color.accentColor.opacity(0.15))
+                                    .foregroundStyle(Color.accentColor)
+                                    .clipShape(Capsule())
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                        .padding(.top, 2)
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -441,6 +536,11 @@ struct StepCardRow: View {
             mission.isCompleted = true
             UINotificationFeedbackGenerator().notificationOccurred(.success)
             NotificationManager.shared.cancelNotification(for: mission)
+            
+            if let nextMission = mission.createNextRecurrence() {
+                // Inserir a próxima ocorrência
+                NotificationManager.shared.scheduleNotification(for: nextMission)
+            }
         }
     }
 }
