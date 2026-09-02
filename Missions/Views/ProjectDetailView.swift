@@ -2,7 +2,11 @@ import SwiftUI
 import SwiftData
 
 struct ProjectDetailView: View {
+    @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) private var dismiss
     @Bindable var project: Project
+    
+    @State private var showingDeleteAlert = false
     
     var body: some View {
         ScrollView {
@@ -42,5 +46,25 @@ struct ProjectDetailView: View {
         .background(Color(uiColor: .systemGroupedBackground))
         .navigationTitle(project.name)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(action: { showingDeleteAlert = true }) {
+                    Image(systemName: "trash")
+                        .foregroundStyle(.red)
+                }
+            }
+        }
+        .alert("Excluir Projeto?", isPresented: $showingDeleteAlert) {
+            Button("Cancelar", role: .cancel) { }
+            Button("Excluir", role: .destructive, action: deleteProject)
+        } message: {
+            Text("Todas as missões vinculadas a este projeto serão excluídas.")
+        }
+    }
+    
+    private func deleteProject() {
+        modelContext.delete(project)
+        try? modelContext.save()
+        dismiss()
     }
 }

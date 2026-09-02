@@ -3,9 +3,11 @@ import SwiftData
 
 struct SectorDetailView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) private var dismiss
     @Bindable var sector: Sector
     
     @State private var showingAddProject = false
+    @State private var showingDeleteAlert = false
     
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
@@ -37,6 +39,16 @@ struct SectorDetailView: View {
                                 }
                                 .padding(.vertical, 4)
                             }
+                            .contextMenu {
+                                Button(role: .destructive) {
+                                    withAnimation {
+                                        modelContext.delete(project)
+                                        try? modelContext.save()
+                                    }
+                                } label: {
+                                    Label("Excluir Projeto", systemImage: "trash")
+                                }
+                            }
                         }
                         .onDelete(perform: deleteProjects)
                     } else {
@@ -64,9 +76,29 @@ struct SectorDetailView: View {
             .padding(.bottom, 24)
         }
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(action: { showingDeleteAlert = true }) {
+                    Image(systemName: "trash")
+                        .foregroundStyle(.red)
+                }
+            }
+        }
+        .alert("Excluir Setor?", isPresented: $showingDeleteAlert) {
+            Button("Cancelar", role: .cancel) { }
+            Button("Excluir", role: .destructive, action: deleteSector)
+        } message: {
+            Text("Todos os projetos e missões vinculados a este setor também serão excluídos.")
+        }
         .sheet(isPresented: $showingAddProject) {
             AddProjectView(sector: sector)
         }
+    }
+    
+    private func deleteSector() {
+        modelContext.delete(sector)
+        try? modelContext.save()
+        dismiss()
     }
     
     private func deleteProjects(offsets: IndexSet) {

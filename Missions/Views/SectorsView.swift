@@ -38,6 +38,16 @@ struct SectorsView: View {
                                     SectorGridCard(sector: sector)
                                 }
                                 .buttonStyle(.plain)
+                                .contextMenu {
+                                    Button(role: .destructive, action: {
+                                        withAnimation {
+                                            modelContext.delete(sector)
+                                            try? modelContext.save()
+                                        }
+                                    }) {
+                                        Label("Excluir Setor", systemImage: "trash")
+                                    }
+                                }
                             }
                         }
                     }

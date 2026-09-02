@@ -3,9 +3,11 @@ import SwiftData
 
 struct MissionDetailView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) private var dismiss
     @Bindable var mission: Mission
     
     @State private var newStepTitle: String = ""
+    @State private var showingDeleteAlert: Bool = false
     
     var body: some View {
         Form {
@@ -57,14 +59,47 @@ struct MissionDetailView: View {
                     Text("Alta").tag(Priority.high)
                 }
                 
+                Picker("Repetição", selection: $mission.recurrence) {
+                    ForEach(Recurrence.allCases, id: \.self) { rec in
+                        Text(rec.rawValue).tag(rec)
+                    }
+                }
+                
                 DatePicker("Data de Entrega", selection: Binding(
                     get: { mission.dueDate ?? Date() },
                     set: { mission.dueDate = $0 }
                 ), displayedComponents: .date)
             }
+            
+            // SEÇÃO DE EXCLUSÃO DE MISSÃO
+            Section {
+                Button(role: .destructive, action: { showingDeleteAlert = true }) {
+                    HStack {
+                        Spacer()
+                        Image(systemName: "trash.fill")
+                        Text("Excluir Missão")
+                            .bold()
+                        Spacer()
+                    }
+                    .foregroundStyle(.red)
+                }
+            }
         }
         .navigationTitle("Detalhes da Missão")
         .navigationBarTitleDisplayMode(.inline)
+        .alert("Excluir Missão?", isPresented: $showingDeleteAlert) {
+            Button("Cancelar", role: .cancel) { }
+            Button("Excluir", role: .destructive, action: deleteMission)
+        } message: {
+            Text("Esta ação não pode ser desfeita.")
+        }
+    }
+    
+    private func deleteMission() {
+        NotificationManager.shared.cancelNotification(for: mission)
+        modelContext.delete(mission)
+        try? modelContext.save()
+        dismiss()
     }
     
     private func addStep() {

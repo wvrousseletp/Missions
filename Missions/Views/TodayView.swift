@@ -273,7 +273,7 @@ struct TodayView: View {
     }
 }
 
-// CARD MODERNO DE MISSAO (COM DETECÇÃO DE LINKS E RECORRÊNCIA)
+// CARD MODERNO DE MISSAO (INTEIRAMENTE CLICÁVEL COM MENU DE CONTEXTO)
 struct MissionCard: View {
     @Environment(\.modelContext) private var modelContext
     @Bindable var mission: Mission
@@ -304,7 +304,6 @@ struct MissionCard: View {
                         if mission.isCompleted {
                             NotificationManager.shared.cancelNotification(for: mission)
                             
-                            // Se for uma missão recorrente, gerar a próxima automaticamente
                             if let nextMission = mission.createNextRecurrence() {
                                 modelContext.insert(nextMission)
                                 try? modelContext.save()
@@ -496,6 +495,41 @@ struct MissionCard: View {
         .onTapGesture {
             showingDetail = true
         }
+        .contextMenu {
+            Button(action: { showingDetail = true }) {
+                Label("Editar / Detalhes", systemImage: "pencil")
+            }
+            
+            Button(action: {
+                withAnimation {
+                    mission.dueDate = Calendar.current.date(byAdding: .day, value: 1, to: Date())
+                    try? modelContext.save()
+                }
+            }) {
+                Label("Adiar para Amanhã", systemImage: "arrow.right.circle")
+            }
+            
+            Button(action: {
+                withAnimation {
+                    mission.dueDate = nil
+                    try? modelContext.save()
+                }
+            }) {
+                Label("Mover para o Backlog", systemImage: "tray.full")
+            }
+            
+            Divider()
+            
+            Button(role: .destructive, action: {
+                withAnimation {
+                    NotificationManager.shared.cancelNotification(for: mission)
+                    modelContext.delete(mission)
+                    try? modelContext.save()
+                }
+            }) {
+                Label("Excluir Missão", systemImage: "trash")
+            }
+        }
         .sensoryFeedback(.success, trigger: mission.isCompleted)
     }
 }
@@ -538,7 +572,8 @@ struct StepCardRow: View {
             NotificationManager.shared.cancelNotification(for: mission)
             
             if let nextMission = mission.createNextRecurrence() {
-                // Inserir a próxima ocorrência
+                modelContext.insert(nextMission)
+                try? modelContext.save()
                 NotificationManager.shared.scheduleNotification(for: nextMission)
             }
         }
