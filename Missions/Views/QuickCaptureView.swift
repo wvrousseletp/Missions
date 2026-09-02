@@ -80,6 +80,7 @@ struct QuickCaptureView: View {
                     
                     if hasDueDate {
                         DatePicker("Data", selection: $dueDate, displayedComponents: includeTime ? [.date, .hourAndMinute] : [.date])
+                            .environment(\.locale, Locale(identifier: "pt_BR"))
                         
                         Toggle("Incluir Horário", isOn: $includeTime)
                     }

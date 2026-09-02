@@ -6,14 +6,20 @@ struct WeekView: View {
     
     @State private var selectedDate: Date? = nil
     
+    var calendar: Calendar {
+        var cal = Calendar(identifier: .gregorian)
+        cal.locale = Locale(identifier: "pt_BR")
+        return cal
+    }
+    
     // Dias da semana atual
     var currentWeekDays: [Date] {
-        let calendar = Calendar.current
-        let today = calendar.startOfDay(for: Date())
-        let dayOfWeek = calendar.component(.weekday, from: today)
-        let firstDayOfWeek = calendar.date(byAdding: .day, value: -(dayOfWeek - 1), to: today) ?? today
+        let cal = calendar
+        let today = cal.startOfDay(for: Date())
+        let dayOfWeek = cal.component(.weekday, from: today)
+        let firstDayOfWeek = cal.date(byAdding: .day, value: -(dayOfWeek - 1), to: today) ?? today
         
-        return (0..<7).compactMap { calendar.date(byAdding: .day, value: $0, to: firstDayOfWeek) }
+        return (0..<7).compactMap { cal.date(byAdding: .day, value: $0, to: firstDayOfWeek) }
     }
     
     // Missões não concluídas com data
@@ -23,14 +29,14 @@ struct WeekView: View {
     
     // Agrupadas por dia
     var missionsByDay: [(Date, [Mission])] {
-        let calendar = Calendar.current
+        let cal = calendar
         var grouped: [Date: [Mission]] = [:]
         
         for mission in pendingMissions {
             if let dueDate = mission.dueDate {
-                let startOfDay = calendar.startOfDay(for: dueDate)
+                let startOfDay = cal.startOfDay(for: dueDate)
                 if let selected = selectedDate {
-                    if calendar.isDate(startOfDay, inSameDayAs: selected) {
+                    if cal.isDate(startOfDay, inSameDayAs: selected) {
                         grouped[startOfDay, default: []].append(mission)
                     }
                 } else {
@@ -130,29 +136,30 @@ struct WeekView: View {
                 }
             }
             .background(Color(uiColor: .systemGroupedBackground))
+            .environment(\.locale, Locale(identifier: "pt_BR"))
         }
     }
     
     private func isSelected(_ date: Date) -> Bool {
         guard let selected = selectedDate else { return false }
-        return Calendar.current.isDate(date, inSameDayAs: selected)
+        return calendar.isDate(date, inSameDayAs: selected)
     }
     
     private func hasMissionsOnDay(_ date: Date) -> Bool {
-        let calendar = Calendar.current
+        let cal = calendar
         return pendingMissions.contains { mission in
             if let dueDate = mission.dueDate {
-                return calendar.isDate(dueDate, inSameDayAs: date)
+                return cal.isDate(dueDate, inSameDayAs: date)
             }
             return false
         }
     }
     
     private func friendlyDate(_ date: Date) -> String {
-        let calendar = Calendar.current
-        if calendar.isDateInToday(date) {
+        let cal = calendar
+        if cal.isDateInToday(date) {
             return "Hoje"
-        } else if calendar.isDateInTomorrow(date) {
+        } else if cal.isDateInTomorrow(date) {
             return "Amanhã"
         } else {
             let formatter = DateFormatter()
@@ -177,7 +184,9 @@ struct CalendarDayCell: View {
     let action: () -> Void
     
     var isToday: Bool {
-        Calendar.current.isDateInToday(date)
+        var cal = Calendar(identifier: .gregorian)
+        cal.locale = Locale(identifier: "pt_BR")
+        return cal.isDateInToday(date)
     }
     
     var dayName: String {
@@ -189,6 +198,7 @@ struct CalendarDayCell: View {
     
     var dayNumber: String {
         let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "pt_BR")
         formatter.dateFormat = "d"
         return formatter.string(from: date)
     }
