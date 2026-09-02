@@ -27,13 +27,12 @@ platform :ios do
       build_number: ENV["GITHUB_RUN_NUMBER"]
     )
 
-    # Build the application with Apple Distribution signing
+    # Build the application with automatic signing via xcodebuild auth
     p8_path = File.expand_path("AuthKey_#{ENV['APP_STORE_CONNECT_API_KEY_ID']}.p8")
     build_app(
       scheme: "Missions",
-      configuration: "Release",
       export_method: "app-store",
-      xcargs: "-allowProvisioningUpdates -authenticationKeyID #{ENV['APP_STORE_CONNECT_API_KEY_ID']} -authenticationKeyIssuerID #{ENV['APP_STORE_CONNECT_API_KEY_ISSUER_ID']} -authenticationKeyPath \"#{p8_path}\" CODE_SIGN_IDENTITY=\"Apple Distribution\""
+      xcargs: "-allowProvisioningUpdates -authenticationKeyID #{ENV['APP_STORE_CONNECT_API_KEY_ID']} -authenticationKeyIssuerID #{ENV['APP_STORE_CONNECT_API_KEY_ISSUER_ID']} -authenticationKeyPath \"#{p8_path}\""
     )
 
     # Upload to TestFlight
