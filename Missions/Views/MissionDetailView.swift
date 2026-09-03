@@ -51,7 +51,7 @@ struct MissionDetailView: View {
                     
                     TextField("Adicionar etapa ou colar lista...", text: $newStepTitle, axis: .vertical)
                         .lineLimit(1...5)
-                        .onChange(of: newStepTitle) { oldValue, newValue in
+                        .onChange(of: newStepTitle) { newValue in
                             if newValue.contains("\n") {
                                 addStep()
                             }

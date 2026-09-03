@@ -35,33 +35,13 @@ struct QuickCaptureView: View {
     @State private var newStepTitle: String = ""
     @State private var tempSteps: [String] = []
     
-    // Reconhecimento de voz
-    @State private var isListening = false
-    @StateObject private var speechManager = SpeechManager()
-    
     var body: some View {
         NavigationStack {
             Form {
-                // TÍTULO DA MISSÃO COM RECONHECIMENTO DE VOZ
+                // TÍTULO DA MISSÃO
                 Section(header: Text("Lembrete / Objetivo")) {
-                    HStack {
-                        TextField("O que precisa ser feito?", text: $title)
-                            .font(.headline)
-                        
-                        Button(action: toggleVoiceInput) {
-                            Image(systemName: speechManager.isRecording ? "mic.fill" : "mic")
-                                .font(.title3)
-                                .foregroundStyle(speechManager.isRecording ? .red : Color.accentColor)
-                                .symbolEffect(.bounce, value: speechManager.isRecording)
-                        }
-                        .buttonStyle(.plain)
-                    }
-                    
-                    if speechManager.isRecording {
-                        Text("Ouvindo... Fale o título da missão")
-                            .font(.caption)
-                            .foregroundStyle(.red)
-                    }
+                    TextField("O que precisa ser feito?", text: $title)
+                        .font(.headline)
                 }
                 
                 // ANOTAÇÕES E DETALHES
@@ -193,7 +173,7 @@ struct QuickCaptureView: View {
                         
                         TextField("Adicionar sub-etapa ou colar lista...", text: $newStepTitle, axis: .vertical)
                             .lineLimit(1...5)
-                            .onChange(of: newStepTitle) { oldValue, newValue in
+                            .onChange(of: newStepTitle) { newValue in
                                 if newValue.contains("\n") {
                                     addTempStep()
                                 }
@@ -249,7 +229,6 @@ struct QuickCaptureView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancelar") {
-                        speechManager.stopRecording()
                         dismiss()
                     }
                 }
@@ -259,20 +238,7 @@ struct QuickCaptureView: View {
                         .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
             }
-            .onChange(of: speechManager.recognizedText) { oldValue, newValue in
-                if !newValue.isEmpty {
-                    self.title = newValue
-                }
-            }
             .dismissKeyboardOnScroll()
-        }
-    }
-    
-    private func toggleVoiceInput() {
-        if speechManager.isRecording {
-            speechManager.stopRecording()
-        } else {
-            speechManager.startRecording()
         }
     }
     
@@ -311,24 +277,24 @@ struct QuickCaptureView: View {
     }
     
     private func calculatedEndDate() -> Date? {
-        guard recurrence != .none, let dueDate = hasDueDate ? dueDate : Date() else { return nil }
+        guard recurrence != .none else { return nil }
+        let refDate = hasDueDate ? dueDate : Date()
         let calendar = Calendar.current
         switch recurrenceDuration {
         case .forever:
             return nil
         case .oneMonth:
-            return calendar.date(byAdding: .month, value: 1, to: dueDate)
+            return calendar.date(byAdding: .month, value: 1, to: refDate)
         case .twoMonths:
-            return calendar.date(byAdding: .month, value: 2, to: dueDate)
+            return calendar.date(byAdding: .month, value: 2, to: refDate)
         case .threeMonths:
-            return calendar.date(byAdding: .month, value: 3, to: dueDate)
+            return calendar.date(byAdding: .month, value: 3, to: refDate)
         case .customDate:
             return customEndDate
         }
     }
     
     private func saveMission() {
-        speechManager.stopRecording()
         let newMission = Mission(
             title: title,
             details: details,
