@@ -163,6 +163,15 @@ struct QuickCaptureView: View {
                             Text(tempSteps[index])
                             Spacer()
                         }
+                        .contextMenu {
+                            Button(role: .destructive) {
+                                withAnimation {
+                                    tempSteps.remove(at: index)
+                                }
+                            } label: {
+                                Label("Excluir Etapa", systemImage: "trash")
+                            }
+                        }
                     }
                     .onDelete(perform: removeTempStep)
                     

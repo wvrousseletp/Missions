@@ -724,6 +724,18 @@ struct StepCardRow: View {
             Spacer()
         }
         .sensoryFeedback(.impact(flexibility: .rigid), trigger: step.isCompleted)
+        .contextMenu {
+            Button(role: .destructive, action: deleteStep) {
+                Label("Excluir Etapa", systemImage: "trash")
+            }
+        }
+    }
+    
+    private func deleteStep() {
+        withAnimation {
+            modelContext.delete(step)
+            try? modelContext.save()
+        }
     }
     
     private func checkMissionCompletion() {
