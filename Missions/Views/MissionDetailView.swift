@@ -154,7 +154,7 @@ struct MissionDetailView: View {
         
         var currentStepsCount = mission.steps?.count ?? 0
         for line in lines {
-            let cleanTitle = line.replacingOccurrences(of: #"^[\-\*\•\d+\.]\s*"#, with: "", options: .regularExpression)
+            let cleanTitle = line.replacingOccurrences(of: #"^([\-\*\•]|\d+[\.\)])\s+"#, with: "", options: .regularExpression)
             guard !cleanTitle.isEmpty else { continue }
             
             let step = Step(title: cleanTitle, order: currentStepsCount)
@@ -175,7 +175,7 @@ struct MissionDetailView: View {
         
         var currentStepsCount = mission.steps?.count ?? 0
         for line in lines {
-            let cleanTitle = line.replacingOccurrences(of: #"^[\-\*\•\d+\.]\s*"#, with: "", options: .regularExpression)
+            let cleanTitle = line.replacingOccurrences(of: #"^([\-\*\•]|\d+[\.\)])\s+"#, with: "", options: .regularExpression)
             guard !cleanTitle.isEmpty else { continue }
             
             let step = Step(title: cleanTitle, order: currentStepsCount)

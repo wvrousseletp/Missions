@@ -258,7 +258,7 @@ struct QuickCaptureView: View {
             .filter { !$0.isEmpty }
         
         for line in lines {
-            let cleanTitle = line.replacingOccurrences(of: #"^[\-\*\•\d+\.]\s*"#, with: "", options: .regularExpression)
+            let cleanTitle = line.replacingOccurrences(of: #"^([\-\*\•]|\d+[\.\)])\s+"#, with: "", options: .regularExpression)
             guard !cleanTitle.isEmpty else { continue }
             tempSteps.append(cleanTitle)
         }
@@ -273,7 +273,7 @@ struct QuickCaptureView: View {
             .filter { !$0.isEmpty }
         
         for line in lines {
-            let cleanTitle = line.replacingOccurrences(of: #"^[\-\*\•\d+\.]\s*"#, with: "", options: .regularExpression)
+            let cleanTitle = line.replacingOccurrences(of: #"^([\-\*\•]|\d+[\.\)])\s+"#, with: "", options: .regularExpression)
             guard !cleanTitle.isEmpty else { continue }
             tempSteps.append(cleanTitle)
         }
