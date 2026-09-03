@@ -259,9 +259,19 @@ struct QuickCaptureView: View {
     }
     
     private func addTempStep() {
-        let trimmed = newStepTitle.trimmingCharacters(in: .whitespaces)
+        let trimmed = newStepTitle.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
-        tempSteps.append(trimmed)
+        
+        let lines = trimmed.components(separatedBy: .newlines)
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty }
+        
+        for line in lines {
+            let cleanTitle = line.replacingOccurrences(of: #"^[\-\*\•\d+\.]\s*"#, with: "", options: .regularExpression)
+            guard !cleanTitle.isEmpty else { continue }
+            tempSteps.append(cleanTitle)
+        }
+        
         newStepTitle = ""
     }
     

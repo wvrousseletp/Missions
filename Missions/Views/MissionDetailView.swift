@@ -118,13 +118,23 @@ struct MissionDetailView: View {
     }
     
     private func addStep() {
-        let trimmed = newStepTitle.trimmingCharacters(in: .whitespaces)
+        let trimmed = newStepTitle.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
         
-        let currentStepsCount = mission.steps?.count ?? 0
-        let step = Step(title: trimmed, order: currentStepsCount)
-        step.mission = mission
-        modelContext.insert(step)
+        let lines = trimmed.components(separatedBy: .newlines)
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty }
+        
+        var currentStepsCount = mission.steps?.count ?? 0
+        for line in lines {
+            let cleanTitle = line.replacingOccurrences(of: #"^[\-\*\•\d+\.]\s*"#, with: "", options: .regularExpression)
+            guard !cleanTitle.isEmpty else { continue }
+            
+            let step = Step(title: cleanTitle, order: currentStepsCount)
+            step.mission = mission
+            modelContext.insert(step)
+            currentStepsCount += 1
+        }
         
         newStepTitle = ""
         try? modelContext.save()
