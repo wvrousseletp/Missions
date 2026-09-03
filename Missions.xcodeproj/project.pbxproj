@@ -11,6 +11,7 @@
 		0B7BE4804BE67516CE62FFDC /* DailyReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBFA49D28644C17FE21A101B /* DailyReviewView.swift */; };
 		0F4C4499BB7F3E2A7E169C4E /* Mission.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB624ADFAD8A4CD66FB9697A /* Mission.swift */; };
 		11DB31074947D01D319DB8F1 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2448DAD8F27A11193F3DF707 /* SearchView.swift */; };
+		2A90F3CF1B60A0981E945920 /* DynamicIslandManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC966E189E75DA63229CBD7 /* DynamicIslandManager.swift */; };
 		2D4C40698EEC812EA1B05C3C /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = A490473F8361F49514AAA87E /* Project.swift */; };
 		3CB8419886CCAAC12F2B862F /* WeekView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83804550ADEC47A5BCAB3816 /* WeekView.swift */; };
 		40F0F56AAD9722E326A52E67 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C504F58691A53EDB3F0B77 /* StatsView.swift */; };
@@ -39,6 +40,7 @@
 
 /* Begin PBXFileReference section */
 		11914911A78D9980A0B27CC9 /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Color+Hex.swift"; path = "Missions/Views/Color+Hex.swift"; sourceTree = SOURCE_ROOT; };
+		1AC966E189E75DA63229CBD7 /* DynamicIslandManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DynamicIslandManager.swift; path = Missions/Views/DynamicIslandManager.swift; sourceTree = SOURCE_ROOT; };
 		211FF91CB508AAB9C1E7F69C /* AlarmAlertView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AlarmAlertView.swift; path = Missions/Views/AlarmAlertView.swift; sourceTree = SOURCE_ROOT; };
 		21F044139D2C96379610A4E7 /* ProjectDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProjectDetailView.swift; path = Missions/Views/ProjectDetailView.swift; sourceTree = SOURCE_ROOT; };
 		2448DAD8F27A11193F3DF707 /* SearchView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SearchView.swift; path = Missions/Views/SearchView.swift; sourceTree = SOURCE_ROOT; };
@@ -142,6 +144,7 @@
 				A9F2FD9DBB842B1C532CF26F /* AudioSummaryManager.swift */,
 				4A049552BD5583D7EE03BE93 /* View+Keyboard.swift */,
 				211FF91CB508AAB9C1E7F69C /* AlarmAlertView.swift */,
+				1AC966E189E75DA63229CBD7 /* DynamicIslandManager.swift */,
 			);
 			name = Views;
 			path = Missions/Views;
@@ -242,6 +245,7 @@
 				6390536ABA6C142C56B7C585 /* AudioSummaryManager.swift in Sources */,
 				D00B830123359C25CDC23EA1 /* View+Keyboard.swift in Sources */,
 				C43973496F05B8FD317E6DB0 /* AlarmAlertView.swift in Sources */,
+				2A90F3CF1B60A0981E945920 /* DynamicIslandManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -376,6 +380,7 @@
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "O app usa o microfone para ouvir suas missoes ditadas.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "O app usa reconhecimento de voz para ditar tarefas.";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -412,6 +417,7 @@
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "O app usa o microfone para ouvir suas missoes ditadas.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "O app usa reconhecimento de voz para ditar tarefas.";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

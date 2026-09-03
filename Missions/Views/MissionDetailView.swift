@@ -112,6 +112,21 @@ struct MissionDetailView: View {
                         }
                     }
                 }
+                
+                Button(action: {
+                    withAnimation {
+                        DynamicIslandManager.shared.togglePin(for: mission)
+                    }
+                }) {
+                    HStack {
+                        Image(systemName: DynamicIslandManager.shared.isPinned(mission) ? "pin.slash.fill" : "pin.fill")
+                            .foregroundStyle(.purple)
+                        Text(DynamicIslandManager.shared.isPinned(mission) ? "Desafixar da Dynamic Island" : "Fixar na Dynamic Island")
+                            .bold()
+                            .foregroundStyle(.purple)
+                    }
+                    .padding(.vertical, 4)
+                }
             }
             
             // SEÇÃO DE EXCLUSÃO DE MISSÃO

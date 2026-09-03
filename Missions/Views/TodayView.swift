@@ -403,6 +403,7 @@ struct MissionCard: View {
     @State private var isExpanded: Bool = false
     @State private var showingDetail: Bool = false
     @State private var showingAlarmAlert: Bool = false
+    @StateObject private var dynamicIslandManager = DynamicIslandManager.shared
     
     var completedStepsCount: Int {
         mission.steps?.filter { $0.isCompleted }.count ?? 0
@@ -508,6 +509,22 @@ struct MissionCard: View {
                             .padding(.vertical, 4)
                             .background(Color.red.opacity(0.15))
                             .foregroundStyle(.red)
+                            .clipShape(Capsule())
+                        }
+                        
+                        // BADGE DYNAMIC ISLAND
+                        if dynamicIslandManager.isPinned(mission) {
+                            HStack(spacing: 2) {
+                                Image(systemName: "pin.fill")
+                                    .font(.caption2)
+                                Text("Dynamic Island")
+                                    .font(.caption2)
+                                    .fontWeight(.bold)
+                            }
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(Color.purple.opacity(0.2))
+                            .foregroundStyle(.purple)
                             .clipShape(Capsule())
                         }
                         
@@ -639,6 +656,14 @@ struct MissionCard: View {
             showingDetail = true
         }
         .contextMenu {
+            Button(action: {
+                withAnimation {
+                    dynamicIslandManager.togglePin(for: mission)
+                }
+            }) {
+                Label(dynamicIslandManager.isPinned(mission) ? "Desafixar da Dynamic Island" : "Fixar na Dynamic Island", systemImage: dynamicIslandManager.isPinned(mission) ? "pin.slash" : "pin.fill")
+            }
+            
             if mission.isAlarmMode {
                 Button(action: { showingAlarmAlert = true }) {
                     Label("Testar Despertador", systemImage: "bell.badge.wave.fill")
