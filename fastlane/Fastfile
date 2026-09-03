@@ -27,12 +27,6 @@ platform :ios do
       build_number: ENV["GITHUB_RUN_NUMBER"]
     )
 
-    # Fetch/create App Store Distribution Certificate & Provisioning Profile
-    get_certificates
-    get_provisioning_profile(
-      app_identifier: "com.vicente.missions"
-    )
-
     # Build the application with automatic signing via xcodebuild auth
     p8_path = File.expand_path("AuthKey_#{ENV['APP_STORE_CONNECT_API_KEY_ID']}.p8")
     build_app(
