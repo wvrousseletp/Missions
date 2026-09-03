@@ -40,9 +40,23 @@ class NotificationManager: NSObject, ObservableObject, UNUserNotificationCenterD
         guard dueDate > Date() else { return }
         
         let content = UNMutableNotificationContent()
-        content.title = mission.isAlarmMode ? "🚨 DESPERTADOR DE MISSÃO" : "Lembrete de Missão 🎯"
-        content.body = mission.title
-        content.sound = .default
+        
+        if mission.isAlarmMode {
+            content.title = "🚨 DESPERTADOR DE MISSÃO"
+            content.body = "⏰ \(mission.title)"
+            content.sound = .defaultCriticalSound(withAudioVolume: 1.0)
+            if #available(iOS 15.0, *) {
+                content.interruptionLevel = .critical
+            }
+        } else {
+            content.title = "Lembrete de Missão 🎯"
+            content.body = mission.title
+            content.sound = .default
+            if #available(iOS 15.0, *) {
+                content.interruptionLevel = .timeSensitive
+            }
+        }
+        
         content.userInfo = [
             "missionID": mission.id.uuidString,
             "isAlarmMode": mission.isAlarmMode
@@ -79,7 +93,7 @@ class NotificationManager: NSObject, ObservableObject, UNUserNotificationCenterD
         UNUserNotificationCenter.current().add(request)
     }
     
-    // DELEGATE: QUANDO A NOTIFICAÇÃO DISPARA COM O APP ABERTO OU SEGUNDO PLANO
+    // DELEGATE: QUANDO A NOTIFICAÇÃO DISPARA COM O APP ABERTO OU EM SEGUNDO PLANO
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         let userInfo = notification.request.content.userInfo
         if let missionIDStr = userInfo["missionID"] as? String, let missionUUID = UUID(uuidString: missionIDStr) {
