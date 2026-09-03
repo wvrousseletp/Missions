@@ -156,17 +156,19 @@ struct QuickCaptureView: View {
                 
                 // CHECKLIST / SUBTAREFAS
                 Section(header: Text("Checklist (Subtarefas)")) {
-                    ForEach(tempSteps.indices, id: \.self) { index in
+                    ForEach(Array(tempSteps.enumerated()), id: \.offset) { index, stepTitle in
                         HStack {
                             Image(systemName: "circle")
                                 .foregroundStyle(.gray)
-                            Text(tempSteps[index])
+                            Text(stepTitle)
                             Spacer()
                         }
                         .contextMenu {
                             Button(role: .destructive) {
                                 withAnimation {
-                                    tempSteps.remove(at: index)
+                                    if index < tempSteps.count {
+                                        tempSteps.remove(at: index)
+                                    }
                                 }
                             } label: {
                                 Label("Excluir Etapa", systemImage: "trash")
