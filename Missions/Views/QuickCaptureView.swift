@@ -1,7 +1,6 @@
 import SwiftUI
 import SwiftData
-import Speech
-import AVFoundation
+import UIKit
 
 enum RecurrenceDuration: String, CaseIterable {
     case forever = "Para Sempre"
@@ -15,7 +14,7 @@ struct QuickCaptureView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     
-    @Query var projects: [Project]
+    @Query(sort: \Project.name) var projects: [Project]
     
     @State private var title: String = ""
     @State private var details: String = ""
@@ -40,85 +39,82 @@ struct QuickCaptureView: View {
     @State private var isListening = false
     @StateObject private var speechManager = SpeechManager()
     
-    let daysOfWeek = [
-        (1, "Dom"), (2, "Seg"), (3, "Ter"), (4, "Qua"), (5, "Qui"), (6, "Sex"), (7, "Sáb")
-    ]
-    
     var body: some View {
         NavigationStack {
             Form {
-                // TÍTULO E NOTAS (ESTILO APPLE REMINDERS)
-                Section {
+                // TÍTULO DA MISSÃO COM RECONHECIMENTO DE VOZ
+                Section(header: Text("Lembrete / Objetivo")) {
                     HStack {
-                        TextField("Título da missão", text: $title)
+                        TextField("O que precisa ser feito?", text: $title)
                             .font(.headline)
                         
-                        Button(action: toggleSpeech) {
-                            Image(systemName: isListening ? "mic.fill" : "mic")
-                                .foregroundStyle(isListening ? .red : .accentColor)
-                                .font(.title2)
+                        Button(action: toggleVoiceInput) {
+                            Image(systemName: speechManager.isRecording ? "mic.fill" : "mic")
+                                .font(.title3)
+                                .foregroundStyle(speechManager.isRecording ? .red : Color.accentColor)
+                                .symbolEffect(.bounce, value: speechManager.isRecording)
                         }
                         .buttonStyle(.plain)
                     }
                     
-                    TextField("Notas, links de reuniões ou detalhes...", text: $details, axis: .vertical)
-                        .font(.subheadline)
-                        .lineLimit(2...5)
+                    if speechManager.isRecording {
+                        Text("Ouvindo... Fale o título da missão")
+                            .font(.caption)
+                            .foregroundStyle(.red)
+                    }
                 }
                 
-                // ATALHOS RÁPIDOS DE DATA
+                // ANOTAÇÕES E DETALHES
+                Section(header: Text("Anotações & Links")) {
+                    TextField("Adicione detalhes, links ou observações...", text: $details, axis: .vertical)
+                        .lineLimit(2...6)
+                }
+                
+                // SELEÇÃO DE DATA E HORA
                 Section(header: Text("Data e Hora")) {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 8) {
-                            QuickDateChip(title: "Hoje", icon: "sun.max.fill", color: .orange) {
-                                hasDueDate = true
-                                dueDate = Date()
-                            }
-                            
-                            QuickDateChip(title: "Amanhã", icon: "sunrise.fill", color: .purple) {
-                                hasDueDate = true
-                                dueDate = Calendar.current.date(byAdding: .day, value: 1, to: Date()) ?? Date()
-                            }
-                            
-                            QuickDateChip(title: "Fim de Semana", icon: "sofa.fill", color: .blue) {
-                                hasDueDate = true
-                                dueDate = nextWeekend()
-                            }
-                            
-                            QuickDateChip(title: "Sem Data", icon: "tray.fill", color: .gray) {
-                                hasDueDate = false
-                            }
-                        }
-                        .padding(.vertical, 4)
-                    }
-                    
-                    Toggle("Definir Data Específica", isOn: $hasDueDate)
+                    Toggle("Agendar para uma data", isOn: $hasDueDate)
                     
                     if hasDueDate {
-                        DatePicker("Data", selection: $dueDate, displayedComponents: includeTime ? [.date, .hourAndMinute] : [.date])
+                        DatePicker("Data", selection: $dueDate, displayedComponents: [.date])
                             .environment(\.locale, Locale(identifier: "pt_BR"))
                         
-                        Toggle("Incluir Horário", isOn: $includeTime)
+                        Toggle("Definir Horário Específico", isOn: $includeTime)
+                        
+                        if includeTime {
+                            DatePicker("Horário", selection: $dueDate, displayedComponents: [.hourAndMinute])
+                                .environment(\.locale, Locale(identifier: "pt_BR"))
+                        }
                     }
                 }
                 
-                // RECORRÊNCIA PERSONALIZADA (DIAS DA SEMANA E DURAÇÃO)
+                // PRIORIDADE E RECORRÊNCIA
                 Section(header: Text("Planejamento & Repetição")) {
+                    Picker("Prioridade", selection: $priority) {
+                        Text("Baixa").tag(Priority.low)
+                        Text("Média").tag(Priority.medium)
+                        Text("🔥 Alta").tag(Priority.high)
+                    }
+                    .pickerStyle(.segmented)
+                    
                     Picker("Repetição", selection: $recurrence) {
                         ForEach(Recurrence.allCases, id: \.self) { rec in
                             Text(rec.rawValue).tag(rec)
                         }
                     }
                     
-                    // SELETOR DE DIAS DA SEMANA (ex: Seg, Qua, Sex)
+                    // DIAS DA SEMANA CUSTOMIZADOS (se escolher 'Dias da Semana')
                     if recurrence == .customDays {
                         VStack(alignment: .leading, spacing: 8) {
                             Text("Escolha os dias da semana:")
                                 .font(.caption)
+                                .bold()
                                 .foregroundStyle(.secondary)
                             
                             HStack(spacing: 6) {
-                                ForEach(daysOfWeek, id: \.0) { id, name in
+                                ForEach([
+                                    (1, "Dom"), (2, "Seg"), (3, "Ter"), (4, "Qua"),
+                                    (5, "Qui"), (6, "Sex"), (7, "Sáb")
+                                ], id: \.0) { id, name in
                                     let isSelected = selectedDays.contains(id)
                                     Button(action: {
                                         if isSelected {
@@ -190,41 +186,55 @@ struct QuickCaptureView: View {
                     }
                     .onDelete(perform: removeTempStep)
                     
-                    HStack {
+                    HStack(alignment: .top) {
                         Image(systemName: "plus")
                             .foregroundStyle(Color.accentColor)
-                        TextField("Adicionar sub-etapa...", text: $newStepTitle)
+                            .padding(.top, 4)
+                        
+                        TextField("Adicionar sub-etapa ou colar lista...", text: $newStepTitle, axis: .vertical)
+                            .lineLimit(1...5)
+                            .onChange(of: newStepTitle) { oldValue, newValue in
+                                if newValue.contains("\n") {
+                                    addTempStep()
+                                }
+                            }
                             .onSubmit {
                                 addTempStep()
                             }
+                        
                         if !newStepTitle.isEmpty {
                             Button("Adicionar", action: addTempStep)
                                 .font(.caption)
                                 .bold()
                         }
                     }
+                    
+                    Button(action: pasteClipboardTempSteps) {
+                        HStack {
+                            Image(systemName: "doc.on.clipboard.fill")
+                                .foregroundStyle(Color.accentColor)
+                            Text("Colar Lista Copiada como Várias Etapas")
+                                .font(.subheadline)
+                                .bold()
+                                .foregroundStyle(Color.accentColor)
+                        }
+                        .padding(.vertical, 4)
+                    }
                 }
                 
                 // PROJETO E SETOR
                 Section(header: Text("Organização")) {
                     if !projects.isEmpty {
-                        Picker("Projeto / Lista", selection: $selectedProject) {
-                            Text("Caixa de Entrada (Nenhum)").tag(Project?.none)
+                        Picker("Projeto / Setor", selection: $selectedProject) {
+                            Text("Nenhum (Caixa de Entrada)").tag(nil as Project?)
                             ForEach(projects) { project in
-                                Text("\(project.sector?.name ?? "") • \(project.name)").tag(Project?.some(project))
+                                Text("\(project.sector?.name ?? "Setor") • \(project.name)")
+                                    .tag(project as Project?)
                             }
                         }
                     }
-                    
-                    Picker("Prioridade", selection: $priority) {
-                        Text("Baixa").tag(Priority.low)
-                        Text("Média").tag(Priority.medium)
-                        Text("Alta").tag(Priority.high)
-                    }
-                    .pickerStyle(.segmented)
                 }
                 
-                // BOTAO SALVAR
                 Section {
                     Button(action: saveMission) {
                         Text("Adicionar Lembrete")
@@ -258,6 +268,27 @@ struct QuickCaptureView: View {
         }
     }
     
+    private func toggleVoiceInput() {
+        if speechManager.isRecording {
+            speechManager.stopRecording()
+        } else {
+            speechManager.startRecording()
+        }
+    }
+    
+    private func pasteClipboardTempSteps() {
+        guard let clipboardString = UIPasteboard.general.string else { return }
+        let lines = clipboardString.components(separatedBy: .newlines)
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty }
+        
+        for line in lines {
+            let cleanTitle = line.replacingOccurrences(of: #"^[\-\*\•\d+\.]\s*"#, with: "", options: .regularExpression)
+            guard !cleanTitle.isEmpty else { continue }
+            tempSteps.append(cleanTitle)
+        }
+    }
+    
     private func addTempStep() {
         let trimmed = newStepTitle.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
@@ -279,18 +310,8 @@ struct QuickCaptureView: View {
         tempSteps.remove(atOffsets: offsets)
     }
     
-    private func toggleSpeech() {
-        if isListening {
-            speechManager.stopRecording()
-            isListening = false
-        } else {
-            speechManager.startRecording()
-            isListening = true
-        }
-    }
-    
     private func calculatedEndDate() -> Date? {
-        guard recurrence != .none else { return nil }
+        guard recurrence != .none, let dueDate = hasDueDate ? dueDate : Date() else { return nil }
         let calendar = Calendar.current
         switch recurrenceDuration {
         case .forever:
@@ -329,113 +350,8 @@ struct QuickCaptureView: View {
             modelContext.insert(step)
         }
         
-        do {
-            try modelContext.save()
-            NotificationManager.shared.scheduleNotification(for: newMission)
-            dismiss()
-        } catch {
-            print("Error saving mission: \(error)")
-        }
-    }
-    
-    private func nextWeekend() -> Date {
-        let calendar = Calendar.current
-        var components = DateComponents()
-        components.weekday = 7 // Sábado
-        return calendar.nextDate(after: Date(), matching: components, matchingPolicy: .nextTime) ?? Date()
-    }
-}
-
-struct QuickDateChip: View {
-    let title: String
-    let icon: String
-    let color: Color
-    let action: () -> Void
-    
-    var body: some View {
-        Button(action: action) {
-            HStack(spacing: 6) {
-                Image(systemName: icon)
-                    .foregroundStyle(color)
-                Text(title)
-                    .font(.caption)
-                    .bold()
-            }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .background(Color.secondary.opacity(0.12))
-            .clipShape(Capsule())
-        }
-        .buttonStyle(.plain)
-    }
-}
-
-class SpeechManager: NSObject, ObservableObject, SFSpeechRecognizerDelegate {
-    @Published var recognizedText = ""
-    
-    private let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "pt-BR"))
-    private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
-    private var recognitionTask: SFSpeechRecognitionTask?
-    private let audioEngine = AVAudioEngine()
-    
-    override init() {
-        super.init()
-        speechRecognizer?.delegate = self
-    }
-    
-    func startRecording() {
-        SFSpeechRecognizer.requestAuthorization { authStatus in
-            if authStatus == .authorized {
-                DispatchQueue.main.async {
-                    self.beginSession()
-                }
-            }
-        }
-    }
-    
-    private func beginSession() {
-        if recognitionTask != nil {
-            recognitionTask?.cancel()
-            recognitionTask = nil
-        }
-        
-        let audioSession = AVAudioSession.sharedInstance()
-        try? audioSession.setCategory(.record, mode: .measurement, options: .duckOthers)
-        try? audioSession.setActive(true, options: .notifyOthersOnDeactivation)
-        
-        recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
-        guard let recognitionRequest = recognitionRequest else { return }
-        recognitionRequest.shouldReportPartialResults = true
-        
-        let inputNode = audioEngine.inputNode
-        let recordingFormat = inputNode.outputFormat(forBus: 0)
-        inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { (buffer, when) in
-            self.recognitionRequest?.append(buffer)
-        }
-        
-        audioEngine.prepare()
-        try? audioEngine.start()
-        
-        recognitionTask = speechRecognizer?.recognitionTask(with: recognitionRequest) { result, error in
-            if let result = result {
-                DispatchQueue.main.async {
-                    self.recognizedText = result.bestTranscription.formattedString
-                }
-            }
-            if error != nil {
-                self.audioEngine.stop()
-                inputNode.removeTap(onBus: 0)
-                self.recognitionRequest = nil
-                self.recognitionTask = nil
-            }
-        }
-    }
-    
-    func stopRecording() {
-        audioEngine.stop()
-        audioEngine.inputNode.removeTap(onBus: 0)
-        recognitionRequest?.endAudio()
-        recognitionRequest = nil
-        recognitionTask = nil
+        try? modelContext.save()
+        NotificationManager.shared.scheduleNotification(for: newMission)
+        dismiss()
     }
 }

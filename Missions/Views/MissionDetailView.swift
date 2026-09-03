@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import UIKit
 
 struct MissionDetailView: View {
     @Environment(\.modelContext) private var modelContext
@@ -42,13 +43,41 @@ struct MissionDetailView: View {
                     .onMove(perform: moveSteps)
                 }
                 
-                HStack {
+                // CAMPO DE ADICIONAR OU COLAR MULTILINHAS
+                HStack(alignment: .top) {
                     Image(systemName: "plus")
                         .foregroundColor(.accentColor)
-                    TextField("Adicionar nova etapa", text: $newStepTitle)
+                        .padding(.top, 4)
+                    
+                    TextField("Adicionar etapa ou colar lista...", text: $newStepTitle, axis: .vertical)
+                        .lineLimit(1...5)
+                        .onChange(of: newStepTitle) { oldValue, newValue in
+                            if newValue.contains("\n") {
+                                addStep()
+                            }
+                        }
                         .onSubmit {
                             addStep()
                         }
+                    
+                    if !newStepTitle.isEmpty {
+                        Button("Adicionar", action: addStep)
+                            .font(.caption)
+                            .bold()
+                    }
+                }
+                
+                // BOTÃO DE ATALHO PARA COLAR ÁREA DE TRANSFERÊNCIA
+                Button(action: pasteClipboardSteps) {
+                    HStack {
+                        Image(systemName: "doc.on.clipboard.fill")
+                            .foregroundStyle(Color.accentColor)
+                        Text("Colar Lista Copiada como Várias Etapas")
+                            .font(.subheadline)
+                            .bold()
+                            .foregroundStyle(Color.accentColor)
+                    }
+                    .padding(.vertical, 4)
                 }
             }
             
@@ -115,6 +144,25 @@ struct MissionDetailView: View {
         modelContext.delete(mission)
         try? modelContext.save()
         dismiss()
+    }
+    
+    private func pasteClipboardSteps() {
+        guard let clipboardString = UIPasteboard.general.string else { return }
+        let lines = clipboardString.components(separatedBy: .newlines)
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty }
+        
+        var currentStepsCount = mission.steps?.count ?? 0
+        for line in lines {
+            let cleanTitle = line.replacingOccurrences(of: #"^[\-\*\•\d+\.]\s*"#, with: "", options: .regularExpression)
+            guard !cleanTitle.isEmpty else { continue }
+            
+            let step = Step(title: cleanTitle, order: currentStepsCount)
+            step.mission = mission
+            modelContext.insert(step)
+            currentStepsCount += 1
+        }
+        try? modelContext.save()
     }
     
     private func addStep() {
