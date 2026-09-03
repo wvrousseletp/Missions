@@ -27,10 +27,9 @@ platform :ios do
       build_number: ENV["GITHUB_RUN_NUMBER"]
     )
 
-    # Download existing provisioning profile so xcodebuild does not generate development certs
+    # Create/fetch App Store provisioning profile automatically via App Store Connect API
     get_provisioning_profile(
-      app_identifier: "com.vicente.missions",
-      readonly: true
+      app_identifier: "com.vicente.missions"
     )
 
     # Build the application with automatic signing via xcodebuild auth
