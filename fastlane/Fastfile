@@ -27,7 +27,8 @@ platform :ios do
       build_number: ENV["GITHUB_RUN_NUMBER"]
     )
 
-    # Create/fetch App Store provisioning profile automatically via App Store Connect API
+    # Fetch/create App Store Distribution Certificate & Provisioning Profile
+    get_certificates
     get_provisioning_profile(
       app_identifier: "com.vicente.missions"
     )
