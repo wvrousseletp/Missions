@@ -140,10 +140,11 @@ final class Mission {
         return nextMission
     }
     
-    // Detectar URLs nas anotações
+    // Detectar URLs no título e nas anotações
     var detectedURLs: [URL] {
+        let fullText = "\(title)\n\(details)"
         guard let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue) else { return [] }
-        let matches = detector.matches(in: details, options: [], range: NSRange(location: 0, length: details.utf16.count))
+        let matches = detector.matches(in: fullText, options: [], range: NSRange(location: 0, length: fullText.utf16.count))
         return matches.compactMap { $0.url }
     }
 }

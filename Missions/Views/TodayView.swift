@@ -727,7 +727,7 @@ struct StepCardRow: View {
     let mission: Mission
     
     var body: some View {
-        HStack(spacing: 10) {
+        HStack(alignment: .top, spacing: 10) {
             Button(action: {
                 withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
                     step.isCompleted.toggle()
@@ -740,11 +740,37 @@ struct StepCardRow: View {
                     .font(.title3)
             }
             .buttonStyle(.plain)
+            .padding(.top, 2)
             
-            Text(step.title)
-                .font(.subheadline)
-                .strikethrough(step.isCompleted, color: .secondary)
-                .foregroundStyle(step.isCompleted ? .secondary : .primary)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(step.title)
+                    .font(.subheadline)
+                    .strikethrough(step.isCompleted, color: .secondary)
+                    .foregroundStyle(step.isCompleted ? .secondary : .primary)
+                
+                if !step.detectedURLs.isEmpty {
+                    HStack(spacing: 6) {
+                        ForEach(step.detectedURLs, id: \.self) { url in
+                            Link(destination: url) {
+                                HStack(spacing: 4) {
+                                    Image(systemName: url.absoluteString.contains("maps") ? "map.fill" : "link.circle.fill")
+                                        .font(.caption2)
+                                    Text(url.absoluteString.contains("maps") ? "Abrir Mapa 📍" : "Abrir Link 🔗")
+                                        .font(.caption2)
+                                        .bold()
+                                }
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(Color.blue.opacity(0.15))
+                                .foregroundStyle(.blue)
+                                .clipShape(Capsule())
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                    .padding(.top, 2)
+                }
+            }
             
             Spacer()
         }
