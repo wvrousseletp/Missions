@@ -235,18 +235,14 @@ struct QuickCaptureView: View {
             }
             .navigationTitle("Novo Lembrete")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancelar") {
-                        dismiss()
-                    }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Adicionar", action: saveMission)
-                        .bold()
-                        .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                }
-            }
+            .navigationBarItems(
+                leading: Button("Cancelar") {
+                    dismiss()
+                },
+                trailing: Button("Adicionar", action: saveMission)
+                    .bold()
+                    .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+            )
             .dismissKeyboardOnScroll()
         }
     }
