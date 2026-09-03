@@ -29,6 +29,7 @@ struct QuickCaptureView: View {
     @State private var dueDate: Date = Date()
     @State private var hasDueDate: Bool = true
     @State private var includeTime: Bool = false
+    @State private var isAlarmMode: Bool = false
     @State private var selectedProject: Project?
     
     // Checklist/Subtarefas diretamente na captura
@@ -161,6 +162,20 @@ struct QuickCaptureView: View {
                     if hasEstimatedTime {
                         Stepper("\(estimatedMinutes) minutos de foco", value: $estimatedMinutes, in: 5...240, step: 15)
                     }
+                    
+                    Toggle(isOn: $isAlarmMode) {
+                        HStack {
+                            Image(systemName: "bell.badge.wave.fill")
+                                .foregroundStyle(.red)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Alerta em Tela Cheia")
+                                    .bold()
+                                Text("Abre estilo despertador no horário")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
                 }
                 
                 // CHECKLIST / SUBTAREFAS
@@ -291,7 +306,8 @@ struct QuickCaptureView: View {
             priority: priority,
             recurrence: recurrence,
             selectedDays: Array(selectedDays),
-            recurrenceEndDate: calculatedEndDate()
+            recurrenceEndDate: calculatedEndDate(),
+            isAlarmMode: isAlarmMode
         )
         newMission.project = selectedProject
         modelContext.insert(newMission)

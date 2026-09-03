@@ -27,6 +27,7 @@ final class Mission {
     var recurrenceRaw: String
     var selectedDaysRaw: String // ex: "2,4,6" (1=Dom, 2=Seg, 3=Ter, 4=Qua, 5=Qui, 6=Sex, 7=Sab)
     var recurrenceEndDate: Date? // Data limite da repetição (ex: por 2 meses)
+    var isAlarmMode: Bool = false // Alerta estilo Despertador em Tela Cheia
     var isCompleted: Bool
     var createdAt: Date
     
@@ -63,7 +64,8 @@ final class Mission {
         priority: Priority = .medium,
         recurrence: Recurrence = .none,
         selectedDays: [Int] = [],
-        recurrenceEndDate: Date? = nil
+        recurrenceEndDate: Date? = nil,
+        isAlarmMode: Bool = false
     ) {
         self.title = title
         self.details = details
@@ -73,6 +75,7 @@ final class Mission {
         self.recurrenceRaw = recurrence.rawValue
         self.selectedDaysRaw = selectedDays.map { String($0) }.joined(separator: ",")
         self.recurrenceEndDate = recurrenceEndDate
+        self.isAlarmMode = isAlarmMode
         self.isCompleted = false
         self.createdAt = Date()
     }
@@ -130,7 +133,8 @@ final class Mission {
             priority: priority,
             recurrence: recurrence,
             selectedDays: selectedDays,
-            recurrenceEndDate: recurrenceEndDate
+            recurrenceEndDate: recurrenceEndDate,
+            isAlarmMode: isAlarmMode
         )
         nextMission.project = project
         return nextMission

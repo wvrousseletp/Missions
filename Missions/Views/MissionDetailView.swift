@@ -69,6 +69,20 @@ struct MissionDetailView: View {
                     get: { mission.dueDate ?? Date() },
                     set: { mission.dueDate = $0 }
                 ), displayedComponents: .date)
+                
+                Toggle(isOn: $mission.isAlarmMode) {
+                    HStack {
+                        Image(systemName: "bell.badge.wave.fill")
+                            .foregroundStyle(.red)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Alerta em Tela Cheia")
+                                .bold()
+                            Text("Abre estilo despertador no horário")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
             }
             
             // SEÇÃO DE EXCLUSÃO DE MISSÃO

@@ -402,6 +402,7 @@ struct MissionCard: View {
     
     @State private var isExpanded: Bool = false
     @State private var showingDetail: Bool = false
+    @State private var showingAlarmAlert: Bool = false
     
     var completedStepsCount: Int {
         mission.steps?.filter { $0.isCompleted }.count ?? 0
@@ -465,7 +466,7 @@ struct MissionCard: View {
                         .foregroundStyle(mission.isCompleted ? .secondary : .primary)
                         .multilineTextAlignment(.leading)
                     
-                    // BADGES DE SETOR, PRIORIDADE, RECORRÊNCIA E TEMPO
+                    // BADGES DE SETOR, PRIORIDADE, RECORRÊNCIA, DESPERTADOR E TEMPO
                     HStack(spacing: 8) {
                         if let project = mission.project, let sector = project.sector {
                             HStack(spacing: 4) {
@@ -492,6 +493,22 @@ struct MissionCard: View {
                                 .background(Color.red.opacity(0.12))
                                 .foregroundStyle(.red)
                                 .clipShape(Capsule())
+                        }
+                        
+                        // BADGE DE DESPERTADOR (ALERTA EM TELA CHEIA)
+                        if mission.isAlarmMode {
+                            HStack(spacing: 2) {
+                                Image(systemName: "bell.badge.wave.fill")
+                                    .font(.caption2)
+                                Text("Despertador")
+                                    .font(.caption2)
+                                    .fontWeight(.bold)
+                            }
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(Color.red.opacity(0.15))
+                            .foregroundStyle(.red)
+                            .clipShape(Capsule())
                         }
                         
                         // BADGE DE RECORRÊNCIA
@@ -622,6 +639,12 @@ struct MissionCard: View {
             showingDetail = true
         }
         .contextMenu {
+            if mission.isAlarmMode {
+                Button(action: { showingAlarmAlert = true }) {
+                    Label("Testar Despertador", systemImage: "bell.badge.wave.fill")
+                }
+            }
+            
             Button(action: {
                 withAnimation {
                     mission.isCompleted.toggle()
@@ -664,6 +687,9 @@ struct MissionCard: View {
             }) {
                 Label("Excluir Missão", systemImage: "trash")
             }
+        }
+        .fullScreenCover(isPresented: $showingAlarmAlert) {
+            AlarmAlertView(mission: mission)
         }
         .sensoryFeedback(.success, trigger: mission.isCompleted)
     }
