@@ -6,11 +6,12 @@ extension View {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
     
-    func dismissKeyboardOnTap() -> some View {
-        self.simultaneousGesture(
-            TapGesture().onEnded {
-                hideKeyboard()
-            }
-        )
+    // Suporte nativo do iOS para fechar o teclado ao rolar ou tocar na área externa sem bloquear os menus de Copiar/Colar
+    func dismissKeyboardOnScroll() -> some View {
+        if #available(iOS 16.0, *) {
+            return self.scrollDismissesKeyboard(.immediately)
+        } else {
+            return self
+        }
     }
 }
