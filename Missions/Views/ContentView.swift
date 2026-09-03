@@ -7,6 +7,10 @@ struct ContentView: View {
     @State private var showingQuickCapture: Bool = false
     @State private var showingAddSector: Bool = false
     
+    @StateObject private var notificationManager = NotificationManager.shared
+    @Query var allMissions: [Mission]
+    @State private var activeAlarmMission: Mission? = nil
+    
     let tabs = [
         (title: "Hoje", icon: "sun.max.fill"),
         (title: "Semana", icon: "calendar"),
@@ -117,6 +121,14 @@ struct ContentView: View {
         .sheet(isPresented: $showingAddSector) {
             AddSectorView()
                 .preferredColorScheme(isPureBlack ? .dark : nil)
+        }
+        .onChange(of: notificationManager.activeAlarmMissionID) { newValue in
+            if let id = newValue, let foundMission = allMissions.first(where: { $0.id == id }) {
+                activeAlarmMission = foundMission
+            }
+        }
+        .fullScreenCover(item: $activeAlarmMission) { mission in
+            AlarmAlertView(mission: mission)
         }
     }
     

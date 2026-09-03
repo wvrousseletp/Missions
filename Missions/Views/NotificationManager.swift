@@ -2,17 +2,20 @@ import Foundation
 import UserNotifications
 import Combine
 
-class NotificationManager: ObservableObject {
+class NotificationManager: NSObject, ObservableObject, UNUserNotificationCenterDelegate {
     static let shared = NotificationManager()
     
     @Published var isAuthorized = false
+    @Published var activeAlarmMissionID: UUID? = nil
     
-    init() {
+    override init() {
+        super.init()
+        UNUserNotificationCenter.current().delegate = self
         checkAuthorizationStatus()
     }
     
     func requestAuthorization() {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound, .criticalAlert]) { granted, error in
             DispatchQueue.main.async {
                 self.isAuthorized = granted
                 if granted {
@@ -37,9 +40,13 @@ class NotificationManager: ObservableObject {
         guard dueDate > Date() else { return }
         
         let content = UNMutableNotificationContent()
-        content.title = "Lembrete de Missão 🎯"
+        content.title = mission.isAlarmMode ? "🚨 DESPERTADOR DE MISSÃO" : "Lembrete de Missão 🎯"
         content.body = mission.title
         content.sound = .default
+        content.userInfo = [
+            "missionID": mission.id.uuidString,
+            "isAlarmMode": mission.isAlarmMode
+        ]
         
         if let project = mission.project, let sector = project.sector {
             content.subtitle = "\(sector.name) • \(project.name)"
@@ -70,5 +77,26 @@ class NotificationManager: ObservableObject {
         let request = UNNotificationRequest(identifier: "daily_morning_digest", content: content, trigger: trigger)
         
         UNUserNotificationCenter.current().add(request)
+    }
+    
+    // DELEGATE: QUANDO A NOTIFICAÇÃO DISPARA COM O APP ABERTO OU SEGUNDO PLANO
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        let userInfo = notification.request.content.userInfo
+        if let missionIDStr = userInfo["missionID"] as? String, let missionUUID = UUID(uuidString: missionIDStr) {
+            DispatchQueue.main.async {
+                self.activeAlarmMissionID = missionUUID
+            }
+        }
+        completionHandler([.banner, .sound, .badge, .list])
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        let userInfo = response.notification.request.content.userInfo
+        if let missionIDStr = userInfo["missionID"] as? String, let missionUUID = UUID(uuidString: missionIDStr) {
+            DispatchQueue.main.async {
+                self.activeAlarmMissionID = missionUUID
+            }
+        }
+        completionHandler()
     }
 }
