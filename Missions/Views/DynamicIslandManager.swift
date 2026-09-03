@@ -22,9 +22,7 @@ class DynamicIslandManager: ObservableObject {
     @Published var pinnedMissionID: String? = nil
     private var currentActivity: Any? = nil
     
-    private override init() {
-        super.init()
-    }
+    private init() {}
     
     func togglePin(for mission: Mission) {
         if isPinned(mission) {
