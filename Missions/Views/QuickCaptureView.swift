@@ -33,6 +33,8 @@ struct QuickCaptureView: View {
     @State private var waitingPerson: String = ""
     @State private var selectedProject: Project?
     
+    @FocusState private var isTitleFocused: Bool
+    
     // Checklist/Subtarefas diretamente na captura
     @State private var newStepTitle: String = ""
     @State private var tempSteps: [String] = []
@@ -44,6 +46,7 @@ struct QuickCaptureView: View {
                 Section(header: Text("Lembrete / Objetivo")) {
                     TextField("O que precisa ser feito?", text: $title)
                         .font(.headline)
+                        .focused($isTitleFocused)
                 }
                 
                 // ANOTAÇÕES E DETALHES
@@ -267,6 +270,11 @@ struct QuickCaptureView: View {
                     .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             )
             .dismissKeyboardOnScroll()
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                    isTitleFocused = true
+                }
+            }
         }
     }
     

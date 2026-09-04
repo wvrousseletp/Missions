@@ -9,6 +9,7 @@ struct BrainDumpView: View {
     @State private var scheduleForToday: Bool = true
     @State private var processedCount: Int = 0
     @State private var isSuccess: Bool = false
+    @FocusState private var isEditorFocused: Bool
     
     var body: some View {
         NavigationStack {
@@ -35,6 +36,7 @@ struct BrainDumpView: View {
                 .padding(.top, 12)
                 
                 TextEditor(text: $dumpText)
+                    .focused($isEditorFocused)
                     .padding(12)
                     .background(Color.secondary.opacity(0.08))
                     .clipShape(RoundedRectangle(cornerRadius: 14))
@@ -83,6 +85,11 @@ struct BrainDumpView: View {
                 Button("OK") { dismiss() }
             } message: {
                 Text("\(processedCount) tarefas foram salvas no app. Sua memória está liberada!")
+            }
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                    isEditorFocused = true
+                }
             }
         }
     }
