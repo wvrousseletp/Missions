@@ -27,6 +27,7 @@ final class Mission {
     var recurrenceRaw: String
     var selectedDaysRaw: String // ex: "2,4,6" (1=Dom, 2=Seg, 3=Ter, 4=Qua, 5=Qui, 6=Sex, 7=Sab)
     var recurrenceEndDate: Date? // Data limite da repetição (ex: por 2 meses)
+    var isAlarmMode: Bool = false // Alerta estilo Despertador em Tela Cheia
     var isWaitingFor: Bool = false // Status Aguardando Resposta de Terceiros
     var waitingPerson: String = "" // Nome do terceiro (ex: Deise, Fornecedor)
     var phase: String = "" // Fase / Marco do Projeto (ex: Fase 1: Planejamento)
