@@ -29,6 +29,8 @@ struct QuickCaptureView: View {
     @State private var hasDueDate: Bool = true
     @State private var includeTime: Bool = false
     @State private var isAlarmMode: Bool = false
+    @State private var isWaitingFor: Bool = false
+    @State private var waitingPerson: String = ""
     @State private var selectedProject: Project?
     
     // Checklist/Subtarefas diretamente na captura
@@ -151,6 +153,25 @@ struct QuickCaptureView: View {
                                     .foregroundStyle(.secondary)
                             }
                         }
+                    }
+                    
+                    Toggle(isOn: $isWaitingFor) {
+                        HStack {
+                            Image(systemName: "hourglass.badge.plus")
+                                .foregroundStyle(.orange)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Aguardando Terceiro")
+                                    .bold()
+                                Text("Depende de outra pessoa para concluir")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                    
+                    if isWaitingFor {
+                        TextField("Quem você está aguardando? (ex: Deise, Fornecedor)", text: $waitingPerson)
+                            .font(.subheadline)
                     }
                 }
                 
@@ -311,7 +332,9 @@ struct QuickCaptureView: View {
             recurrence: recurrence,
             selectedDays: Array(selectedDays),
             recurrenceEndDate: calculatedEndDate(),
-            isAlarmMode: isAlarmMode
+            isAlarmMode: isAlarmMode,
+            isWaitingFor: isWaitingFor,
+            waitingPerson: waitingPerson
         )
         newMission.project = selectedProject
         modelContext.insert(newMission)

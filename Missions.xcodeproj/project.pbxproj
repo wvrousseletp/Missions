@@ -13,7 +13,9 @@
 		11DB31074947D01D319DB8F1 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2448DAD8F27A11193F3DF707 /* SearchView.swift */; };
 		2A90F3CF1B60A0981E945920 /* DynamicIslandManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC966E189E75DA63229CBD7 /* DynamicIslandManager.swift */; };
 		2D4C40698EEC812EA1B05C3C /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = A490473F8361F49514AAA87E /* Project.swift */; };
+		30AF44524B3800176C9D8A5D /* DailyShutdownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010DEA3CF4CA469320F71FA5 /* DailyShutdownView.swift */; };
 		3CB8419886CCAAC12F2B862F /* WeekView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83804550ADEC47A5BCAB3816 /* WeekView.swift */; };
+		3E09871F07E1E65612CC4C7C /* BrainDumpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEAA7CA9E8C7A7F42CCF6CC2 /* BrainDumpView.swift */; };
 		40F0F56AAD9722E326A52E67 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C504F58691A53EDB3F0B77 /* StatsView.swift */; };
 		55A634A537D6C271A5FC73DC /* HelpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C704FD7BCDC8F6C55D3E8E4 /* HelpView.swift */; };
 		5DEE4BC288834FD34CD6C5B2 /* Step.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447B4F2FA05CB553715E0CA7 /* Step.swift */; };
@@ -39,6 +41,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		010DEA3CF4CA469320F71FA5 /* DailyShutdownView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DailyShutdownView.swift; path = Missions/Views/DailyShutdownView.swift; sourceTree = SOURCE_ROOT; };
 		11914911A78D9980A0B27CC9 /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Color+Hex.swift"; path = "Missions/Views/Color+Hex.swift"; sourceTree = SOURCE_ROOT; };
 		1AC966E189E75DA63229CBD7 /* DynamicIslandManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DynamicIslandManager.swift; path = Missions/Views/DynamicIslandManager.swift; sourceTree = SOURCE_ROOT; };
 		211FF91CB508AAB9C1E7F69C /* AlarmAlertView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AlarmAlertView.swift; path = Missions/Views/AlarmAlertView.swift; sourceTree = SOURCE_ROOT; };
@@ -67,6 +70,7 @@
 		DBFA49D28644C17FE21A101B /* DailyReviewView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DailyReviewView.swift; path = Missions/Views/DailyReviewView.swift; sourceTree = SOURCE_ROOT; };
 		DFC94F49B823D2B00ADD2B81 /* Sector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Sector.swift; path = Missions/Models/Sector.swift; sourceTree = SOURCE_ROOT; };
 		E4A6494A9AAC8C4A0D54577E /* FocusModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FocusModeView.swift; path = Missions/Views/FocusModeView.swift; sourceTree = SOURCE_ROOT; };
+		EEAA7CA9E8C7A7F42CCF6CC2 /* BrainDumpView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BrainDumpView.swift; path = Missions/Views/BrainDumpView.swift; sourceTree = SOURCE_ROOT; };
 		F3324E94BA85E2997152232D /* MissionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MissionDetailView.swift; path = Missions/Views/MissionDetailView.swift; sourceTree = SOURCE_ROOT; };
 		F781448F8D71CD9D4E9DD99C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ContentView.swift; path = Missions/Views/ContentView.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -145,6 +149,8 @@
 				4A049552BD5583D7EE03BE93 /* View+Keyboard.swift */,
 				211FF91CB508AAB9C1E7F69C /* AlarmAlertView.swift */,
 				1AC966E189E75DA63229CBD7 /* DynamicIslandManager.swift */,
+				EEAA7CA9E8C7A7F42CCF6CC2 /* BrainDumpView.swift */,
+				010DEA3CF4CA469320F71FA5 /* DailyShutdownView.swift */,
 			);
 			name = Views;
 			path = Missions/Views;
@@ -246,6 +252,8 @@
 				D00B830123359C25CDC23EA1 /* View+Keyboard.swift in Sources */,
 				C43973496F05B8FD317E6DB0 /* AlarmAlertView.swift in Sources */,
 				2A90F3CF1B60A0981E945920 /* DynamicIslandManager.swift in Sources */,
+				3E09871F07E1E65612CC4C7C /* BrainDumpView.swift in Sources */,
+				30AF44524B3800176C9D8A5D /* DailyShutdownView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -113,6 +113,25 @@ struct MissionDetailView: View {
                     }
                 }
                 
+                Toggle(isOn: $mission.isWaitingFor) {
+                    HStack {
+                        Image(systemName: "hourglass.badge.plus")
+                            .foregroundStyle(.orange)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Aguardando Terceiro")
+                                .bold()
+                            Text("Depende de outra pessoa para concluir")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+                
+                if mission.isWaitingFor {
+                    TextField("Quem você está aguardando? (ex: Deise, Fornecedor)", text: $mission.waitingPerson)
+                        .font(.subheadline)
+                }
+                
                 Button(action: {
                     withAnimation {
                         DynamicIslandManager.shared.togglePin(for: mission)

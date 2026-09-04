@@ -27,6 +27,8 @@ struct TodayView: View {
     @State private var showingStats = false
     @State private var showingSearch = false
     @State private var showingDailyReview = false
+    @State private var showingBrainDump = false
+    @State private var showingDailyShutdown = false
     
     @State private var showingCompletedSection: Bool = false
     @State private var lastCompletedMission: Mission? = nil
@@ -332,6 +334,18 @@ struct TodayView: View {
                                 .foregroundStyle(audioManager.isSpeaking ? .orange : .accentColor)
                         }
                         
+                        Button(action: { showingBrainDump = true }) {
+                            Image(systemName: "brain.head.profile")
+                                .font(.title3)
+                                .foregroundStyle(.purple)
+                        }
+                        
+                        Button(action: { showingDailyShutdown = true }) {
+                            Image(systemName: "moon.stars.fill")
+                                .font(.title3)
+                                .foregroundStyle(.indigo)
+                        }
+                        
                         Button(action: { showingHelp = true }) {
                             Image(systemName: "questionmark.circle")
                                 .font(.title3)
@@ -380,6 +394,12 @@ struct TodayView: View {
             }
             .sheet(isPresented: $showingDailyReview) {
                 DailyReviewView()
+            }
+            .sheet(isPresented: $showingBrainDump) {
+                BrainDumpView()
+            }
+            .fullScreenCover(isPresented: $showingDailyShutdown) {
+                DailyShutdownView()
             }
             .fullScreenCover(isPresented: $showingFocusMode) {
                 if let mission = filteredTodayMissions.first {
