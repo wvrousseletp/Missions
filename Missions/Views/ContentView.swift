@@ -83,7 +83,7 @@ struct ContentView: View {
                 
                 Spacer()
                 
-                // BOTÃO FLUTUANTE `+` PREMIUM
+                // BOTÃO FLUTUANTE `+` PREMIUM COM GLOW
                 Button(action: {
                     UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                     if selectedTab == 2 {
@@ -93,9 +93,9 @@ struct ContentView: View {
                     }
                 }) {
                     Image(systemName: "plus")
-                        .font(.title3.bold())
+                        .font(.system(.title3, design: .rounded, weight: .bold))
                         .foregroundStyle(.white)
-                        .frame(width: 48, height: 48)
+                        .frame(width: 50, height: 50)
                         .background(
                             LinearGradient(
                                 colors: [Color.accentColor, Color.accentColor.opacity(0.8)],
@@ -104,7 +104,11 @@ struct ContentView: View {
                             )
                         )
                         .clipShape(Circle())
-                        .shadow(color: Color.accentColor.opacity(0.4), radius: 8, x: 0, y: 4)
+                        .overlay(
+                            Circle()
+                                .stroke(Color.white.opacity(0.25), lineWidth: 1)
+                        )
+                        .shadow(color: Color.accentColor.opacity(0.45), radius: 10, x: 0, y: 5)
                 }
                 .buttonStyle(.plain)
             }

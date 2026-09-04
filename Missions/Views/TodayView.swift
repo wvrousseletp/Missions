@@ -3,8 +3,9 @@ import SwiftData
 
 enum MissionFilter: String, CaseIterable {
     case all = "Todas"
-    case highPriority = "🔥 Alta"
-    case withChecklist = "📋 Com Checklist"
+    case highPriority = "🔥 Alta Prioridade"
+    case waiting = "⏳ Aguardando"
+    case withChecklist = "📋 Checklist"
 }
 
 struct TodayView: View {
@@ -35,12 +36,35 @@ struct TodayView: View {
     
     @StateObject private var audioManager = AudioSummaryManager.shared
     
+    var greetingText: String {
+        let hour = Calendar.current.component(.hour, from: Date())
+        if hour < 12 {
+            return "Bom dia! ☀️"
+        } else if hour < 18 {
+            return "Boa tarde! 🌤️"
+        } else {
+            return "Boa noite! 🌙"
+        }
+    }
+    
+    var cognitiveFreedomText: String {
+        let total = todayMissions.count + completedTodayMissions.count
+        let completed = completedTodayMissions.count
+        if total == 0 {
+            return "Sua mente está 100% livre hoje 🧘"
+        }
+        let percent = Int((Double(completed) / Double(total)) * 100)
+        return "Sua mente está \(percent)% liberada hoje 🧘"
+    }
+    
     var filteredTodayMissions: [Mission] {
         switch selectedFilter {
         case .all:
             return todayMissions
         case .highPriority:
             return todayMissions.filter { $0.priority == .high }
+        case .waiting:
+            return todayMissions.filter { $0.isWaitingFor }
         case .withChecklist:
             return todayMissions.filter { ($0.steps?.count ?? 0) > 0 }
         }
@@ -69,7 +93,30 @@ struct TodayView: View {
         NavigationStack {
             ZStack(alignment: .bottom) {
                 ScrollView {
-                    VStack(spacing: 20) {
+                    VStack(spacing: 16) {
+                        // BANNER DE SAUDAÇÃO & LIBERDADE MENTAL COGNITIVA
+                        HStack {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(greetingText)
+                                    .font(.system(.title2, design: .rounded, weight: .bold))
+                                
+                                Text(cognitiveFreedomText)
+                                    .font(.system(.subheadline, design: .rounded))
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            
+                            Text(Date().formatted(.dateTime.locale(Locale(identifier: "pt_BR")).weekday(.abbreviated).day().month(.abbreviated)))
+                                .font(.system(.caption, design: .rounded, weight: .bold))
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 5)
+                                .background(Color.accentColor.opacity(0.12))
+                                .foregroundStyle(Color.accentColor)
+                                .clipShape(Capsule())
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.top, 8)
+                        
                         // HERO CARD: ANEL DE PROGRESSO DIÁRIO & CARGA HORÁRIA
                         HStack(spacing: 20) {
                             ZStack {
@@ -99,11 +146,10 @@ struct TodayView: View {
                                 let completed = completedTodayMissions.count
                                 
                                 Text("Progresso de Hoje")
-                                    .font(.headline)
-                                    .fontWeight(.bold)
+                                    .font(.system(.headline, design: .rounded, weight: .bold))
                                 
                                 Text("\(completed) de \(total) missões concluídas")
-                                    .font(.subheadline)
+                                    .font(.system(.subheadline, design: .rounded))
                                     .foregroundStyle(.secondary)
                                 
                                 if totalEstimatedMinutesToday > 0 {
@@ -111,8 +157,7 @@ struct TodayView: View {
                                         Image(systemName: "hourglass")
                                             .font(.caption2)
                                         Text("Carga estimada: \(formattedEstimatedTimeToday)")
-                                            .font(.caption2)
-                                            .bold()
+                                            .font(.system(.caption2, design: .rounded, weight: .bold))
                                     }
                                     .foregroundStyle(Color.accentColor)
                                     .padding(.top, 2)
@@ -648,14 +693,23 @@ struct MissionCard: View {
                 }
             }
             
-            // CHECKLIST EXPANDIDO
+            // CHECKLIST EXPANDIDO COM ÁRVORE CONECTORA VISUAL
             if isExpanded, let steps = mission.steps?.sorted(by: { $0.order < $1.order }) {
                 Divider()
                     .padding(.vertical, 4)
                 
-                VStack(alignment: .leading, spacing: 10) {
-                    ForEach(steps) { step in
-                        StepCardRow(step: step, mission: mission)
+                HStack(alignment: .top, spacing: 12) {
+                    // LINHA DE ÁRVORE CONECTORA VISUAL
+                    Rectangle()
+                        .fill(LinearGradient(colors: [Color.accentColor.opacity(0.6), Color.accentColor.opacity(0.1)], startPoint: .top, endPoint: .bottom))
+                        .frame(width: 3)
+                        .clipShape(Capsule())
+                        .padding(.vertical, 4)
+                    
+                    VStack(alignment: .leading, spacing: 10) {
+                        ForEach(steps) { step in
+                            StepCardRow(step: step, mission: mission)
+                        }
                     }
                 }
                 .padding(.leading, 8)
@@ -669,11 +723,54 @@ struct MissionCard: View {
             .opacity(0)
         )
         .background(Color(uiColor: .systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         .shadow(color: Color.black.opacity(0.04), radius: 8, x: 0, y: 3)
-        .contentShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .contentShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         .onTapGesture {
             showingDetail = true
+        }
+        .swipeActions(edge: .leading, allowsFullSwipe: true) {
+            Button {
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                    mission.isCompleted.toggle()
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                    if mission.isCompleted {
+                        NotificationManager.shared.cancelNotification(for: mission)
+                        if let nextMission = mission.createNextRecurrence() {
+                            modelContext.insert(nextMission)
+                            NotificationManager.shared.scheduleNotification(for: nextMission)
+                        }
+                    } else {
+                        NotificationManager.shared.scheduleNotification(for: mission)
+                    }
+                    try? modelContext.save()
+                }
+            } label: {
+                Label(mission.isCompleted ? "Reabrir" : "Concluir", systemImage: mission.isCompleted ? "arrow.uturn.backward" : "checkmark")
+            }
+            .tint(mission.isCompleted ? .gray : .green)
+        }
+        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+            Button {
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                    mission.dueDate = Calendar.current.date(byAdding: .day, value: 1, to: Date())
+                    try? modelContext.save()
+                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                }
+            } label: {
+                Label("Amanhã", systemImage: "arrow.right.circle")
+            }
+            .tint(.orange)
+            
+            Button {
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                    mission.dueDate = nil
+                    try? modelContext.save()
+                }
+            } label: {
+                Label("Backlog", systemImage: "tray.full")
+            }
+            .tint(.blue)
         }
         .contextMenu {
             Button(action: {

@@ -74,9 +74,20 @@ struct SectorGridCard: View {
         Color(hex: sector.colorHex) ?? .accentColor
     }
     
+    var allMissions: [Mission] {
+        (sector.projects ?? []).flatMap { $0.missions ?? [] }
+    }
+    
     var activeMissionsCount: Int {
-        let projects = sector.projects ?? []
-        return projects.flatMap { $0.missions ?? [] }.filter { !$0.isCompleted }.count
+        allMissions.filter { !$0.isCompleted }.count
+    }
+    
+    var completedMissionsCount: Int {
+        allMissions.filter { $0.isCompleted }.count
+    }
+    
+    var progress: Double {
+        allMissions.isEmpty ? 0 : Double(completedMissionsCount) / Double(allMissions.count)
     }
     
     var body: some View {
@@ -84,10 +95,10 @@ struct SectorGridCard: View {
             HStack {
                 ZStack {
                     Circle()
-                        .fill(color.opacity(0.15))
+                        .fill(color.opacity(0.18))
                         .frame(width: 44, height: 44)
                     Image(systemName: sector.iconName)
-                        .font(.title3)
+                        .font(.system(.title3, design: .rounded, weight: .bold))
                         .foregroundStyle(color)
                 }
                 
@@ -100,24 +111,33 @@ struct SectorGridCard: View {
             
             VStack(alignment: .leading, spacing: 4) {
                 Text(sector.name)
-                    .font(.headline)
-                    .fontWeight(.bold)
+                    .font(.system(.headline, design: .rounded, weight: .bold))
                     .foregroundStyle(.primary)
                     .lineLimit(1)
                 
-                HStack(spacing: 8) {
-                    Text("\(sector.projects?.count ?? 0) projetos")
+                HStack(spacing: 6) {
+                    Text("\(sector.projects?.count ?? 0) proj")
                     Text("•")
-                    Text("\(activeMissionsCount) missões")
+                    Text("\(activeMissionsCount) tarefas")
                 }
-                .font(.caption2)
+                .font(.system(.caption2, design: .rounded))
                 .foregroundStyle(.secondary)
+            }
+            
+            if !allMissions.isEmpty {
+                ProgressView(value: progress)
+                    .tint(color)
+                    .padding(.top, 2)
             }
         }
         .padding(16)
-        .background(Color(uiColor: .systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-        .shadow(color: Color.black.opacity(0.04), radius: 8, x: 0, y: 3)
+        .background(.ultraThinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .stroke(color.opacity(0.2), lineWidth: 1)
+        )
+        .shadow(color: color.opacity(0.22), radius: 10, x: 0, y: 5)
     }
 }
 
