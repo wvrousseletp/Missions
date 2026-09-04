@@ -763,10 +763,27 @@ struct StepCardRow: View {
             .padding(.top, 2)
             
             VStack(alignment: .leading, spacing: 4) {
-                Text(step.title)
-                    .font(.subheadline)
-                    .strikethrough(step.isCompleted, color: .secondary)
-                    .foregroundStyle(step.isCompleted ? .secondary : .primary)
+                HStack(spacing: 6) {
+                    Text(step.title)
+                        .font(.subheadline)
+                        .strikethrough(step.isCompleted, color: .secondary)
+                        .foregroundStyle(step.isCompleted ? .secondary : .primary)
+                    
+                    if step.isWaitingFor {
+                        HStack(spacing: 3) {
+                            Image(systemName: "hourglass.badge.plus")
+                                .font(.caption2)
+                            Text(step.waitingPerson.isEmpty ? "Aguardando Terceiro" : "Aguardando \(step.waitingPerson)")
+                                .font(.caption2)
+                                .fontWeight(.bold)
+                        }
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 3)
+                        .background(Color.orange.opacity(0.18))
+                        .foregroundStyle(.orange)
+                        .clipShape(Capsule())
+                    }
+                }
                 
                 if !step.detectedURLs.isEmpty {
                     HStack(spacing: 6) {
@@ -796,6 +813,18 @@ struct StepCardRow: View {
         }
         .sensoryFeedback(.impact(flexibility: .rigid), trigger: step.isCompleted)
         .contextMenu {
+            Button(action: {
+                withAnimation {
+                    step.isWaitingFor.toggle()
+                    if !step.isWaitingFor {
+                        step.waitingPerson = ""
+                    }
+                    try? modelContext.save()
+                }
+            }) {
+                Label(step.isWaitingFor ? "Remover Status Aguardando" : "Marcar Etapa como Aguardando Terceiro", systemImage: "hourglass.badge.plus")
+            }
+            
             Button(role: .destructive, action: deleteStep) {
                 Label("Excluir Etapa", systemImage: "trash")
             }
