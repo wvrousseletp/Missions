@@ -9,15 +9,17 @@ final class Step {
     var order: Int
     var isWaitingFor: Bool = false
     var waitingPerson: String = ""
+    var isAlarmMode: Bool = false
     
     var mission: Mission?
     
-    init(title: String, isCompleted: Bool = false, order: Int = 0, isWaitingFor: Bool = false, waitingPerson: String = "") {
+    init(title: String, isCompleted: Bool = false, order: Int = 0, isWaitingFor: Bool = false, waitingPerson: String = "", isAlarmMode: Bool = false) {
         self.title = title
         self.isCompleted = isCompleted
         self.order = order
         self.isWaitingFor = isWaitingFor
         self.waitingPerson = waitingPerson
+        self.isAlarmMode = isAlarmMode
     }
     
     // Detectar URLs automaticamente em etapas/checkboxes (ex: links de localização do Google Maps)

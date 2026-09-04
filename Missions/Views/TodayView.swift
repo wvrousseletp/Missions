@@ -746,6 +746,9 @@ struct StepCardRow: View {
     @Bindable var step: Step
     let mission: Mission
     
+    @State private var showingWaitingPrompt: Bool = false
+    @State private var waitingPersonInput: String = ""
+    
     var body: some View {
         HStack(alignment: .top, spacing: 10) {
             Button(action: {
@@ -768,6 +771,21 @@ struct StepCardRow: View {
                         .font(.subheadline)
                         .strikethrough(step.isCompleted, color: .secondary)
                         .foregroundStyle(step.isCompleted ? .secondary : .primary)
+                    
+                    if step.isAlarmMode {
+                        HStack(spacing: 3) {
+                            Image(systemName: "bell.badge.wave.fill")
+                                .font(.caption2)
+                            Text("Despertador")
+                                .font(.caption2)
+                                .fontWeight(.bold)
+                        }
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 3)
+                        .background(Color.red.opacity(0.18))
+                        .foregroundStyle(.red)
+                        .clipShape(Capsule())
+                    }
                     
                     if step.isWaitingFor {
                         HStack(spacing: 3) {
@@ -815,19 +833,46 @@ struct StepCardRow: View {
         .contextMenu {
             Button(action: {
                 withAnimation {
-                    step.isWaitingFor.toggle()
-                    if !step.isWaitingFor {
-                        step.waitingPerson = ""
-                    }
+                    step.isAlarmMode.toggle()
                     try? modelContext.save()
+                }
+            }) {
+                Label(step.isAlarmMode ? "Remover Alerta em Tela Cheia" : "Definir Alerta em Tela Cheia (Despertador)", systemImage: "bell.badge.wave.fill")
+            }
+            
+            Button(action: {
+                if step.isWaitingFor {
+                    withAnimation {
+                        step.isWaitingFor = false
+                        step.waitingPerson = ""
+                        try? modelContext.save()
+                    }
+                } else {
+                    waitingPersonInput = step.waitingPerson
+                    showingWaitingPrompt = true
                 }
             }) {
                 Label(step.isWaitingFor ? "Remover Status Aguardando" : "Marcar Etapa como Aguardando Terceiro", systemImage: "hourglass.badge.plus")
             }
             
+            Divider()
+            
             Button(role: .destructive, action: deleteStep) {
                 Label("Excluir Etapa", systemImage: "trash")
             }
+        }
+        .alert("Aguardando Quem?", isPresented: $showingWaitingPrompt) {
+            TextField("Nome ou empresa (opcional)", text: $waitingPersonInput)
+            Button("Salvar") {
+                withAnimation {
+                    step.isWaitingFor = true
+                    step.waitingPerson = waitingPersonInput
+                    try? modelContext.save()
+                }
+            }
+            Button("Cancelar", role: .cancel) { }
+        } message: {
+            Text("Informe a pessoa ou terceiro de quem você está dependendo para esta etapa.")
         }
     }
     
