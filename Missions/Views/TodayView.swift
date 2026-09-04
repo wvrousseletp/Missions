@@ -369,8 +369,8 @@ struct TodayView: View {
             .background(Color(uiColor: isPureBlack ? .black : .systemGroupedBackground))
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    HStack(spacing: 14) {
-                        // BOTAO DE OUVRIR O DIA EM AUDIO
+                    HStack(spacing: 12) {
+                        // BOTAO DE OUVIR O DIA EM AUDIO
                         Button(action: {
                             audioManager.speakSummary(missions: todayMissions, totalMins: totalEstimatedMinutesToday)
                         }) {
@@ -379,49 +379,50 @@ struct TodayView: View {
                                 .foregroundStyle(audioManager.isSpeaking ? .orange : .accentColor)
                         }
                         
+                        // DESCARREGO MENTAL INSTANTÂNEO
                         Button(action: { showingBrainDump = true }) {
                             Image(systemName: "brain.head.profile")
                                 .font(.title3)
                                 .foregroundStyle(.purple)
                         }
-                        
+                    }
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    Menu {
                         Button(action: { showingDailyShutdown = true }) {
-                            Image(systemName: "moon.stars.fill")
-                                .font(.title3)
-                                .foregroundStyle(.indigo)
-                        }
-                        
-                        Button(action: { showingHelp = true }) {
-                            Image(systemName: "questionmark.circle")
-                                .font(.title3)
-                        }
-                        
-                        Button(action: { showingSearch = true }) {
-                            Image(systemName: "magnifyingglass")
-                                .font(.title3)
-                        }
-                        
-                        Button(action: { showingStats = true }) {
-                            Image(systemName: "chart.bar.fill")
-                                .font(.title3)
-                                .foregroundStyle(Color.accentColor)
+                            Label("Encerramento Noturno (Shutdown)", systemImage: "moon.stars.fill")
                         }
                         
                         Button(action: { showingDailyReview = true }) {
-                            Image(systemName: "moon.stars.circle.fill")
-                                .font(.title3)
-                                .foregroundStyle(.purple)
+                            Label("Revisão Diária", systemImage: "sparkles")
                         }
+                        
+                        Button(action: { showingSearch = true }) {
+                            Label("Buscar Missões", systemImage: "magnifyingglass")
+                        }
+                        
+                        Button(action: { showingStats = true }) {
+                            Label("Estatísticas de Foco", systemImage: "chart.bar.fill")
+                        }
+                        
+                        Button(action: { showingHelp = true }) {
+                            Label("Guia de Produtividade", systemImage: "questionmark.circle")
+                        }
+                        
+                        Divider()
                         
                         Button(action: {
                             withAnimation {
                                 isPureBlack.toggle()
                             }
                         }) {
-                            Image(systemName: isPureBlack ? "moon.fill" : "moon")
-                                .font(.title3)
-                                .foregroundStyle(isPureBlack ? .purple : .primary)
+                            Label(isPureBlack ? "Desativar Preto Puro OLED" : "Ativar Preto Puro OLED", systemImage: isPureBlack ? "sun.max" : "moon.fill")
                         }
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
+                            .font(.title3)
+                            .foregroundStyle(Color.accentColor)
                     }
                 }
             }
