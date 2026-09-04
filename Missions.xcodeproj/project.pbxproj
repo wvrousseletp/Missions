@@ -18,7 +18,8 @@
 		3CB8419886CCAAC12F2B862F /* WeekView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83804550ADEC47A5BCAB3816 /* WeekView.swift */; };
 		3E09871F07E1E65612CC4C7C /* BrainDumpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEAA7CA9E8C7A7F42CCF6CC2 /* BrainDumpView.swift */; };
 		40F0F56AAD9722E326A52E67 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C504F58691A53EDB3F0B77 /* StatsView.swift */; };
-		55A634A537D6C271A5FC73DC /* HelpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C704FD7BCDC8F6C55D3E8E4 /* HelpView.swift */; };
+		4C0F49358DF9AE9056990352 /* TemplatePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EE24D3E96909E476DFFFFE6 /* TemplatePickerView.swift */; };
+		55A634A537D6C271A5FC73DC /* Missions/Views/HelpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C704FD7BCDC8F6C55D3E8E4 /* Missions/Views/HelpView.swift */; };
 		5DEE4BC288834FD34CD6C5B2 /* Step.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447B4F2FA05CB553715E0CA7 /* Step.swift */; };
 		62574EBBBCECD19BBC784271 /* Sector.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC94F49B823D2B00ADD2B81 /* Sector.swift */; };
 		6390536ABA6C142C56B7C585 /* AudioSummaryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F2FD9DBB842B1C532CF26F /* AudioSummaryManager.swift */; };
@@ -31,6 +32,7 @@
 		AE874B0AA7BACCF724440A33 /* MissionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3324E94BA85E2997152232D /* MissionDetailView.swift */; };
 		C43973496F05B8FD317E6DB0 /* AlarmAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211FF91CB508AAB9C1E7F69C /* AlarmAlertView.swift */; };
 		C92047B4B8BE6AF9B63D9FC0 /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11914911A78D9980A0B27CC9 /* Color+Hex.swift */; };
+		CD694AD5AAA54464EE0A72BF /* ProjectTemplateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB4C4342AFBB5C8741035E1D /* ProjectTemplateManager.swift */; };
 		D00B830123359C25CDC23EA1 /* View+Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A049552BD5583D7EE03BE93 /* View+Keyboard.swift */; };
 		D35B3D383045FBA300498B3F /* MissionsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D35B3D373045FBA300498B3F /* MissionsApp.swift */; };
 		D35B3D3C3045FBA900498B3F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D35B3D3B3045FBA900498B3F /* Assets.xcassets */; };
@@ -50,13 +52,14 @@
 		2448DAD8F27A11193F3DF707 /* SearchView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SearchView.swift; path = Missions/Views/SearchView.swift; sourceTree = SOURCE_ROOT; };
 		26F54DAE970069BD88B2E70C /* AddProjectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AddProjectView.swift; path = Missions/Views/AddProjectView.swift; sourceTree = SOURCE_ROOT; };
 		2BF04401BE9D76D37F894FCC /* AddSectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AddSectorView.swift; path = Missions/Views/AddSectorView.swift; sourceTree = SOURCE_ROOT; };
-		2C704FD7BCDC8F6C55D3E8E4 /* HelpView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Missions/Views/HelpView.swift; sourceTree = SOURCE_ROOT; };
+		2C704FD7BCDC8F6C55D3E8E4 /* Missions/Views/HelpView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Missions/Views/HelpView.swift; sourceTree = SOURCE_ROOT; };
 		2E6C4A88904D6E59C8E6190C /* QuickCaptureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = QuickCaptureView.swift; path = Missions/Views/QuickCaptureView.swift; sourceTree = SOURCE_ROOT; };
 		33964E3AB97B4857580A98AA /* SectorsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SectorsView.swift; path = Missions/Views/SectorsView.swift; sourceTree = SOURCE_ROOT; };
 		42FA4985A4CC86782067E2C2 /* TodayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TodayView.swift; path = Missions/Views/TodayView.swift; sourceTree = SOURCE_ROOT; };
 		447B4F2FA05CB553715E0CA7 /* Step.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Step.swift; path = Missions/Models/Step.swift; sourceTree = SOURCE_ROOT; };
 		4A049552BD5583D7EE03BE93 /* View+Keyboard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "View+Keyboard.swift"; path = "Missions/Views/View+Keyboard.swift"; sourceTree = SOURCE_ROOT; };
 		579AC3CF55589F2EFE2852B1 /* ImageScannerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageScannerView.swift; path = Missions/Views/ImageScannerView.swift; sourceTree = SOURCE_ROOT; };
+		7EE24D3E96909E476DFFFFE6 /* TemplatePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TemplatePickerView.swift; path = Missions/Views/TemplatePickerView.swift; sourceTree = SOURCE_ROOT; };
 		83804550ADEC47A5BCAB3816 /* WeekView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WeekView.swift; path = Missions/Views/WeekView.swift; sourceTree = SOURCE_ROOT; };
 		A490473F8361F49514AAA87E /* Project.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Project.swift; path = Missions/Models/Project.swift; sourceTree = SOURCE_ROOT; };
 		A9F2FD9DBB842B1C532CF26F /* AudioSummaryManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AudioSummaryManager.swift; path = Missions/Views/AudioSummaryManager.swift; sourceTree = SOURCE_ROOT; };
@@ -75,6 +78,7 @@
 		EEAA7CA9E8C7A7F42CCF6CC2 /* BrainDumpView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BrainDumpView.swift; path = Missions/Views/BrainDumpView.swift; sourceTree = SOURCE_ROOT; };
 		F3324E94BA85E2997152232D /* MissionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MissionDetailView.swift; path = Missions/Views/MissionDetailView.swift; sourceTree = SOURCE_ROOT; };
 		F781448F8D71CD9D4E9DD99C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ContentView.swift; path = Missions/Views/ContentView.swift; sourceTree = SOURCE_ROOT; };
+		FB4C4342AFBB5C8741035E1D /* ProjectTemplateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProjectTemplateManager.swift; path = Missions/Models/ProjectTemplateManager.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -85,6 +89,7 @@
 				A490473F8361F49514AAA87E /* Project.swift */,
 				447B4F2FA05CB553715E0CA7 /* Step.swift */,
 				DFC94F49B823D2B00ADD2B81 /* Sector.swift */,
+				FB4C4342AFBB5C8741035E1D /* ProjectTemplateManager.swift */,
 			);
 			name = Models;
 			path = Missions/Models;
@@ -142,7 +147,7 @@
 				26F54DAE970069BD88B2E70C /* AddProjectView.swift */,
 				21F044139D2C96379610A4E7 /* ProjectDetailView.swift */,
 				F3324E94BA85E2997152232D /* MissionDetailView.swift */,
-				2C704FD7BCDC8F6C55D3E8E4 /* HelpView.swift */,
+				2C704FD7BCDC8F6C55D3E8E4 /* Missions/Views/HelpView.swift */,
 				AA98EFB7B5965E0D08A22127 /* NotificationManager.swift */,
 				B4C504F58691A53EDB3F0B77 /* StatsView.swift */,
 				2448DAD8F27A11193F3DF707 /* SearchView.swift */,
@@ -154,6 +159,7 @@
 				EEAA7CA9E8C7A7F42CCF6CC2 /* BrainDumpView.swift */,
 				010DEA3CF4CA469320F71FA5 /* DailyShutdownView.swift */,
 				579AC3CF55589F2EFE2852B1 /* ImageScannerView.swift */,
+				7EE24D3E96909E476DFFFFE6 /* TemplatePickerView.swift */,
 			);
 			name = Views;
 			path = Missions/Views;
@@ -246,7 +252,7 @@
 				6910443FB4ADAA5CA6D0AE20 /* AddProjectView.swift in Sources */,
 				756146ED84C92A94508ED79B /* ProjectDetailView.swift in Sources */,
 				AE874B0AA7BACCF724440A33 /* MissionDetailView.swift in Sources */,
-				55A634A537D6C271A5FC73DC /* HelpView.swift in Sources */,
+				55A634A537D6C271A5FC73DC /* Missions/Views/HelpView.swift in Sources */,
 				AA1F601B1672AFEACF19C62C /* NotificationManager.swift in Sources */,
 				40F0F56AAD9722E326A52E67 /* StatsView.swift in Sources */,
 				11DB31074947D01D319DB8F1 /* SearchView.swift in Sources */,
@@ -258,6 +264,8 @@
 				3E09871F07E1E65612CC4C7C /* BrainDumpView.swift in Sources */,
 				30AF44524B3800176C9D8A5D /* DailyShutdownView.swift in Sources */,
 				0AF977751315ADEC00E16B8D /* ImageScannerView.swift in Sources */,
+				CD694AD5AAA54464EE0A72BF /* ProjectTemplateManager.swift in Sources */,
+				4C0F49358DF9AE9056990352 /* TemplatePickerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
