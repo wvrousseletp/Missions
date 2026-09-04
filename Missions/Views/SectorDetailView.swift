@@ -71,179 +71,177 @@ struct SectorDetailView: View {
     }
     
     var body: some View {
-        VStack(spacing: 0) {
-            // SEGMENTED PICKER DA VISÃO (STATUS vs CRONOGRAMA)
-            Picker("Visualização", selection: $selectedTab) {
-                Text("🗂️ Status & Lista").tag(0)
-                Text("📅 Cronograma & Prazos").tag(1)
-            }
-            .pickerStyle(.segmented)
-            .padding(.horizontal)
-            .padding(.top, 8)
-            .padding(.bottom, 4)
-            
-            if selectedTab == 0 {
-                List {
-                    // 1. DASHBOARD DE SAÚDE E PROGRESSO GLOBAL DO SETOR
-                    Section {
-                        VStack(alignment: .leading, spacing: 14) {
-                            HStack(alignment: .center, spacing: 14) {
-                                ZStack {
-                                    Circle()
-                                        .fill(Color(hex: sector.colorHex)?.opacity(0.2) ?? Color.accentColor.opacity(0.2))
-                                        .frame(width: 52, height: 52)
-                                    Image(systemName: sector.iconName)
-                                        .font(.title2)
-                                        .foregroundStyle(Color(hex: sector.colorHex) ?? .accentColor)
+        ZStack(alignment: .bottomTrailing) {
+            VStack(spacing: 0) {
+                // SEGMENTED PICKER DA VISÃO (STATUS vs CRONOGRAMA)
+                Picker("Visualização", selection: $selectedTab) {
+                    Text("🗂️ Status & Lista").tag(0)
+                    Text("📅 Cronograma & Prazos").tag(1)
+                }
+                .pickerStyle(.segmented)
+                .padding(.horizontal)
+                .padding(.top, 8)
+                .padding(.bottom, 4)
+                
+                if selectedTab == 0 {
+                    List {
+                        // 1. DASHBOARD DE SAÚDE E PROGRESSO GLOBAL DO SETOR
+                        Section {
+                            VStack(alignment: .leading, spacing: 14) {
+                                HStack(alignment: .center, spacing: 14) {
+                                    ZStack {
+                                        Circle()
+                                            .fill(Color(hex: sector.colorHex)?.opacity(0.2) ?? Color.accentColor.opacity(0.2))
+                                            .frame(width: 52, height: 52)
+                                        Image(systemName: sector.iconName)
+                                            .font(.title2)
+                                            .foregroundStyle(Color(hex: sector.colorHex) ?? .accentColor)
+                                    }
+                                    
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(sector.name)
+                                            .font(.title2)
+                                            .bold()
+                                        
+                                        HStack(spacing: 8) {
+                                            Text(sectorHealth.status)
+                                                .font(.caption)
+                                                .bold()
+                                                .foregroundStyle(sectorHealth.color)
+                                            
+                                            Text("•")
+                                                .font(.caption)
+                                                .foregroundStyle(.secondary)
+                                            
+                                            Text("\(activeProjects.count) ativos")
+                                                .font(.caption)
+                                                .foregroundStyle(.secondary)
+                                        }
+                                    }
                                 }
                                 
+                                // BARRA DE PROGRESSO GLOBAL DO SETOR
                                 VStack(alignment: .leading, spacing: 4) {
-                                    Text(sector.name)
-                                        .font(.title2)
-                                        .bold()
-                                    
-                                    HStack(spacing: 6) {
-                                        Image(systemName: sectorHealth.icon)
-                                            .font(.caption2)
-                                        Text(sectorHealth.status)
+                                    HStack {
+                                        Text("Progresso Geral do Setor")
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                        Spacer()
+                                        Text("\(Int(globalSectorProgress * 100))%")
                                             .font(.caption)
                                             .bold()
+                                            .foregroundStyle(Color(hex: sector.colorHex) ?? Color.accentColor)
                                     }
-                                    .padding(.horizontal, 8)
-                                    .padding(.vertical, 3)
-                                    .background(sectorHealth.color.opacity(0.15))
-                                    .foregroundStyle(sectorHealth.color)
-                                    .clipShape(Capsule())
-                                }
-                                
-                                Spacer()
-                                
-                                // ANEL / PORCENTAGEM GLOBAL
-                                VStack(spacing: 2) {
-                                    Text("\(Int(globalSectorProgress * 100))%")
-                                        .font(.headline)
-                                        .bold()
-                                        .foregroundStyle(Color(hex: sector.colorHex) ?? .accentColor)
                                     
-                                    Text("\(completedMissionsCount)/\(totalMissionsCount) tarefas")
-                                        .font(.caption2)
-                                        .foregroundStyle(.secondary)
-                                }
-                            }
-                            
-                            // BARRA DE PROGRESSO DO SETOR
-                            ProgressView(value: globalSectorProgress)
-                                .tint(Color(hex: sector.colorHex) ?? .accentColor)
-                            
-                            // META DO SETOR (KPI)
-                            HStack {
-                                Image(systemName: "flag.fill")
-                                    .font(.caption)
-                                    .foregroundStyle(Color(hex: sector.colorHex) ?? .accentColor)
-                                
-                                if let goal = sector.targetGoal, !goal.isEmpty {
-                                    Text(goal)
-                                        .font(.subheadline)
-                                        .bold()
-                                } else {
-                                    Text("Definir Meta / KPI deste Setor...")
-                                        .font(.subheadline)
-                                        .italic()
-                                        .foregroundStyle(.secondary)
+                                    ProgressView(value: globalSectorProgress)
+                                        .tint(Color(hex: sector.colorHex) ?? Color.accentColor)
                                 }
                                 
-                                Spacer()
-                                
-                                Button(action: {
-                                    newGoalText = sector.targetGoal ?? ""
-                                    showingEditGoal = true
-                                }) {
+                                // META/OBJETIVO ESTRATÉGICO DO SETOR
+                                HStack {
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text("🎯 META DO SETOR")
+                                            .font(.caption2)
+                                            .bold()
+                                            .foregroundStyle(.secondary)
+                                        
+                                        Text((sector.targetGoal?.isEmpty ?? true) ? "Nenhuma meta cadastrada. Toque para definir." : sector.targetGoal ?? "")
+                                            .font(.subheadline)
+                                            .italic((sector.targetGoal?.isEmpty ?? true))
+                                            .foregroundStyle((sector.targetGoal?.isEmpty ?? true) ? .secondary : .primary)
+                                    }
+                                    Spacer()
                                     Image(systemName: "pencil.circle.fill")
                                         .font(.title3)
-                                        .foregroundStyle(Color.accentColor)
+                                        .foregroundStyle(Color(hex: sector.colorHex) ?? Color.accentColor)
                                 }
-                                .buttonStyle(.plain)
+                                .padding(10)
+                                .background(Color.secondary.opacity(0.08))
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                                .onTapGesture {
+                                    newGoalText = sector.targetGoal ?? ""
+                                    showingEditGoal = true
+                                }
                             }
-                            .padding(10)
-                            .background(Color.secondary.opacity(0.08))
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .padding(.vertical, 6)
                         }
-                        .padding(.vertical, 6)
-                    }
-                    
-                    // 2. BOTÃO PARA NOVO PROJETO
-                    Section {
-                        Button(action: { showingAddProject = true }) {
-                            HStack {
-                                Image(systemName: "plus.circle.fill")
-                                    .foregroundStyle(Color.accentColor)
-                                Text("Novo Projeto neste Setor")
-                                    .bold()
-                                    .foregroundStyle(Color.accentColor)
-                            }
-                            .padding(.vertical, 4)
-                        }
-                    }
-                    
-                    // 3. SEÇÃO ⭐ PROJETOS EM DESTAQUE (STARRED)
-                    if !starredProjects.isEmpty {
-                        Section(header: Text("⭐ Projetos em Destaque")) {
-                            ForEach(starredProjects) { project in
-                                ProjectRowView(project: project, onDuplicate: { duplicateProject(project) })
+                        
+                        // 2. PROJETOS EM DESTAQUE (STARRED)
+                        if !starredProjects.isEmpty {
+                            Section(header: Text("⭐ Projetos em Destaque")) {
+                                ForEach(starredProjects) { project in
+                                    ProjectRowView(project: project, onDuplicate: { duplicateProject(project) })
+                                }
                             }
                         }
-                    }
-                    
-                    // 4. SEÇÃO 🚀 EM ANDAMENTO (ATIVOS)
-                    Section(header: Text("🚀 Em Andamento (\(activeProjects.count))")) {
-                        if activeProjects.isEmpty {
-                            Text("Nenhum projeto ativo.")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        } else {
-                            ForEach(activeProjects) { project in
-                                ProjectRowView(project: project, onDuplicate: { duplicateProject(project) })
+                        
+                        // 3. SEÇÃO 🚀 EM ANDAMENTO (ATIVOS)
+                        Section(header: Text("🚀 Em Andamento (\(activeProjects.count))")) {
+                            if activeProjects.isEmpty {
+                                Text("Nenhum projeto ativo.")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            } else {
+                                ForEach(activeProjects) { project in
+                                    ProjectRowView(project: project, onDuplicate: { duplicateProject(project) })
+                                }
                             }
                         }
-                    }
-                    
-                    // 5. SEÇÃO ⏸️ EM PAUSA / ESPERA
-                    if !pausedProjects.isEmpty {
-                        Section(header: Text("⏸️ Em Pausa (\(pausedProjects.count))")) {
-                            ForEach(pausedProjects) { project in
-                                ProjectRowView(project: project, onDuplicate: { duplicateProject(project) })
+                        
+                        // 4. SEÇÃO ⏸️ EM PAUSA / ESPERA
+                        if !pausedProjects.isEmpty {
+                            Section(header: Text("⏸️ Em Pausa (\(pausedProjects.count))")) {
+                                ForEach(pausedProjects) { project in
+                                    ProjectRowView(project: project, onDuplicate: { duplicateProject(project) })
+                                }
+                            }
+                        }
+                        
+                        // 5. SEÇÃO ✅ CONCLUÍDOS (ARQUIVADOS)
+                        if !completedProjects.isEmpty {
+                            Section(header: Text("✅ Concluídos (\(completedProjects.count))")) {
+                                ForEach(completedProjects) { project in
+                                    ProjectRowView(project: project, onDuplicate: { duplicateProject(project) })
+                                }
                             }
                         }
                     }
-                    
-                    // 6. SEÇÃO ✅ CONCLUÍDOS (ARQUIVADOS)
-                    if !completedProjects.isEmpty {
-                        Section(header: Text("✅ Concluídos (\(completedProjects.count))")) {
-                            ForEach(completedProjects) { project in
-                                ProjectRowView(project: project, onDuplicate: { duplicateProject(project) })
-                            }
-                        }
-                    }
+                    .listStyle(.insetGrouped)
+                } else {
+                    // 📅 VISÃO DE CRONOGRAMA & LINHA DO TEMPO DOS PROJETOS
+                    ProjectTimelineView(projects: sector.projects ?? [])
                 }
-                .listStyle(.insetGrouped)
-            } else {
-                // 📅 VISÃO DE CRONOGRAMA & LINHA DO TEMPO DOS PROJETOS
-                ProjectTimelineView(projects: sector.projects ?? [])
             }
+            
+            // BOTÃO FLUTUANTE `+` NO CANTO INFERIOR DIREITO PARA CRIAR NOVO PROJETO
+            Button(action: {
+                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                showingAddProject = true
+            }) {
+                Image(systemName: "plus")
+                    .font(.title3.bold())
+                    .foregroundStyle(.white)
+                    .frame(width: 50, height: 50)
+                    .background(
+                        LinearGradient(
+                            colors: [Color(hex: sector.colorHex) ?? Color.accentColor, (Color(hex: sector.colorHex) ?? Color.accentColor).opacity(0.8)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .clipShape(Circle())
+                    .shadow(color: (Color(hex: sector.colorHex) ?? Color.accentColor).opacity(0.4), radius: 8, x: 0, y: 4)
+            }
+            .buttonStyle(.plain)
+            .padding(.trailing, 20)
+            .padding(.bottom, 24)
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                HStack(spacing: 16) {
-                    Button(action: { showingAddProject = true }) {
-                        Image(systemName: "plus")
-                            .font(.title3.bold())
-                    }
-                    
-                    Button(action: { showingDeleteAlert = true }) {
-                        Image(systemName: "trash")
-                            .foregroundStyle(.red)
-                    }
+                Button(action: { showingDeleteAlert = true }) {
+                    Image(systemName: "trash")
+                        .foregroundStyle(.red)
                 }
             }
         }

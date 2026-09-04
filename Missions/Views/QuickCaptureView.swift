@@ -16,6 +16,8 @@ struct QuickCaptureView: View {
     
     @Query(sort: \Project.name) var projects: [Project]
     
+    var initialProject: Project?
+    
     @State private var title: String = ""
     @State private var details: String = ""
     @State private var priority: Priority = .medium
@@ -32,6 +34,11 @@ struct QuickCaptureView: View {
     @State private var isWaitingFor: Bool = false
     @State private var waitingPerson: String = ""
     @State private var selectedProject: Project?
+    
+    init(initialProject: Project? = nil) {
+        self.initialProject = initialProject
+        _selectedProject = State(initialValue: initialProject)
+    }
     
     @FocusState private var isTitleFocused: Bool
     
