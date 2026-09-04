@@ -155,4 +155,10 @@ final class Mission {
         let matches = detector.matches(in: fullText, options: [], range: NSRange(location: 0, length: fullText.utf16.count))
         return matches.compactMap { $0.url }
     }
+    
+    // Somatório de custos detectados no checklist
+    var totalEstimatedCost: Double {
+        guard let steps = steps else { return 0.0 }
+        return steps.compactMap { $0.extractedPrice }.reduce(0.0, +)
+    }
 }

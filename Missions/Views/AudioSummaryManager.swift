@@ -46,6 +46,35 @@ final class AudioSummaryManager: NSObject, ObservableObject, AVSpeechSynthesizer
         synthesizer.speak(utterance)
     }
     
+    func speakRoute(for mission: Mission) {
+        if isSpeaking {
+            synthesizer.stopSpeaking(at: .immediate)
+            isSpeaking = false
+            return
+        }
+        
+        var text = "Iniciando leitor viva-voz da rota para a missão: \(mission.title)."
+        
+        let uncompletedSteps = (mission.steps ?? []).filter { !$0.isCompleted }
+        if uncompletedSteps.isEmpty {
+            text += " Todas as etapas deste checklist já foram concluídas!"
+        } else {
+            text += " Você tem \(uncompletedSteps.count) paradas no checklist:"
+            for (idx, step) in uncompletedSteps.enumerated() {
+                text += " Parada \(idx + 1): \(step.title)."
+            }
+        }
+        
+        text += " Boa rota e dirigir com segurança!"
+        
+        let utterance = AVSpeechUtterance(string: text)
+        utterance.voice = AVSpeechSynthesisVoice(language: "pt-BR")
+        utterance.rate = 0.48
+        
+        isSpeaking = true
+        synthesizer.speak(utterance)
+    }
+    
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
         DispatchQueue.main.async {
             self.isSpeaking = false

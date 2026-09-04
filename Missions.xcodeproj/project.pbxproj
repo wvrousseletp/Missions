@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		04DE4582A27657C931B8770F /* BacklogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1CB4925B177DB3FD953BC72 /* BacklogView.swift */; };
+		0AF977751315ADEC00E16B8D /* ImageScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 579AC3CF55589F2EFE2852B1 /* ImageScannerView.swift */; };
 		0B7BE4804BE67516CE62FFDC /* DailyReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBFA49D28644C17FE21A101B /* DailyReviewView.swift */; };
 		0F4C4499BB7F3E2A7E169C4E /* Mission.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB624ADFAD8A4CD66FB9697A /* Mission.swift */; };
 		11DB31074947D01D319DB8F1 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2448DAD8F27A11193F3DF707 /* SearchView.swift */; };
@@ -55,6 +56,7 @@
 		42FA4985A4CC86782067E2C2 /* TodayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TodayView.swift; path = Missions/Views/TodayView.swift; sourceTree = SOURCE_ROOT; };
 		447B4F2FA05CB553715E0CA7 /* Step.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Step.swift; path = Missions/Models/Step.swift; sourceTree = SOURCE_ROOT; };
 		4A049552BD5583D7EE03BE93 /* View+Keyboard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "View+Keyboard.swift"; path = "Missions/Views/View+Keyboard.swift"; sourceTree = SOURCE_ROOT; };
+		579AC3CF55589F2EFE2852B1 /* ImageScannerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageScannerView.swift; path = Missions/Views/ImageScannerView.swift; sourceTree = SOURCE_ROOT; };
 		83804550ADEC47A5BCAB3816 /* WeekView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WeekView.swift; path = Missions/Views/WeekView.swift; sourceTree = SOURCE_ROOT; };
 		A490473F8361F49514AAA87E /* Project.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Project.swift; path = Missions/Models/Project.swift; sourceTree = SOURCE_ROOT; };
 		A9F2FD9DBB842B1C532CF26F /* AudioSummaryManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AudioSummaryManager.swift; path = Missions/Views/AudioSummaryManager.swift; sourceTree = SOURCE_ROOT; };
@@ -151,6 +153,7 @@
 				1AC966E189E75DA63229CBD7 /* DynamicIslandManager.swift */,
 				EEAA7CA9E8C7A7F42CCF6CC2 /* BrainDumpView.swift */,
 				010DEA3CF4CA469320F71FA5 /* DailyShutdownView.swift */,
+				579AC3CF55589F2EFE2852B1 /* ImageScannerView.swift */,
 			);
 			name = Views;
 			path = Missions/Views;
@@ -254,6 +257,7 @@
 				2A90F3CF1B60A0981E945920 /* DynamicIslandManager.swift in Sources */,
 				3E09871F07E1E65612CC4C7C /* BrainDumpView.swift in Sources */,
 				30AF44524B3800176C9D8A5D /* DailyShutdownView.swift in Sources */,
+				0AF977751315ADEC00E16B8D /* ImageScannerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

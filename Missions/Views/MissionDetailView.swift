@@ -9,6 +9,7 @@ struct MissionDetailView: View {
     
     @State private var newStepTitle: String = ""
     @State private var showingDeleteAlert: Bool = false
+    @State private var showingImageScanner: Bool = false
     
     var body: some View {
         Form {
@@ -76,6 +77,47 @@ struct MissionDetailView: View {
                             .font(.subheadline)
                             .bold()
                             .foregroundStyle(Color.accentColor)
+                    }
+                    .padding(.vertical, 2)
+                }
+                
+                // BOTÃO PARA ESCANEAR LISTA POR FOTO (OCR)
+                Button(action: { showingImageScanner = true }) {
+                    HStack {
+                        Image(systemName: "camera.viewfinder")
+                            .foregroundStyle(.blue)
+                        Text("Escanear Lista por Foto / Imagem")
+                            .font(.subheadline)
+                            .bold()
+                            .foregroundStyle(.blue)
+                    }
+                    .padding(.vertical, 2)
+                }
+                
+                // BOTÃO DE LEITOR VIVA-VOZ NO CARRO
+                Button(action: {
+                    AudioSummaryManager.shared.speakRoute(for: mission)
+                }) {
+                    HStack {
+                        Image(systemName: AudioSummaryManager.shared.isSpeaking ? "speaker.wave.3.fill" : "car.fill")
+                            .foregroundStyle(.orange)
+                        Text(AudioSummaryManager.shared.isSpeaking ? "Parar Leitura Viva-Voz" : "🚗 Modo Viva-Voz (Ouvir Rota)")
+                            .font(.subheadline)
+                            .bold()
+                            .foregroundStyle(.orange)
+                    }
+                    .padding(.vertical, 2)
+                }
+                
+                // BADGE DE ORÇAMENTO TOTAL ESTIMADO DE COMPRAS
+                if mission.totalEstimatedCost > 0 {
+                    HStack {
+                        Image(systemName: "banknote.fill")
+                            .foregroundStyle(.green)
+                        Text("Orçamento Estimado: R$ \(mission.totalEstimatedCost, specifier: "%.2f")")
+                            .font(.subheadline)
+                            .bold()
+                            .foregroundStyle(.green)
                     }
                     .padding(.vertical, 4)
                 }
@@ -169,6 +211,18 @@ struct MissionDetailView: View {
             Button("Excluir", role: .destructive, action: deleteMission)
         } message: {
             Text("Esta ação não pode ser desfeita.")
+        }
+        .sheet(isPresented: $showingImageScanner) {
+            ImageScannerView { extractedLines in
+                var currentStepsCount = mission.steps?.count ?? 0
+                for line in extractedLines {
+                    let step = Step(title: line, order: currentStepsCount)
+                    step.mission = mission
+                    modelContext.insert(step)
+                    currentStepsCount += 1
+                }
+                try? modelContext.save()
+            }
         }
         .dismissKeyboardOnScroll()
     }

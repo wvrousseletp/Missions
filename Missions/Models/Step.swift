@@ -26,4 +26,21 @@ final class Step {
         let matches = detector.matches(in: title, options: [], range: NSRange(location: 0, length: title.utf16.count))
         return matches.compactMap { $0.url }
     }
+    
+    // Detectar valores financeiros nas etapas
+    var extractedPrice: Double? {
+        let pattern = #"(?:R\$\s*)?(\d+[\.\,]\d{2})"#
+        guard let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive) else { return nil }
+        let matches = regex.matches(in: title, options: [], range: NSRange(location: 0, length: title.utf16.count))
+        
+        for match in matches {
+            if let range = Range(match.range(at: 1), in: title) {
+                let strVal = String(title[range]).replacingOccurrences(of: ",", with: ".")
+                if let val = Double(strVal), val > 0 {
+                    return val
+                }
+            }
+        }
+        return nil
+    }
 }
