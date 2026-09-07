@@ -56,7 +56,7 @@
 		2C704FD7BCDC8F6C55D3E8E4 /* Missions/Views/HelpView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Missions/Views/HelpView.swift; sourceTree = SOURCE_ROOT; };
 		2E6C4A88904D6E59C8E6190C /* QuickCaptureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = QuickCaptureView.swift; path = Missions/Views/QuickCaptureView.swift; sourceTree = SOURCE_ROOT; };
 		33964E3AB97B4857580A98AA /* SectorsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SectorsView.swift; path = Missions/Views/SectorsView.swift; sourceTree = SOURCE_ROOT; };
-		40CD4422AF4C455E50BF3353 /* alarm.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = alarm.wav; path = Missions/alarm.wav; sourceTree = SOURCE_ROOT; };
+		40CD4422AF4C455E50BF3353 /* alarm.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = alarm.wav; sourceTree = "<group>"; };
 		42FA4985A4CC86782067E2C2 /* TodayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TodayView.swift; path = Missions/Views/TodayView.swift; sourceTree = SOURCE_ROOT; };
 		447B4F2FA05CB553715E0CA7 /* Step.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Step.swift; path = Missions/Models/Step.swift; sourceTree = SOURCE_ROOT; };
 		4A049552BD5583D7EE03BE93 /* View+Keyboard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "View+Keyboard.swift"; path = "Missions/Views/View+Keyboard.swift"; sourceTree = SOURCE_ROOT; };
@@ -102,7 +102,6 @@
 			children = (
 				D35B3D363045FBA300498B3F /* Missions */,
 				D35B3D353045FBA300498B3F /* Products */,
-				40CD4422AF4C455E50BF3353 /* alarm.wav */,
 			);
 			sourceTree = "<group>";
 		};
@@ -122,6 +121,7 @@
 				D35B3D3D3045FBA900498B3F /* Preview Content */,
 				116746CC8F19769C1A435219 /* Models */,
 				FCA24DB49D42DE78EB3A82F1 /* Views */,
+				40CD4422AF4C455E50BF3353 /* alarm.wav */,
 			);
 			path = Missions;
 			sourceTree = "<group>";
