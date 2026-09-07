@@ -44,7 +44,7 @@ class NotificationManager: NSObject, ObservableObject, UNUserNotificationCenterD
         if mission.isAlarmMode {
             content.title = "🚨 DESPERTADOR DE MISSÃO"
             content.body = "⏰ \(mission.title)"
-            content.sound = .defaultCriticalSound(withAudioVolume: 1.0)
+            content.sound = .criticalSoundNamed(UNNotificationSoundName(rawValue: "alarm.wav"), withAudioVolume: 1.0)
             if #available(iOS 15.0, *) {
                 content.interruptionLevel = .critical
             }
