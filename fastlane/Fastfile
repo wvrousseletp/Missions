@@ -27,17 +27,16 @@ platform :ios do
       build_number: ENV["GITHUB_RUN_NUMBER"]
     )
 
-    # Fetch App Store Provisioning Profile
-    get_provisioning_profile(
-      app_identifier: "com.vicente.missions"
-    )
-
     # Build the application with automatic signing via xcodebuild auth
     p8_path = File.expand_path("AuthKey_#{ENV['APP_STORE_CONNECT_API_KEY_ID']}.p8")
     build_app(
       scheme: "Missions",
-      configuration: "Release",
+      destination: "generic/platform=iOS",
       export_method: "app-store",
+      export_options: {
+        method: "app-store",
+        signingStyle: "automatic"
+      },
       xcargs: "-allowProvisioningUpdates -authenticationKeyID #{ENV['APP_STORE_CONNECT_API_KEY_ID']} -authenticationKeyIssuerID #{ENV['APP_STORE_CONNECT_API_KEY_ISSUER_ID']} -authenticationKeyPath \"#{p8_path}\""
     )
 
