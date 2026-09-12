@@ -27,16 +27,18 @@ platform :ios do
       build_number: ENV["GITHUB_RUN_NUMBER"]
     )
 
-    # Ensure a free Development Certificate slot if account has hit 2-certificate limit
+    # Ensure dev_certs.count < 2 by revoking extra Development certificates
     begin
       certs = Spaceship::ConnectAPI::Certificate.all
       dev_certs = certs.select { |c| c.certificate_type.to_s.upcase.include?("DEVELOPMENT") }
       puts "Found #{dev_certs.count} Development Certificates"
       if dev_certs.count >= 2
         sorted_certs = dev_certs.sort_by { |c| c.expiration_date || Time.now }
-        cert_to_delete = sorted_certs.first
-        puts "Revoking oldest Development Certificate (#{cert_to_delete.id}) to free up slot for Xcode automatic signing..."
-        cert_to_delete.delete!
+        certs_to_delete = sorted_certs[0...-1] # Delete all except the newest 1
+        certs_to_delete.each do |c|
+          puts "Revoking extra Development Certificate (#{c.id})..."
+          c.delete!
+        end
       end
     rescue => e
       puts "Certificate check note: #{e.message}"
