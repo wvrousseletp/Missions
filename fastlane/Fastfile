@@ -27,16 +27,26 @@ platform :ios do
       build_number: ENV["GITHUB_RUN_NUMBER"]
     )
 
+    # Ensure a free Development Certificate slot if account has hit 2-certificate limit
+    begin
+      certs = Spaceship::ConnectAPI::Certificate.all
+      dev_certs = certs.select { |c| c.certificate_type.to_s.upcase.include?("DEVELOPMENT") }
+      puts "Found #{dev_certs.count} Development Certificates"
+      if dev_certs.count >= 2
+        sorted_certs = dev_certs.sort_by { |c| c.expiration_date || Time.now }
+        cert_to_delete = sorted_certs.first
+        puts "Revoking oldest Development Certificate (#{cert_to_delete.id}) to free up slot for Xcode automatic signing..."
+        cert_to_delete.delete!
+      end
+    rescue => e
+      puts "Certificate check note: #{e.message}"
+    end
+
     # Build the application with automatic signing via xcodebuild auth
     p8_path = File.expand_path("AuthKey_#{ENV['APP_STORE_CONNECT_API_KEY_ID']}.p8")
     build_app(
       scheme: "Missions",
-      destination: "generic/platform=iOS",
       export_method: "app-store",
-      export_options: {
-        method: "app-store",
-        signingStyle: "automatic"
-      },
       xcargs: "-allowProvisioningUpdates -authenticationKeyID #{ENV['APP_STORE_CONNECT_API_KEY_ID']} -authenticationKeyIssuerID #{ENV['APP_STORE_CONNECT_API_KEY_ISSUER_ID']} -authenticationKeyPath \"#{p8_path}\""
     )
 
