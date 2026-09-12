@@ -854,6 +854,7 @@ struct StepCardRow: View {
                     step.isCompleted.toggle()
                     UIImpactFeedbackGenerator(style: .light).impactOccurred()
                     checkMissionCompletion()
+                    DynamicIslandManager.shared.updatePinnedMission(mission)
                 }
             }) {
                 Image(systemName: step.isCompleted ? "checkmark.square.fill" : "square")
@@ -865,10 +866,18 @@ struct StepCardRow: View {
             
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 6) {
-                    Text(step.title)
+                    TextField("Nome da etapa", text: $step.title, axis: .vertical)
                         .font(.subheadline)
                         .strikethrough(step.isCompleted, color: .secondary)
                         .foregroundStyle(step.isCompleted ? .secondary : .primary)
+                        .onSubmit {
+                            try? modelContext.save()
+                            DynamicIslandManager.shared.updatePinnedMission(mission)
+                        }
+                        .onChange(of: step.title) { _ in
+                            try? modelContext.save()
+                            DynamicIslandManager.shared.updatePinnedMission(mission)
+                        }
                     
                     if step.isAlarmMode {
                         HStack(spacing: 3) {

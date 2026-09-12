@@ -163,7 +163,6 @@ struct MissionLiveActivityWidget: Widget {
     }
 }
 
-@main
 struct MissionsWidgetBundle: WidgetBundle {
     var body: some Widget {
         MissionsWidget()

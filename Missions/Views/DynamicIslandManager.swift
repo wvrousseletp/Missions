@@ -20,7 +20,6 @@ class DynamicIslandManager: ObservableObject {
     static let shared = DynamicIslandManager()
     
     @Published var pinnedMissionID: String? = nil
-    private var currentActivity: Any? = nil
     
     private init() {}
     
@@ -55,13 +54,23 @@ class DynamicIslandManager: ObservableObject {
             let attributes = MissionActivityAttributes(missionID: mission.id.uuidString)
             
             do {
-                let activity = try Activity<MissionActivityAttributes>.request(
-                    attributes: attributes,
-                    contentState: initialContentState,
-                    pushType: nil
-                )
-                self.currentActivity = activity
-                self.pinnedMissionID = mission.id.uuidString
+                if #available(iOS 16.2, *) {
+                    let content = ActivityContent(state: initialContentState, staleDate: nil)
+                    _ = try Activity<MissionActivityAttributes>.request(
+                        attributes: attributes,
+                        content: content,
+                        pushType: nil
+                    )
+                } else {
+                    _ = try Activity<MissionActivityAttributes>.request(
+                        attributes: attributes,
+                        contentState: initialContentState,
+                        pushType: nil
+                    )
+                }
+                DispatchQueue.main.async {
+                    self.pinnedMissionID = mission.id.uuidString
+                }
             } catch {
                 print("Erro ao fixar na Dynamic Island: \(error)")
             }
@@ -70,7 +79,7 @@ class DynamicIslandManager: ObservableObject {
     
     func updatePinnedMission(_ mission: Mission) {
         if #available(iOS 16.1, *) {
-            guard isPinned(mission), let activity = currentActivity as? Activity<MissionActivityAttributes> else { return }
+            guard isPinned(mission) else { return }
             
             let steps = mission.steps ?? []
             let completedSteps = steps.filter { $0.isCompleted }.count
@@ -86,25 +95,38 @@ class DynamicIslandManager: ObservableObject {
                 stepsCountText: totalSteps > 0 ? "\(completedSteps)/\(totalSteps) etapas" : "Em Foco"
             )
             
-            Task {
-                await activity.update(using: updatedState)
+            for activity in Activity<MissionActivityAttributes>.activities {
+                if activity.attributes.missionID == mission.id.uuidString {
+                    Task {
+                        if #available(iOS 16.2, *) {
+                            let content = ActivityContent(state: updatedState, staleDate: nil)
+                            await activity.update(content)
+                        } else {
+                            await activity.update(using: updatedState)
+                        }
+                    }
+                }
             }
         }
     }
     
     func unpinCurrentMission() {
         if #available(iOS 16.1, *) {
-            if let activity = currentActivity as? Activity<MissionActivityAttributes> {
+            for activity in Activity<MissionActivityAttributes>.activities {
                 Task {
                     await activity.end(dismissalPolicy: .immediate)
                 }
             }
-            self.currentActivity = nil
-            self.pinnedMissionID = nil
+            DispatchQueue.main.async {
+                self.pinnedMissionID = nil
+            }
         }
     }
     
     func isPinned(_ mission: Mission) -> Bool {
+        if #available(iOS 16.1, *) {
+            return Activity<MissionActivityAttributes>.activities.contains(where: { $0.attributes.missionID == mission.id.uuidString })
+        }
         return pinnedMissionID == mission.id.uuidString
     }
 }
