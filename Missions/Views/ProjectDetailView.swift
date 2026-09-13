@@ -377,7 +377,7 @@ struct ProjectDetailView: View {
                 showingQuickCapture = true
             }) {
                 Image(systemName: "plus")
-                    .font(.title3.bold())
+                    .font(.system(.title3, design: .rounded, weight: .bold))
                     .foregroundStyle(.white)
                     .frame(width: 50, height: 50)
                     .background(
@@ -388,11 +388,15 @@ struct ProjectDetailView: View {
                         )
                     )
                     .clipShape(Circle())
-                    .shadow(color: (Color(hex: project.colorHex ?? "") ?? Color.accentColor).opacity(0.4), radius: 8, x: 0, y: 4)
+                    .overlay(
+                        Circle()
+                            .stroke(Color.white.opacity(0.25), lineWidth: 1)
+                    )
+                    .shadow(color: (Color(hex: project.colorHex ?? "") ?? Color.accentColor).opacity(0.45), radius: 10, x: 0, y: 5)
             }
             .buttonStyle(.plain)
             .padding(.trailing, 20)
-            .padding(.bottom, 24)
+            .padding(.bottom, 28)
         }
         .background(Color(uiColor: .systemGroupedBackground))
         .navigationTitle(project.name)
