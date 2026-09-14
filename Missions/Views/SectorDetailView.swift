@@ -223,35 +223,147 @@ struct SectorDetailView: View {
         .onDisappear {
             FABManager.shared.customAction = nil
         }
-        .confirmationDialog("Adicionar em \(sector.name)", isPresented: $showingAddOptions, titleVisibility: .visible) {
-            Button("📁 Novo Projeto") {
-                showingAddProject = true
-            }
-            
-            Button("🎯 Nova Missão / Tarefa") {
-                let activeProjs = (sector.projects ?? []).filter { $0.status == .active }
-                if let existing = activeProjs.first ?? sector.projects?.first {
-                    quickCaptureProject = existing
-                } else {
-                    let defaultProject = Project(
-                        name: "Geral (\(sector.name))",
-                        projectDescription: "Projeto padrão para missões do setor \(sector.name)",
-                        status: .active,
-                        colorHex: sector.colorHex
-                    )
-                    defaultProject.sector = sector
-                    modelContext.insert(defaultProject)
-                    try? modelContext.save()
-                    quickCaptureProject = defaultProject
+        .sheet(isPresented: $showingAddOptions) {
+            VStack(spacing: 16) {
+                VStack(spacing: 4) {
+                    Text("Adicionar em \(sector.name)")
+                        .font(.headline)
+                        .bold()
+                    Text("Escolha o tipo de item que deseja criar neste setor")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
-                showingQuickCapture = true
+                .padding(.top, 16)
+                
+                Divider()
+                
+                VStack(spacing: 10) {
+                    // 📁 NOVO PROJETO
+                    Button(action: {
+                        showingAddOptions = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                            showingAddProject = true
+                        }
+                    }) {
+                        HStack {
+                            ZStack {
+                                Circle()
+                                    .fill(Color.blue.opacity(0.15))
+                                    .frame(width: 40, height: 40)
+                                Image(systemName: "folder.badge.plus")
+                                    .font(.title3)
+                                    .foregroundStyle(.blue)
+                            }
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Novo Projeto")
+                                    .font(.headline)
+                                    .foregroundStyle(.primary)
+                                Text("Criar um projeto estruturado neste setor")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(12)
+                        .background(Color.secondary.opacity(0.08))
+                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                    }
+                    .buttonStyle(.plain)
+                    
+                    // 🎯 NOVA MISSÃO / TAREFA
+                    Button(action: {
+                        showingAddOptions = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                            let activeProjs = (sector.projects ?? []).filter { $0.status == .active }
+                            if let existing = activeProjs.first ?? sector.projects?.first {
+                                quickCaptureProject = existing
+                            } else {
+                                let defaultProject = Project(
+                                    name: "Geral (\(sector.name))",
+                                    projectDescription: "Projeto padrão para missões do setor \(sector.name)",
+                                    status: .active,
+                                    colorHex: sector.colorHex
+                                )
+                                defaultProject.sector = sector
+                                modelContext.insert(defaultProject)
+                                try? modelContext.save()
+                                quickCaptureProject = defaultProject
+                            }
+                            showingQuickCapture = true
+                        }
+                    }) {
+                        HStack {
+                            ZStack {
+                                Circle()
+                                    .fill(Color.orange.opacity(0.15))
+                                    .frame(width: 40, height: 40)
+                                Image(systemName: "target")
+                                    .font(.title3)
+                                    .foregroundStyle(.orange)
+                            }
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Nova Missão / Tarefa")
+                                    .font(.headline)
+                                    .foregroundStyle(.primary)
+                                Text("Adicionar tarefa com ou sem checklist neste setor")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(12)
+                        .background(Color.secondary.opacity(0.08))
+                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                    }
+                    .buttonStyle(.plain)
+                    
+                    // 🪄 CRIAR PROJETO POR MODELO
+                    Button(action: {
+                        showingAddOptions = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                            showingTemplatePicker = true
+                        }
+                    }) {
+                        HStack {
+                            ZStack {
+                                Circle()
+                                    .fill(Color.purple.opacity(0.15))
+                                    .frame(width: 40, height: 40)
+                                Image(systemName: "wand.and.stars")
+                                    .font(.title3)
+                                    .foregroundStyle(.purple)
+                            }
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Criar Projeto por Modelo")
+                                    .font(.headline)
+                                    .foregroundStyle(.primary)
+                                Text("Injetar modelo pronto (Viagem, Reforma, Vendas...)")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(12)
+                        .background(Color.secondary.opacity(0.08))
+                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                    }
+                    .buttonStyle(.plain)
+                }
+                .padding(.horizontal)
+                
+                Spacer()
             }
-            
-            Button("🪄 Criar Projeto por Modelo") {
-                showingTemplatePicker = true
-            }
-            
-            Button("Cancelar", role: .cancel) { }
+            .presentationDetents([.height(340)])
+            .presentationDragIndicator(.visible)
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

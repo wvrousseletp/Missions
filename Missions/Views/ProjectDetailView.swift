@@ -378,28 +378,143 @@ struct ProjectDetailView: View {
         .onDisappear {
             FABManager.shared.customAction = nil
         }
-        .confirmationDialog("Adicionar no Projeto \(project.name)", isPresented: $showingAddOptions, titleVisibility: .visible) {
-            Button("🎯 Nova Missão / Tarefa") {
-                showingQuickCapture = true
+        .sheet(isPresented: $showingAddOptions) {
+            VStack(spacing: 16) {
+                VStack(spacing: 4) {
+                    Text("Adicionar no Projeto '\(project.name)'")
+                        .font(.headline)
+                        .bold()
+                    Text("Escolha como deseja adicionar itens a este projeto")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.top, 16)
+                
+                Divider()
+                
+                VStack(spacing: 10) {
+                    // 🎯 NOVA MISSÃO / TAREFA
+                    Button(action: {
+                        showingAddOptions = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                            showingQuickCapture = true
+                        }
+                    }) {
+                        HStack {
+                            ZStack {
+                                Circle()
+                                    .fill(Color.accentColor.opacity(0.15))
+                                    .frame(width: 36, height: 36)
+                                Image(systemName: "target")
+                                    .foregroundStyle(Color.accentColor)
+                            }
+                            Text("Nova Missão / Tarefa")
+                                .font(.headline)
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(10)
+                        .background(Color.secondary.opacity(0.08))
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                    }
+                    .buttonStyle(.plain)
+                    
+                    // 🧠 DESCARREGO MENTAL
+                    Button(action: {
+                        showingAddOptions = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                            showingProjectBrainDump = true
+                        }
+                    }) {
+                        HStack {
+                            ZStack {
+                                Circle()
+                                    .fill(Color.blue.opacity(0.15))
+                                    .frame(width: 36, height: 36)
+                                Image(systemName: "brain.head.profile")
+                                    .foregroundStyle(.blue)
+                            }
+                            Text("Descarrego Mental")
+                                .font(.headline)
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(10)
+                        .background(Color.secondary.opacity(0.08))
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                    }
+                    .buttonStyle(.plain)
+                    
+                    // 📋 COLAR LISTA COPIADA
+                    Button(action: {
+                        showingAddOptions = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                            pasteClipboardMissions()
+                        }
+                    }) {
+                        HStack {
+                            ZStack {
+                                Circle()
+                                    .fill(Color.orange.opacity(0.15))
+                                    .frame(width: 36, height: 36)
+                                Image(systemName: "doc.on.clipboard.fill")
+                                    .foregroundStyle(.orange)
+                            }
+                            Text("Colar Lista Copiada (WhatsApp/Notas)")
+                                .font(.headline)
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(10)
+                        .background(Color.secondary.opacity(0.08))
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                    }
+                    .buttonStyle(.plain)
+                    
+                    // 🪄 INJETAR MODELO
+                    Button(action: {
+                        showingAddOptions = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                            showingTemplates = true
+                        }
+                    }) {
+                        HStack {
+                            ZStack {
+                                Circle()
+                                    .fill(Color.purple.opacity(0.15))
+                                    .frame(width: 36, height: 36)
+                                Image(systemName: "wand.and.stars")
+                                    .foregroundStyle(.purple)
+                            }
+                            Text("Injetar Modelo de Projeto")
+                                .font(.headline)
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(10)
+                        .background(Color.secondary.opacity(0.08))
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                    }
+                    .buttonStyle(.plain)
+                }
+                .padding(.horizontal)
+                
+                Spacer()
             }
-            
-            Button("🧠 Descarrego Mental") {
-                showingProjectBrainDump = true
-            }
-            
-            Button("📋 Colar Lista Copiada") {
-                pasteClipboardMissions()
-            }
-            
-            Button("🪄 Injetar Modelo de Projeto") {
-                showingTemplates = true
-            }
-            
-            Button("📷 Escanear por Foto / OCR") {
-                showingImageScanner = true
-            }
-            
-            Button("Cancelar", role: .cancel) { }
+            .presentationDetents([.height(360)])
+            .presentationDragIndicator(.visible)
         }
         .background(Color(uiColor: .systemGroupedBackground))
         .navigationTitle(project.name)

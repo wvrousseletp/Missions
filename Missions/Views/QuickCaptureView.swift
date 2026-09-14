@@ -46,14 +46,32 @@ struct QuickCaptureView: View {
     @State private var newStepTitle: String = ""
     @State private var tempSteps: [String] = []
     
+    @Query(sort: \CustomTaskTemplate.createdAt, order: .reverse) var customTaskTemplates: [CustomTaskTemplate]
+    @State private var showingTaskTemplatePicker = false
+    
     var body: some View {
         NavigationStack {
             Form {
-                // TÍTULO DA MISSÃO
+                // TÍTULO DA MISSÃO E SELETOR DE TEMPLATE
                 Section(header: Text("Lembrete / Objetivo")) {
                     TextField("O que precisa ser feito?", text: $title)
                         .font(.headline)
                         .focused($isTitleFocused)
+                    
+                    Button(action: { showingTaskTemplatePicker = true }) {
+                        HStack {
+                            Image(systemName: "wand.and.stars")
+                                .foregroundStyle(Color.accentColor)
+                            Text("Usar Padrão de Tarefa (Checklist Pronto)")
+                                .font(.subheadline)
+                                .bold()
+                                .foregroundStyle(Color.accentColor)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
                 }
                 
                 // ANOTAÇÕES E DETALHES
@@ -282,6 +300,20 @@ struct QuickCaptureView: View {
                     isTitleFocused = true
                 }
             }
+            .sheet(isPresented: $showingTaskTemplatePicker) {
+                TaskTemplateSelectionSheet(
+                    customTemplates: customTaskTemplates,
+                    onSelect: { selectedTitle, selectedDetails, selectedMins, selectedSteps in
+                        title = selectedTitle
+                        details = selectedDetails
+                        estimatedMinutes = selectedMins
+                        hasEstimatedTime = selectedMins > 0
+                        tempSteps = selectedSteps
+                        showingTaskTemplatePicker = false
+                        UINotificationFeedbackGenerator().notificationOccurred(.success)
+                    }
+                )
+            }
         }
     }
     
@@ -366,3 +398,201 @@ struct QuickCaptureView: View {
         dismiss()
     }
 }
+
+struct TaskTemplateSelectionSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    var customTemplates: [CustomTaskTemplate]
+    var onSelect: (String, String, Int, [String]) -> Void
+    
+    @State private var showingManager = false
+    
+    let defaultTaskTemplates: [(title: String, icon: String, category: String, details: String, mins: Int, steps: [String])] = [
+        (
+            title: "Ir para Retiro / Evento Espiritual",
+            icon: "cross.fill",
+            category: "Espiritual",
+            details: "Checklist completo de bagagem, estudo e transporte.",
+            mins: 45,
+            steps: [
+                "Arrumar mala com roupas confortáveis",
+                "Separar Bíblia, bloco de notas e caneta",
+                "Kit de higiene pessoal e toalha",
+                "Confirmar horário e ponto da carona/ônibus",
+                "Baixar playlist e louvores offline"
+            ]
+        ),
+        (
+            title: "Viagem a Trabalho / Evento",
+            icon: "briefcase.fill",
+            category: "Trabalho",
+            details: "Checklist de passagens, documentos e materiais de trabalho.",
+            mins: 60,
+            steps: [
+                "Conferir passagens aéreas e reserva de hotel",
+                "Mala com roupas sociais/esporte fino",
+                "Carregador de celular, notebook e adaptadores",
+                "Revisar arquivos da apresentação offline",
+                "Cartões de visita e documento de identificação"
+            ]
+        ),
+        (
+            title: "Checklist para Viagem de Carro",
+            icon: "car.side.fill",
+            category: "Viagem",
+            details: "Inspeção preventiva para pegar a estrada com segurança.",
+            mins: 30,
+            steps: [
+                "Calibrar 4 pneus e checar pressão do estepe",
+                "Conferir óleo do motor e fluido do radiador",
+                "Verificar saldo da tag de pedágio",
+                "Separar kit de água e lanches rápidos",
+                "Configurar GPS e rotas no celular"
+            ]
+        ),
+        (
+            title: "Preparação para Reunião Importante",
+            icon: "person.3.fill",
+            category: "Trabalho",
+            details: "Pauta, equipamentos e alinhamento prévio.",
+            mins: 20,
+            steps: [
+                "Definir pauta com 3 tópicos prioritários",
+                "Testar microfone, câmera e link da chamada",
+                "Separar dados e relatórios necessários",
+                "Enviar lembrete para os participantes"
+            ]
+        )
+    ]
+    
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    // SEÇÃO 1: TEMPLATES PERSONALIZADOS DO USUÁRIO
+                    if !customTemplates.isEmpty {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("⭐ Seus Padrões Personalizados")
+                                .font(.headline)
+                                .bold()
+                                .padding(.horizontal)
+                            
+                            ForEach(customTemplates) { template in
+                                Button(action: {
+                                    onSelect(template.title, template.details, template.estimatedMinutes, template.steps)
+                                }) {
+                                    VStack(alignment: .leading, spacing: 8) {
+                                        HStack {
+                                            Text(template.title)
+                                                .font(.headline)
+                                                .bold()
+                                                .foregroundStyle(.primary)
+                                            Spacer()
+                                            Text("\(template.steps.count) passos")
+                                                .font(.caption2)
+                                                .bold()
+                                                .foregroundStyle(Color.accentColor)
+                                        }
+                                        
+                                        if !template.details.isEmpty {
+                                            Text(template.details)
+                                                .font(.caption)
+                                                .foregroundStyle(.secondary)
+                                                .lineLimit(2)
+                                        }
+                                    }
+                                    .padding(14)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .background(Color.accentColor.opacity(0.1))
+                                    .clipShape(RoundedRectangle(cornerRadius: 14))
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 14)
+                                            .stroke(Color.accentColor.opacity(0.3), lineWidth: 1)
+                                    )
+                                }
+                                .buttonStyle(.plain)
+                                .padding(.horizontal)
+                            }
+                        }
+                    }
+                    
+                    // SEÇÃO 2: PADRÕES PRONTOS DO APP
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("✨ Padrões Prontos Recomendados")
+                            .font(.headline)
+                            .bold()
+                            .padding(.horizontal)
+                        
+                        ForEach(defaultTaskTemplates, id: \.title) { t in
+                            Button(action: {
+                                onSelect(t.title, t.details, t.mins, t.steps)
+                            }) {
+                                VStack(alignment: .leading, spacing: 10) {
+                                    HStack(spacing: 10) {
+                                        Image(systemName: t.icon)
+                                            .font(.title3)
+                                            .foregroundStyle(Color.accentColor)
+                                        
+                                        VStack(alignment: .leading, spacing: 2) {
+                                            Text(t.title)
+                                                .font(.headline)
+                                                .bold()
+                                                .foregroundStyle(.primary)
+                                            
+                                            Text(t.details)
+                                                .font(.caption)
+                                                .foregroundStyle(.secondary)
+                                        }
+                                        Spacer()
+                                    }
+                                    
+                                    Divider()
+                                    
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        ForEach(t.steps, id: \.self) { step in
+                                            HStack(spacing: 6) {
+                                                Image(systemName: "checkmark.circle.fill")
+                                                    .font(.caption2)
+                                                    .foregroundStyle(.green)
+                                                Text(step)
+                                                    .font(.caption)
+                                                    .foregroundStyle(.primary)
+                                            }
+                                        }
+                                    }
+                                }
+                                .padding(14)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(Color.secondary.opacity(0.07))
+                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                            }
+                            .buttonStyle(.plain)
+                            .padding(.horizontal)
+                        }
+                    }
+                }
+                .padding(.vertical)
+            }
+            .navigationTitle("Escolha um Padrão de Tarefa")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Cancelar") { dismiss() }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: { showingManager = true }) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "gearshape.fill")
+                            Text("Gerenciar")
+                        }
+                        .font(.caption)
+                        .bold()
+                    }
+                }
+            }
+            .sheet(isPresented: $showingManager) {
+                TemplateManagerView()
+            }
+        }
+    }
+}
+

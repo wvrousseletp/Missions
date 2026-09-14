@@ -41,8 +41,25 @@ struct BacklogView: View {
                 .padding(.top, 16)
                 .padding(.bottom, 100)
             }
-            .background(Color(uiColor: isPureBlack ? .black : .systemGroupedBackground))
-            .preferredColorScheme(isPureBlack ? .dark : nil)
+            .navigationTitle("Backlog")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: { showingTemplateManager = true }) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "wand.and.stars")
+                            Text("Templates")
+                        }
+                        .font(.caption)
+                        .bold()
+                    }
+                }
+            }
+            .sheet(isPresented: $showingTemplateManager) {
+                TemplateManagerView()
+            }
         }
     }
+    
+    @State private var showingTemplateManager = false
 }

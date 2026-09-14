@@ -9,6 +9,8 @@ struct MissionsApp: App {
             Project.self,
             Mission.self,
             Step.self,
+            CustomTaskTemplate.self,
+            CustomProjectTemplate.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
