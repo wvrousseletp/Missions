@@ -75,8 +75,7 @@ struct SectorDetailView: View {
     }
     
     var body: some View {
-        ZStack(alignment: .bottomTrailing) {
-            VStack(spacing: 0) {
+        VStack(spacing: 0) {
                 // SEGMENTED PICKER DA VISÃO (STATUS vs CRONOGRAMA)
                 Picker("Visualização", selection: $selectedTab) {
                     Text("🗂️ Status & Lista").tag(0)
@@ -216,9 +215,6 @@ struct SectorDetailView: View {
                     ProjectTimelineView(projects: sector.projects ?? [])
                 }
             }
-            
-            }
-        }
         .onAppear {
             FABManager.shared.customAction = {
                 showingAddOptions = true

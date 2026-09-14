@@ -63,8 +63,7 @@ struct ProjectDetailView: View {
     }
     
     var body: some View {
-        ZStack(alignment: .bottomTrailing) {
-            VStack(spacing: 0) {
+        VStack(spacing: 0) {
                 // SELETOR DE MODO DE VISUALIZAÇÃO
                 Picker("Visualização", selection: $viewMode) {
                     Text("📋 Lista").tag(0)
@@ -371,9 +370,6 @@ struct ProjectDetailView: View {
                     .padding(.bottom, 90)
                 }
             }
-            
-            }
-        }
         .onAppear {
             FABManager.shared.customAction = {
                 showingAddOptions = true
