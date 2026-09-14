@@ -5,7 +5,8 @@ struct TemplatePickerView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     
-    let project: Project
+    var project: Project? = nil
+    var sector: Sector? = nil
     var onApplied: (() -> Void)? = nil
     
     @State private var selectedTemplate: ProjectTemplate? = nil
@@ -29,9 +30,16 @@ struct TemplatePickerView: View {
                             Text("Modelos Prontos de Projetos")
                                 .font(.headline)
                                 .bold()
-                            Text("Injete uma estrutura pronta de missões e checklists no projeto '\(project.name)' com 1 toque.")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                            
+                            if let p = project {
+                                Text("Injete uma estrutura pronta de missões e checklists no projeto '\(p.name)' com 1 toque.")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            } else if let s = sector {
+                                Text("Crie um projeto completo com missões e checklists prontos no setor '\(s.name)'.")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
                         }
                     }
                     .padding(.horizontal)
@@ -89,7 +97,7 @@ struct TemplatePickerView: View {
                             }) {
                                 HStack {
                                     Image(systemName: "plus.app.fill")
-                                    Text("Usar Este Template no Projeto")
+                                    Text(project != nil ? "Usar Este Template no Projeto" : "Criar Projeto por Template")
                                         .bold()
                                 }
                                 .frame(maxWidth: .infinity)
@@ -117,7 +125,20 @@ struct TemplatePickerView: View {
                 Button("Cancelar", role: .cancel) { }
                 Button("Aplicar Template") {
                     if let t = selectedTemplate {
-                        ProjectTemplateManager.shared.applyTemplate(t, to: project, in: modelContext)
+                        if let p = project {
+                            ProjectTemplateManager.shared.applyTemplate(t, to: p, in: modelContext)
+                        } else if let s = sector {
+                            let newProj = Project(
+                                name: t.name,
+                                projectDescription: t.description,
+                                status: .active,
+                                colorHex: s.colorHex,
+                                targetDate: Calendar.current.date(byAdding: .month, value: 1, to: Date())
+                            )
+                            newProj.sector = s
+                            modelContext.insert(newProj)
+                            ProjectTemplateManager.shared.applyTemplate(t, to: newProj, in: modelContext)
+                        }
                         onApplied?()
                         UINotificationFeedbackGenerator().notificationOccurred(.success)
                         dismiss()
@@ -125,7 +146,11 @@ struct TemplatePickerView: View {
                 }
             } message: {
                 if let t = selectedTemplate {
-                    Text("As \(t.missions.count) missões do template '\(t.name)' serão adicionadas ao projeto '\(project.name)'.")
+                    if let p = project {
+                        Text("As \(t.missions.count) missões do template '\(t.name)' serão adicionadas ao projeto '\(p.name)'.")
+                    } else if let s = sector {
+                        Text("Um novo projeto '\(t.name)' com \(t.missions.count) missões será criado no setor '\(s.name)'.")
+                    }
                 } else {
                     Text("Deseja aplicar as missões ao projeto?")
                 }

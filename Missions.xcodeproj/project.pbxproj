@@ -20,6 +20,7 @@
 		3E09871F07E1E65612CC4C7C /* BrainDumpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEAA7CA9E8C7A7F42CCF6CC2 /* BrainDumpView.swift */; };
 		40F0F56AAD9722E326A52E67 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C504F58691A53EDB3F0B77 /* StatsView.swift */; };
 		4C0F49358DF9AE9056990352 /* TemplatePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EE24D3E96909E476DFFFFE6 /* TemplatePickerView.swift */; };
+		0AF977751315ADEC00E16B8E /* FABManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 579AC3CF55589F2EFE2852B2 /* FABManager.swift */; };
 		55A634A537D6C271A5FC73DC /* Missions/Views/HelpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C704FD7BCDC8F6C55D3E8E4 /* Missions/Views/HelpView.swift */; };
 		5DEE4BC288834FD34CD6C5B2 /* Step.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447B4F2FA05CB553715E0CA7 /* Step.swift */; };
 		62574EBBBCECD19BBC784271 /* Sector.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC94F49B823D2B00ADD2B81 /* Sector.swift */; };
@@ -48,6 +49,7 @@
 		010DEA3CF4CA469320F71FA5 /* DailyShutdownView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DailyShutdownView.swift; path = Missions/Views/DailyShutdownView.swift; sourceTree = SOURCE_ROOT; };
 		11914911A78D9980A0B27CC9 /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Color+Hex.swift"; path = "Missions/Views/Color+Hex.swift"; sourceTree = SOURCE_ROOT; };
 		1AC966E189E75DA63229CBD7 /* DynamicIslandManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DynamicIslandManager.swift; path = Missions/Views/DynamicIslandManager.swift; sourceTree = SOURCE_ROOT; };
+		579AC3CF55589F2EFE2852B2 /* FABManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FABManager.swift; path = Missions/Views/FABManager.swift; sourceTree = SOURCE_ROOT; };
 		211FF91CB508AAB9C1E7F69C /* AlarmAlertView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AlarmAlertView.swift; path = Missions/Views/AlarmAlertView.swift; sourceTree = SOURCE_ROOT; };
 		21F044139D2C96379610A4E7 /* ProjectDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProjectDetailView.swift; path = Missions/Views/ProjectDetailView.swift; sourceTree = SOURCE_ROOT; };
 		2448DAD8F27A11193F3DF707 /* SearchView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SearchView.swift; path = Missions/Views/SearchView.swift; sourceTree = SOURCE_ROOT; };
@@ -270,6 +272,7 @@
 				0AF977751315ADEC00E16B8D /* ImageScannerView.swift in Sources */,
 				CD694AD5AAA54464EE0A72BF /* ProjectTemplateManager.swift in Sources */,
 				4C0F49358DF9AE9056990352 /* TemplatePickerView.swift in Sources */,
+				0AF977751315ADEC00E16B8E /* FABManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

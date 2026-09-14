@@ -8,6 +8,7 @@ struct ContentView: View {
     @State private var showingAddSector: Bool = false
     
     @StateObject private var notificationManager = NotificationManager.shared
+    @StateObject private var fabManager = FABManager.shared
     @Query var allMissions: [Mission]
     @State private var activeAlarmMission: Mission? = nil
     
@@ -86,7 +87,9 @@ struct ContentView: View {
                 // BOTÃO FLUTUANTE `+` PREMIUM COM GLOW
                 Button(action: {
                     UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                    if selectedTab == 2 {
+                    if let customAction = fabManager.customAction {
+                        customAction()
+                    } else if selectedTab == 2 {
                         showingAddSector = true
                     } else {
                         showingQuickCapture = true

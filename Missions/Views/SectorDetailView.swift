@@ -8,6 +8,10 @@ struct SectorDetailView: View {
     
     @State private var selectedTab: Int = 0 // 0: Status List, 1: Timeline
     @State private var showingAddProject = false
+    @State private var showingAddOptions = false
+    @State private var showingQuickCapture = false
+    @State private var showingTemplatePicker = false
+    @State private var quickCaptureProject: Project? = nil
     @State private var showingDeleteAlert = false
     @State private var showingEditGoal = false
     @State private var newGoalText = ""
@@ -213,32 +217,45 @@ struct SectorDetailView: View {
                 }
             }
             
-            // BOTÃO FLUTUANTE `+` NO CANTO INFERIOR DIREITO PARA CRIAR NOVO PROJETO
-            Button(action: {
-                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                showingAddProject = true
-            }) {
-                Image(systemName: "plus")
-                    .font(.system(.title3, design: .rounded, weight: .bold))
-                    .foregroundStyle(.white)
-                    .frame(width: 50, height: 50)
-                    .background(
-                        LinearGradient(
-                            colors: [Color(hex: sector.colorHex) ?? Color.accentColor, (Color(hex: sector.colorHex) ?? Color.accentColor).opacity(0.8)],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-                    .clipShape(Circle())
-                    .overlay(
-                        Circle()
-                            .stroke(Color.white.opacity(0.25), lineWidth: 1)
-                    )
-                    .shadow(color: (Color(hex: sector.colorHex) ?? Color.accentColor).opacity(0.45), radius: 10, x: 0, y: 5)
             }
-            .buttonStyle(.plain)
-            .padding(.trailing, 20)
-            .padding(.bottom, 28)
+        }
+        .onAppear {
+            FABManager.shared.customAction = {
+                showingAddOptions = true
+            }
+        }
+        .onDisappear {
+            FABManager.shared.customAction = nil
+        }
+        .confirmationDialog("Adicionar em \(sector.name)", isPresented: $showingAddOptions, titleVisibility: .visible) {
+            Button("📁 Novo Projeto") {
+                showingAddProject = true
+            }
+            
+            Button("🎯 Nova Missão / Tarefa") {
+                let activeProjs = (sector.projects ?? []).filter { $0.status == .active }
+                if let existing = activeProjs.first ?? sector.projects?.first {
+                    quickCaptureProject = existing
+                } else {
+                    let defaultProject = Project(
+                        name: "Geral (\(sector.name))",
+                        projectDescription: "Projeto padrão para missões do setor \(sector.name)",
+                        status: .active,
+                        colorHex: sector.colorHex
+                    )
+                    defaultProject.sector = sector
+                    modelContext.insert(defaultProject)
+                    try? modelContext.save()
+                    quickCaptureProject = defaultProject
+                }
+                showingQuickCapture = true
+            }
+            
+            Button("🪄 Criar Projeto por Modelo") {
+                showingTemplatePicker = true
+            }
+            
+            Button("Cancelar", role: .cancel) { }
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -257,6 +274,12 @@ struct SectorDetailView: View {
         }
         .sheet(isPresented: $showingAddProject) {
             AddProjectView(sector: sector)
+        }
+        .sheet(isPresented: $showingQuickCapture) {
+            QuickCaptureView(initialProject: quickCaptureProject)
+        }
+        .sheet(isPresented: $showingTemplatePicker) {
+            TemplatePickerView(sector: sector)
         }
         .alert("Meta do Setor", isPresented: $showingEditGoal) {
             TextField("Ex: Concluir 5 entregas este mês", text: $newGoalText)

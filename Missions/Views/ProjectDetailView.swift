@@ -9,6 +9,7 @@ struct ProjectDetailView: View {
     
     @State private var viewMode: Int = 0 // 0: Lista, 1: Pipeline, 2: Fases
     @State private var showingDeleteAlert = false
+    @State private var showingAddOptions = false
     @State private var showingQuickCapture = false
     @State private var showingTemplates = false
     @State private var showingImageScanner = false
@@ -371,32 +372,38 @@ struct ProjectDetailView: View {
                 }
             }
             
-            // BOTÃO FLUTUANTE `+` NO CANTO INFERIOR DIREITO
-            Button(action: {
-                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                showingQuickCapture = true
-            }) {
-                Image(systemName: "plus")
-                    .font(.system(.title3, design: .rounded, weight: .bold))
-                    .foregroundStyle(.white)
-                    .frame(width: 50, height: 50)
-                    .background(
-                        LinearGradient(
-                            colors: [Color(hex: project.colorHex ?? "") ?? Color.accentColor, (Color(hex: project.colorHex ?? "") ?? Color.accentColor).opacity(0.8)],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-                    .clipShape(Circle())
-                    .overlay(
-                        Circle()
-                            .stroke(Color.white.opacity(0.25), lineWidth: 1)
-                    )
-                    .shadow(color: (Color(hex: project.colorHex ?? "") ?? Color.accentColor).opacity(0.45), radius: 10, x: 0, y: 5)
             }
-            .buttonStyle(.plain)
-            .padding(.trailing, 20)
-            .padding(.bottom, 28)
+        }
+        .onAppear {
+            FABManager.shared.customAction = {
+                showingAddOptions = true
+            }
+        }
+        .onDisappear {
+            FABManager.shared.customAction = nil
+        }
+        .confirmationDialog("Adicionar no Projeto \(project.name)", isPresented: $showingAddOptions, titleVisibility: .visible) {
+            Button("🎯 Nova Missão / Tarefa") {
+                showingQuickCapture = true
+            }
+            
+            Button("🧠 Descarrego Mental") {
+                showingProjectBrainDump = true
+            }
+            
+            Button("📋 Colar Lista Copiada") {
+                pasteClipboardMissions()
+            }
+            
+            Button("🪄 Injetar Modelo de Projeto") {
+                showingTemplates = true
+            }
+            
+            Button("📷 Escanear por Foto / OCR") {
+                showingImageScanner = true
+            }
+            
+            Button("Cancelar", role: .cancel) { }
         }
         .background(Color(uiColor: .systemGroupedBackground))
         .navigationTitle(project.name)
