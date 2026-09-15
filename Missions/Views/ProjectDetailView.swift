@@ -15,6 +15,7 @@ struct ProjectDetailView: View {
     @State private var showingImageScanner = false
     @State private var showingProjectBrainDump = false
     @State private var projectDumpText: String = ""
+    @State private var fabActionID: UUID? = nil
     
     var allMissions: [Mission] {
         project.missions?.sorted(by: { ($0.dueDate ?? Date.distantFuture) < ($1.dueDate ?? Date.distantFuture) }) ?? []
@@ -371,12 +372,14 @@ struct ProjectDetailView: View {
                 }
             }
         .onAppear {
-            FABManager.shared.customAction = {
+            fabActionID = FABManager.shared.setAction {
                 showingAddOptions = true
             }
         }
         .onDisappear {
-            FABManager.shared.customAction = nil
+            if let id = fabActionID {
+                FABManager.shared.removeAction(id: id)
+            }
         }
         .sheet(isPresented: $showingAddOptions) {
             VStack(spacing: 16) {

@@ -15,6 +15,7 @@ struct SectorDetailView: View {
     @State private var showingDeleteAlert = false
     @State private var showingEditGoal = false
     @State private var newGoalText = ""
+    @State private var fabActionID: UUID? = nil
     
     // Todas as missões vinculadas aos projetos deste setor
     var allMissionsInSector: [Mission] {
@@ -216,12 +217,14 @@ struct SectorDetailView: View {
                 }
             }
         .onAppear {
-            FABManager.shared.customAction = {
+            fabActionID = FABManager.shared.setAction {
                 showingAddOptions = true
             }
         }
         .onDisappear {
-            FABManager.shared.customAction = nil
+            if let id = fabActionID {
+                FABManager.shared.removeAction(id: id)
+            }
         }
         .sheet(isPresented: $showingAddOptions) {
             VStack(spacing: 16) {
