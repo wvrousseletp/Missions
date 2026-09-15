@@ -36,27 +36,7 @@ struct TodayView: View {
     
     @StateObject private var audioManager = AudioSummaryManager.shared
     
-    var greetingText: String {
-        let hour = Calendar.current.component(.hour, from: Date())
-        if hour < 12 {
-            return "Bom dia! ☀️"
-        } else if hour < 18 {
-            return "Boa tarde! 🌤️"
-        } else {
-            return "Boa noite! 🌙"
-        }
-    }
-    
-    var cognitiveFreedomText: String {
-        let total = todayMissions.count + completedTodayMissions.count
-        let completed = completedTodayMissions.count
-        if total == 0 {
-            return "Sua mente está 100% livre hoje 🧘"
-        }
-        let percent = Int((Double(completed) / Double(total)) * 100)
-        return "Sua mente está \(percent)% liberada hoje 🧘"
-    }
-    
+
     var filteredTodayMissions: [Mission] {
         switch selectedFilter {
         case .all:
@@ -94,29 +74,6 @@ struct TodayView: View {
             ZStack(alignment: .bottom) {
                 ScrollView {
                     VStack(spacing: 16) {
-                        // BANNER DE SAUDAÇÃO & LIBERDADE MENTAL COGNITIVA
-                        HStack {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(greetingText)
-                                    .font(.system(.title2, design: .rounded, weight: .bold))
-                                
-                                Text(cognitiveFreedomText)
-                                    .font(.system(.subheadline, design: .rounded))
-                                    .foregroundStyle(.secondary)
-                            }
-                            Spacer()
-                            
-                            Text(Date().formatted(.dateTime.locale(Locale(identifier: "pt_BR")).weekday(.abbreviated).day().month(.abbreviated)))
-                                .font(.system(.caption, design: .rounded, weight: .bold))
-                                .padding(.horizontal, 10)
-                                .padding(.vertical, 5)
-                                .background(Color.accentColor.opacity(0.12))
-                                .foregroundStyle(Color.accentColor)
-                                .clipShape(Capsule())
-                        }
-                        .padding(.horizontal, 16)
-                        .padding(.top, 8)
-                        
                         // HERO CARD: ANEL DE PROGRESSO DIÁRIO & CARGA HORÁRIA
                         HStack(spacing: 20) {
                             ZStack {
