@@ -38,10 +38,10 @@ struct ContentView: View {
             .tabViewStyle(.page(indexDisplayMode: .never))
             .ignoresSafeArea(.all, edges: .bottom)
             
-            // DOCK BAR FLUTUANTE PREMIUM + BOTÃO FLUTUANTE (FAB)
+            // DOCK BAR INFERIOR DE LARGURA COMPLETA + NAVEGAÇÃO POR GESTO DE DESLIZE
             HStack(alignment: .center, spacing: 0) {
                 // ABAS DE NAVEGAÇÃO COM PILL ANIMADO
-                HStack(spacing: 4) {
+                HStack(spacing: 2) {
                     ForEach(0..<tabs.count, id: \.self) { index in
                         Button(action: {
                             withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
@@ -61,7 +61,7 @@ struct ContentView: View {
                                 }
                             }
                             .foregroundStyle(selectedTab == index ? .white : .secondary)
-                            .padding(.horizontal, selectedTab == index ? 14 : 10)
+                            .padding(.horizontal, selectedTab == index ? 12 : 8)
                             .padding(.vertical, 10)
                             .background(
                                 ZStack {
@@ -77,12 +77,11 @@ struct ContentView: View {
                         .buttonStyle(.plain)
                     }
                 }
-                .padding(6)
-                .background(.ultraThinMaterial)
+                .padding(4)
+                .background(Color.secondary.opacity(0.12))
                 .clipShape(Capsule())
-                .shadow(color: Color.black.opacity(0.12), radius: 12, x: 0, y: 6)
                 
-                Spacer()
+                Spacer(minLength: 8)
                 
                 // BOTÃO FLUTUANTE `+` PREMIUM COM GLOW
                 Button(action: {
@@ -98,7 +97,7 @@ struct ContentView: View {
                     Image(systemName: "plus")
                         .font(.system(.title3, design: .rounded, weight: .bold))
                         .foregroundStyle(.white)
-                        .frame(width: 50, height: 50)
+                        .frame(width: 48, height: 48)
                         .background(
                             LinearGradient(
                                 colors: [Color.accentColor, Color.accentColor.opacity(0.8)],
@@ -111,12 +110,53 @@ struct ContentView: View {
                             Circle()
                                 .stroke(Color.white.opacity(0.25), lineWidth: 1)
                         )
-                        .shadow(color: Color.accentColor.opacity(0.45), radius: 10, x: 0, y: 5)
+                        .shadow(color: Color.accentColor.opacity(0.45), radius: 8, x: 0, y: 4)
                 }
                 .buttonStyle(.plain)
             }
-            .padding(.horizontal, 20)
-            .padding(.bottom, 28)
+            .padding(.horizontal, 16)
+            .padding(.top, 8)
+            .padding(.bottom, 12)
+            .background(
+                ZStack {
+                    Rectangle()
+                        .fill(.ultraThinMaterial)
+                        .ignoresSafeArea(.all, edges: .bottom)
+                    
+                    VStack {
+                        Divider()
+                        Spacer()
+                    }
+                }
+            )
+            .gesture(
+                DragGesture(minimumDistance: 20, coordinateSpace: .local)
+                    .onEnded { value in
+                        let horizontalAmount = value.translation.width
+                        let verticalAmount = value.translation.height
+                        
+                        // Garante que é um deslize horizontal
+                        if abs(horizontalAmount) > abs(verticalAmount) {
+                            if horizontalAmount < -30 {
+                                // Deslizar para a esquerda -> Próxima Aba do Menu
+                                if selectedTab < tabs.count - 1 {
+                                    withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
+                                        selectedTab += 1
+                                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                                    }
+                                }
+                            } else if horizontalAmount > 30 {
+                                // Deslizar para a direita -> Aba Anterior do Menu
+                                if selectedTab > 0 {
+                                    withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
+                                        selectedTab -= 1
+                                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                                    }
+                                }
+                            }
+                        }
+                    }
+            )
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
         .preferredColorScheme(isPureBlack ? .dark : nil)
