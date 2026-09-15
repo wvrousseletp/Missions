@@ -31,6 +31,11 @@ struct TodayView: View {
     @State private var showingBrainDump = false
     @State private var showingDailyShutdown = false
     
+    // Novas variaveis para Produtividade
+    @State private var isListHidden: Bool = true
+    @State private var pomodoroTimeRemaining: Int = 25 * 60
+    @State private var isPomodoroRunning: Bool = false
+    
     @State private var showingCompletedSection: Bool = false
     @State private var lastCompletedMission: Mission? = nil
     
@@ -151,53 +156,148 @@ struct TodayView: View {
                             }
                         }
                         
-                        // BANNER MODO FOCO (SE HOUVER MISSOES)
-                        if let firstMission = filteredTodayMissions.first {
-                            Button(action: {
-                                showingFocusMode = true
-                            }) {
-                                HStack(spacing: 14) {
-                                    ZStack {
-                                        Circle()
-                                            .fill(.white.opacity(0.2))
-                                            .frame(width: 40, height: 40)
-                                        Image(systemName: "scope")
-                                            .font(.title3.bold())
+                        // BANNER MODO FOCO INLINE (COM POMODORO)
+                        if let firstMission = filteredTodayMissions.filter({ !$0.isRoutine }).first {
+                            VStack(spacing: 0) {
+                                Button(action: { showingFocusMode = true }) {
+                                    HStack(spacing: 14) {
+                                        ZStack {
+                                            Circle()
+                                                .fill(.white.opacity(0.2))
+                                                .frame(width: 44, height: 44)
+                                            
+                                            if isPomodoroRunning {
+                                                Text("\(pomodoroTimeRemaining / 60):\(String(format: "%02d", pomodoroTimeRemaining % 60))")
+                                                    .font(.system(size: 12, weight: .bold, design: .monospaced))
+                                            } else {
+                                                Image(systemName: "scope")
+                                                    .font(.title3.bold())
+                                            }
+                                            
+                                            Circle()
+                                                .trim(from: 0, to: CGFloat(pomodoroTimeRemaining) / CGFloat(25 * 60))
+                                                .stroke(Color.white, lineWidth: 2)
+                                                .rotationEffect(.degrees(-90))
+                                        }
+                                        .onReceive(Timer.publish(every: 1, on: .main, in: .common).autoconnect()) { _ in
+                                            if isPomodoroRunning && pomodoroTimeRemaining > 0 {
+                                                pomodoroTimeRemaining -= 1
+                                            } else if pomodoroTimeRemaining == 0 {
+                                                isPomodoroRunning = false
+                                            }
+                                        }
+                                        
+                                        VStack(alignment: .leading, spacing: 2) {
+                                            Text("MODO FOCO")
+                                                .font(.caption2)
+                                                .fontWeight(.bold)
+                                                .kerning(1.2)
+                                                .opacity(0.8)
+                                            Text(firstMission.title)
+                                                .font(.headline)
+                                                .lineLimit(1)
+                                        }
+                                        
+                                        Spacer()
+                                        
+                                        Button(action: {
+                                            withAnimation {
+                                                if isPomodoroRunning {
+                                                    isPomodoroRunning = false
+                                                } else {
+                                                    if pomodoroTimeRemaining == 0 { pomodoroTimeRemaining = 25 * 60 }
+                                                    isPomodoroRunning = true
+                                                }
+                                            }
+                                        }) {
+                                            Image(systemName: isPomodoroRunning ? "pause.circle.fill" : "play.circle.fill")
+                                                .font(.system(size: 32))
+                                        }
+                                        .buttonStyle(.plain)
                                     }
-                                    
-                                    VStack(alignment: .leading, spacing: 2) {
-                                        Text("MODO FOCO")
-                                            .font(.caption2)
-                                            .fontWeight(.bold)
-                                            .kerning(1.2)
-                                            .opacity(0.8)
-                                        Text(firstMission.title)
-                                            .font(.headline)
-                                            .lineLimit(1)
-                                    }
-                                    
-                                    Spacer()
-                                    
-                                    Image(systemName: "play.circle.fill")
-                                        .font(.title2)
-                                }
-                                .foregroundStyle(.white)
-                                .padding(16)
-                                .background(
-                                    LinearGradient(
-                                        colors: [Color.accentColor, Color.purple],
-                                        startPoint: .leading,
-                                        endPoint: .trailing
+                                    .padding(16)
+                                    .background(
+                                        LinearGradient(
+                                            colors: [Color.accentColor, Color.purple],
+                                            startPoint: .leading,
+                                            endPoint: .trailing
+                                        )
                                     )
-                                )
-                                .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-                                .shadow(color: Color.accentColor.opacity(0.3), radius: 8, x: 0, y: 4)
+                                    .foregroundStyle(.white)
+                                }
+                                .buttonStyle(.plain)
+                                
+                                Button(action: {
+                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                        isListHidden.toggle()
+                                    }
+                                }) {
+                                    HStack {
+                                        Spacer()
+                                        Text(isListHidden ? "Mostrar Outras Missões" : "Ocultar Missões")
+                                            .font(.caption)
+                                            .bold()
+                                        Image(systemName: isListHidden ? "chevron.down" : "chevron.up")
+                                            .font(.caption)
+                                        Spacer()
+                                    }
+                                    .padding(.vertical, 8)
+                                    .background(Color.accentColor.opacity(0.1))
+                                    .foregroundStyle(Color.accentColor)
+                                }
+                                .buttonStyle(.plain)
                             }
-                            .buttonStyle(.plain)
+                            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+                            .shadow(color: Color.accentColor.opacity(0.3), radius: 8, x: 0, y: 4)
+                        } else {
+                            // Se não houver missões principais, certifique-se de que a lista está visível para rotinas ou vazio
+                            Color.clear.onAppear { isListHidden = false }
+                        }
+                        
+                        // ROTINAS (PILLS DIÁRIAS)
+                        let routines = filteredTodayMissions.filter { $0.isRoutine }
+                        if !routines.isEmpty {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Rotinas de Hoje")
+                                    .font(.caption)
+                                    .fontWeight(.bold)
+                                    .foregroundStyle(.secondary)
+                                    .padding(.horizontal, 4)
+                                
+                                ScrollView(.horizontal, showsIndicators: false) {
+                                    HStack(spacing: 8) {
+                                        ForEach(routines) { routine in
+                                            Button(action: {
+                                                withAnimation {
+                                                    routine.isCompleted = true
+                                                    try? modelContext.save()
+                                                    if let next = routine.createNextRecurrence() {
+                                                        modelContext.insert(next)
+                                                    }
+                                                }
+                                            }) {
+                                                HStack(spacing: 6) {
+                                                    Image(systemName: "circle")
+                                                    Text(routine.title)
+                                                        .font(.subheadline)
+                                                        .bold()
+                                                }
+                                                .padding(.horizontal, 14)
+                                                .padding(.vertical, 8)
+                                                .background(Color(uiColor: .tertiarySystemGroupedBackground))
+                                                .foregroundStyle(.primary)
+                                                .clipShape(Capsule())
+                                            }
+                                            .buttonStyle(.plain)
+                                        }
+                                    }
+                                }
+                            }
                         }
                         
                         // LISTA DE CARDS DE MISSOES PENDENTES
-                        if filteredTodayMissions.isEmpty && completedTodayMissions.isEmpty {
+                        let coreMissions = filteredTodayMissions.filter { !$0.isRoutine }
+                        if coreMissions.isEmpty && routines.isEmpty && completedTodayMissions.isEmpty {
                             VStack(spacing: 12) {
                                 Image(systemName: "sparkles")
                                     .font(.system(size: 48))
@@ -209,9 +309,9 @@ struct TodayView: View {
                                     .foregroundStyle(.secondary)
                             }
                             .padding(.top, 40)
-                        } else {
+                        } else if !isListHidden {
                             VStack(spacing: 12) {
-                                ForEach(filteredTodayMissions) { mission in
+                                ForEach(coreMissions) { mission in
                                     MissionCard(mission: mission, onCompleted: { completed in
                                         if completed {
                                             withAnimation {

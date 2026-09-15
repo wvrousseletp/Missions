@@ -30,7 +30,9 @@ final class Mission {
     var isAlarmMode: Bool = false // Alerta estilo Despertador em Tela Cheia
     var isWaitingFor: Bool = false // Status Aguardando Resposta de Terceiros
     var waitingPerson: String = "" // Nome do terceiro (ex: Deise, Fornecedor)
-    var phase: String = "" // Fase / Marco do Projeto (ex: Fase 1: Planejamento)
+    var phase: String = "",
+        isRoutine: Bool = false // Fase / Marco do Projeto (ex: Fase 1: Planejamento)
+    var isRoutine: Bool = false
     var isCompleted: Bool
     var createdAt: Date
     
@@ -71,7 +73,8 @@ final class Mission {
         isAlarmMode: Bool = false,
         isWaitingFor: Bool = false,
         waitingPerson: String = "",
-        phase: String = ""
+        phase: String = "",
+        isRoutine: Bool = false
     ) {
         self.title = title
         self.details = details
@@ -85,6 +88,7 @@ final class Mission {
         self.isWaitingFor = isWaitingFor
         self.waitingPerson = waitingPerson
         self.phase = phase
+        self.isRoutine = isRoutine
         self.isCompleted = false
         self.createdAt = Date()
     }
@@ -145,7 +149,8 @@ final class Mission {
             recurrenceEndDate: recurrenceEndDate,
             isAlarmMode: isAlarmMode,
             isWaitingFor: isWaitingFor,
-            waitingPerson: waitingPerson
+            waitingPerson: waitingPerson,
+            isRoutine: isRoutine
         )
         nextMission.project = project
         return nextMission

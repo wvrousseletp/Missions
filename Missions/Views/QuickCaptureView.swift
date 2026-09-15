@@ -381,8 +381,10 @@ struct QuickCaptureView: View {
             recurrenceEndDate: calculatedEndDate(),
             isAlarmMode: isAlarmMode,
             isWaitingFor: isWaitingFor,
-            waitingPerson: waitingPerson
-        )
+            waitingPerson: waitingPerson,
+            isRoutine: isRoutine
+            )
+
         newMission.project = selectedProject
         modelContext.insert(newMission)
         
