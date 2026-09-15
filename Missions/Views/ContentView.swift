@@ -36,6 +36,9 @@ struct ContentView: View {
                     .tag(3)
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
+            .safeAreaInset(edge: .bottom) {
+                Color.clear.frame(height: 80)
+            }
             .ignoresSafeArea(.all, edges: .bottom)
             
             // DOCK BAR INFERIOR DE LARGURA COMPLETA + NAVEGAÇÃO POR GESTO DE DESLIZE
@@ -118,16 +121,15 @@ struct ContentView: View {
             .padding(.top, 8)
             .padding(.bottom, 12)
             .background(
-                ZStack {
-                    Rectangle()
-                        .fill(.ultraThinMaterial)
-                        .ignoresSafeArea(.all, edges: .bottom)
-                    
-                    VStack {
-                        Divider()
-                        Spacer()
-                    }
-                }
+                Rectangle()
+                    .fill(isPureBlack ? Color(white: 0.08) : Color(UIColor.systemBackground))
+                    .ignoresSafeArea(.all, edges: .bottom)
+            )
+            .overlay(
+                Rectangle()
+                    .frame(height: 0.5)
+                    .foregroundColor(Color.gray.opacity(isPureBlack ? 0.3 : 0.15)),
+                alignment: .top
             )
             .gesture(
                 DragGesture(minimumDistance: 20, coordinateSpace: .local)
