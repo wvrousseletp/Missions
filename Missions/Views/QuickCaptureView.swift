@@ -33,6 +33,7 @@ struct QuickCaptureView: View {
     @State private var isAlarmMode: Bool = false
     @State private var isWaitingFor: Bool = false
     @State private var waitingPerson: String = ""
+    @State private var isRoutine: Bool = false
     @State private var selectedProject: Project?
     
     init(initialProject: Project? = nil) {
@@ -200,6 +201,20 @@ struct QuickCaptureView: View {
                     if isWaitingFor {
                         TextField("Quem você está aguardando? (ex: Deise, Fornecedor)", text: $waitingPerson)
                             .font(.subheadline)
+                    }
+                    
+                    Toggle(isOn: $isRoutine) {
+                        HStack {
+                            Image(systemName: "repeat.circle.fill")
+                                .foregroundStyle(.green)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Rotina / Hábito Diário")
+                                    .font(.subheadline)
+                                Text("Aparece como pill rápida na tela inicial")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
                     }
                 }
                 
