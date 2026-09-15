@@ -24,6 +24,7 @@
 		0BF977751315ADEC00E16B8F /* CustomTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589AC3CF55589F2EFE2852B3 /* CustomTemplate.swift */; };
 		0CF977751315ADEC00E16B90 /* AddCustomTaskTemplateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599AC3CF55589F2EFE2852B4 /* AddCustomTaskTemplateView.swift */; };
 		0DF977751315ADEC00E16B91 /* TemplateManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A9AC3CF55589F2EFE2852B5 /* TemplateManagerView.swift */; };
+		0FF977751315ADEC00E16B92 /* MissionsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA9C3CF55589F2EFE2852B6 /* MissionsWidget.swift */; };
 		55A634A537D6C271A5FC73DC /* Missions/Views/HelpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C704FD7BCDC8F6C55D3E8E4 /* Missions/Views/HelpView.swift */; };
 		5DEE4BC288834FD34CD6C5B2 /* Step.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447B4F2FA05CB553715E0CA7 /* Step.swift */; };
 		62574EBBBCECD19BBC784271 /* Sector.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC94F49B823D2B00ADD2B81 /* Sector.swift */; };
@@ -56,6 +57,7 @@
 		589AC3CF55589F2EFE2852B3 /* CustomTemplate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CustomTemplate.swift; path = Missions/Models/CustomTemplate.swift; sourceTree = SOURCE_ROOT; };
 		599AC3CF55589F2EFE2852B4 /* AddCustomTaskTemplateView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AddCustomTaskTemplateView.swift; path = Missions/Views/AddCustomTaskTemplateView.swift; sourceTree = SOURCE_ROOT; };
 		5A9AC3CF55589F2EFE2852B5 /* TemplateManagerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TemplateManagerView.swift; path = Missions/Views/TemplateManagerView.swift; sourceTree = SOURCE_ROOT; };
+		5BA9C3CF55589F2EFE2852B6 /* MissionsWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MissionsWidget.swift; path = Missions/MissionsWidget.swift; sourceTree = SOURCE_ROOT; };
 		211FF91CB508AAB9C1E7F69C /* AlarmAlertView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AlarmAlertView.swift; path = Missions/Views/AlarmAlertView.swift; sourceTree = SOURCE_ROOT; };
 		21F044139D2C96379610A4E7 /* ProjectDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProjectDetailView.swift; path = Missions/Views/ProjectDetailView.swift; sourceTree = SOURCE_ROOT; };
 		2448DAD8F27A11193F3DF707 /* SearchView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SearchView.swift; path = Missions/Views/SearchView.swift; sourceTree = SOURCE_ROOT; };
@@ -282,6 +284,7 @@
 				0BF977751315ADEC00E16B8F /* CustomTemplate.swift in Sources */,
 				0CF977751315ADEC00E16B90 /* AddCustomTaskTemplateView.swift in Sources */,
 				0DF977751315ADEC00E16B91 /* TemplateManagerView.swift in Sources */,
+				0FF977751315ADEC00E16B92 /* MissionsWidget.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
