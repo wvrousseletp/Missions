@@ -30,8 +30,7 @@ final class Mission {
     var isAlarmMode: Bool = false // Alerta estilo Despertador em Tela Cheia
     var isWaitingFor: Bool = false // Status Aguardando Resposta de Terceiros
     var waitingPerson: String = "" // Nome do terceiro (ex: Deise, Fornecedor)
-    var phase: String = "",
-        isRoutine: Bool = false // Fase / Marco do Projeto (ex: Fase 1: Planejamento)
+    var phase: String = ""
     var isRoutine: Bool = false
     var isCompleted: Bool
     var createdAt: Date
