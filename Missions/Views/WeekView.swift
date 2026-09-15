@@ -139,6 +139,35 @@ struct WeekView: View {
             .background(Color(uiColor: isPureBlack ? .black : .systemGroupedBackground))
             .preferredColorScheme(isPureBlack ? .dark : nil)
             .environment(\.locale, Locale(identifier: "pt_BR"))
+            .gesture(
+                DragGesture(minimumDistance: 30, coordinateSpace: .local)
+                    .onEnded { value in
+                        let horizontalAmount = value.translation.width
+                        let verticalAmount = value.translation.height
+                        if abs(horizontalAmount) > abs(verticalAmount) {
+                            let days = currentWeekDays
+                            let cal = calendar
+                            let current = selectedDate ?? Date()
+                            if let currentIndex = days.firstIndex(where: { cal.isDate($0, inSameDayAs: current) }) {
+                                if horizontalAmount < -40 && currentIndex < days.count - 1 {
+                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                        selectedDate = days[currentIndex + 1]
+                                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                                    }
+                                } else if horizontalAmount > 40 && currentIndex > 0 {
+                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                        selectedDate = days[currentIndex - 1]
+                                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                                    }
+                                }
+                            } else if !days.isEmpty {
+                                withAnimation {
+                                    selectedDate = days[0]
+                                }
+                            }
+                        }
+                    }
+            )
         }
     }
     

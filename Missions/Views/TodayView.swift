@@ -514,6 +514,33 @@ struct TodayView: View {
             }
         }
         .preferredColorScheme(isPureBlack ? .dark : nil)
+        .gesture(
+            DragGesture(minimumDistance: 30, coordinateSpace: .local)
+                .onEnded { value in
+                    let horizontalAmount = value.translation.width
+                    let verticalAmount = value.translation.height
+                    if abs(horizontalAmount) > abs(verticalAmount) {
+                        let cases = MissionFilter.allCases
+                        if let currentIndex = cases.firstIndex(of: selectedFilter) {
+                            if horizontalAmount < -40 {
+                                // Deslizar para esquerda -> Próximo filtro de sub-página
+                                let nextIndex = (currentIndex + 1) % cases.count
+                                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                    selectedFilter = cases[nextIndex]
+                                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                                }
+                            } else if horizontalAmount > 40 {
+                                // Deslizar para direita -> Filtro anterior de sub-página
+                                let prevIndex = (currentIndex - 1 + cases.count) % cases.count
+                                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                    selectedFilter = cases[prevIndex]
+                                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                                }
+                            }
+                        }
+                    }
+                }
+        )
     }
 }
 

@@ -21,72 +21,29 @@ struct ContentView: View {
     
     var body: some View {
         ZStack(alignment: .bottom) {
-            // CONTEÚDO DAS ABAS NAVEGÁVEIS POR DESLIZAMENTO
-            TabView(selection: $selectedTab) {
-                TodayView()
-                    .tag(0)
-                
-                WeekView()
-                    .tag(1)
-                
-                SectorsView()
-                    .tag(2)
-                
-                BacklogView()
-                    .tag(3)
+            // CONTEÚDO DAS ABAS (Sem TabView paging para permitir gestos de sub-páginas no conteúdo)
+            Group {
+                switch selectedTab {
+                case 0:
+                    TodayView()
+                case 1:
+                    WeekView()
+                case 2:
+                    SectorsView()
+                case 3:
+                    BacklogView()
+                default:
+                    TodayView()
+                }
             }
-            .tabViewStyle(.page(indexDisplayMode: .never))
             .safeAreaInset(edge: .bottom) {
-                Color.clear.frame(height: 80)
+                Color.clear.frame(height: 75)
             }
             .ignoresSafeArea(.all, edges: .bottom)
             
-            // DOCK BAR INFERIOR DE LARGURA COMPLETA + NAVEGAÇÃO POR GESTO DE DESLIZE
-            HStack(alignment: .center, spacing: 0) {
-                // ABAS DE NAVEGAÇÃO COM PILL ANIMADO
-                HStack(spacing: 2) {
-                    ForEach(0..<tabs.count, id: \.self) { index in
-                        Button(action: {
-                            withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
-                                selectedTab = index
-                                UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                            }
-                        }) {
-                            HStack(spacing: 6) {
-                                Image(systemName: tabs[index].icon)
-                                    .font(.system(size: 16, weight: selectedTab == index ? .bold : .medium))
-                                
-                                if selectedTab == index {
-                                    Text(tabs[index].title)
-                                        .font(.caption)
-                                        .fontWeight(.bold)
-                                        .transition(.scale.combined(with: .opacity))
-                                }
-                            }
-                            .foregroundStyle(selectedTab == index ? .white : .secondary)
-                            .padding(.horizontal, selectedTab == index ? 12 : 8)
-                            .padding(.vertical, 10)
-                            .background(
-                                ZStack {
-                                    if selectedTab == index {
-                                        Capsule()
-                                            .fill(Color.accentColor.gradient)
-                                            .matchedGeometryEffect(id: "activeTabPill", in: tabNamespace)
-                                            .shadow(color: Color.accentColor.opacity(0.4), radius: 6, x: 0, y: 3)
-                                    }
-                                }
-                            )
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
-                .padding(4)
-                .background(Color.secondary.opacity(0.12))
-                .clipShape(Capsule())
-                
-                Spacer(minLength: 8)
-                
-                // BOTÃO FLUTUANTE `+` PREMIUM COM GLOW
+            // BOTÃO FLUTUANTE `+` LOGO ACIMA DO MENU
+            HStack {
+                Spacer()
                 Button(action: {
                     UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                     if let customAction = fabManager.customAction {
@@ -100,7 +57,7 @@ struct ContentView: View {
                     Image(systemName: "plus")
                         .font(.system(.title3, design: .rounded, weight: .bold))
                         .foregroundStyle(.white)
-                        .frame(width: 48, height: 48)
+                        .frame(width: 52, height: 52)
                         .background(
                             LinearGradient(
                                 colors: [Color.accentColor, Color.accentColor.opacity(0.8)],
@@ -111,36 +68,74 @@ struct ContentView: View {
                         .clipShape(Circle())
                         .overlay(
                             Circle()
-                                .stroke(Color.white.opacity(0.25), lineWidth: 1)
+                                .stroke(Color.white.opacity(0.3), lineWidth: 1)
                         )
                         .shadow(color: Color.accentColor.opacity(0.45), radius: 8, x: 0, y: 4)
                 }
                 .buttonStyle(.plain)
             }
-            .padding(.horizontal, 16)
-            .padding(.top, 8)
+            .padding(.trailing, 20)
+            .padding(.bottom, 72)
+            
+            // DOCK BAR INFERIOR DE LARGURA COMPLETA (SEM LINHA SUPERIOR) + DESLIZE DE ABAS NO MENU
+            HStack(alignment: .center, spacing: 0) {
+                ForEach(0..<tabs.count, id: \.self) { index in
+                    Button(action: {
+                        withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
+                            selectedTab = index
+                            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                        }
+                    }) {
+                        HStack(spacing: 6) {
+                            Image(systemName: tabs[index].icon)
+                                .font(.system(size: 16, weight: selectedTab == index ? .bold : .medium))
+                            
+                            if selectedTab == index {
+                                Text(tabs[index].title)
+                                    .font(.caption)
+                                    .fontWeight(.bold)
+                                    .transition(.scale.combined(with: .opacity))
+                            }
+                        }
+                        .foregroundStyle(selectedTab == index ? .white : .secondary)
+                        .padding(.horizontal, selectedTab == index ? 14 : 10)
+                        .padding(.vertical, 10)
+                        .background(
+                            ZStack {
+                                if selectedTab == index {
+                                    Capsule()
+                                        .fill(Color.accentColor.gradient)
+                                        .matchedGeometryEffect(id: "activeTabPill", in: tabNamespace)
+                                        .shadow(color: Color.accentColor.opacity(0.4), radius: 6, x: 0, y: 3)
+                                }
+                            }
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    
+                    if index < tabs.count - 1 {
+                        Spacer(minLength: 0)
+                    }
+                }
+            }
+            .padding(.horizontal, 20)
+            .padding(.top, 10)
             .padding(.bottom, 12)
             .background(
                 Rectangle()
                     .fill(isPureBlack ? Color(white: 0.08) : Color(UIColor.systemBackground))
                     .ignoresSafeArea(.all, edges: .bottom)
             )
-            .overlay(
-                Rectangle()
-                    .frame(height: 0.5)
-                    .foregroundColor(Color.gray.opacity(isPureBlack ? 0.3 : 0.15)),
-                alignment: .top
-            )
             .gesture(
-                DragGesture(minimumDistance: 20, coordinateSpace: .local)
+                DragGesture(minimumDistance: 25, coordinateSpace: .local)
                     .onEnded { value in
                         let horizontalAmount = value.translation.width
                         let verticalAmount = value.translation.height
                         
-                        // Garante que é um deslize horizontal
+                        // Garante que é um deslize horizontal exclusivo em cima do menu
                         if abs(horizontalAmount) > abs(verticalAmount) {
                             if horizontalAmount < -30 {
-                                // Deslizar para a esquerda -> Próxima Aba do Menu
+                                // Deslizar para a esquerda -> Próxima Aba Principal
                                 if selectedTab < tabs.count - 1 {
                                     withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
                                         selectedTab += 1
@@ -148,7 +143,7 @@ struct ContentView: View {
                                     }
                                 }
                             } else if horizontalAmount > 30 {
-                                // Deslizar para a direita -> Aba Anterior do Menu
+                                // Deslizar para a direita -> Aba Principal Anterior
                                 if selectedTab > 0 {
                                     withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
                                         selectedTab -= 1
